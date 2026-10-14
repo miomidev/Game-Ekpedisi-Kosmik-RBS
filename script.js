@@ -828,6 +828,9 @@
       }
       if (state.selectedPlanetId === planet.id) {
         pill.classList.add('active');
+        setTimeout(() => {
+          pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }, 50);
       }
 
       const check = state.visitedPlanets.has(planet.id) ? '✓ ' : '';
@@ -1096,7 +1099,7 @@
       const p = GAME_DATA.planets[i];
       if (p.currX !== undefined) {
         const dist = Math.hypot(mx - p.currX, my - p.currY);
-        const hitR = Math.max(22, p.size * 0.6);
+        const hitR = Math.max(26, p.size * 0.65);
         if (dist <= hitR) return p;
       }
     }
