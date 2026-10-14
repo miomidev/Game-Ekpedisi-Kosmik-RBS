@@ -51,19 +51,24 @@ const GAME_DATA = {
   <path d="M 5 50 A 45 45 0 0 1 50 5 A 45 45 0 0 0 5 50 Z" fill="#ffffff" opacity="0.25"/>
 </svg>`,
       tagline: "Planet Tercepat & Terpanas-Terdingin",
-      description: "Planet terkecil dan terdekat dari Matahari. Permukaannya penuh kawah seperti Bulan.",
+      description: "Planet terkecil dan terdekat dari Matahari. Permukaannya penuh kawah seperti Bulan tanpa atmosfer pelindung.",
       facts: [
         "🌡️ Suhu siang: hingga 430°C, malam: -180°C",
         "🔄 Rotasi sangat lambat: 1 hari = 59 hari Bumi",
         "🌍 Tidak punya atmosfer tebal untuk menahan panas",
-        "📏 Diameter: 4.879 km (terkecil)",
+        "📏 Diameter: 4.879 km (planet terkecil)",
         "☀️ Jarak ke Matahari: 57,9 juta km"
       ],
       interactionTitle: "Misi: Atur Pelindung Suhu!",
       interactionDesc: "Merkurius tidak punya atmosfer tebal. Siang sangat panas, malam sangat dingin. Bantu atur pelindung suhu roket!",
       interactionType: "temperature",
       gravity: 3.7,
-      mpiColor: "#8B7355"
+      mpiColor: "#8B7355",
+      image: "assets/planet-merkurius.jpg",
+      surfaceImage: "assets/surface-merkurius.jpg",
+      imageCaption: "📸 Citra NASA MESSENGER: Permukaan berkawah Merkurius mirip Bulan akibat hantaman asteroid purba.",
+      nasaCredit: "NASA / Johns Hopkins University APL / Carnegie Institution of Washington (MESSENGER)",
+      narrationSpeech: "Kita telah tiba di orbit Merkurius, planet terkecil dan terdekat dari Matahari. Karena tidak memiliki atmosfer penahan suhu, bagian siangnya mendidih hingga 430 derajat Celsius, sementara malamnya membeku hingga minus 180 derajat Celsius!"
     },
     {
       id: "venus",
@@ -90,12 +95,12 @@ const GAME_DATA = {
   <path d="M 5 50 A 45 45 0 0 1 50 5 A 45 45 0 0 0 5 50 Z" fill="#ffffff" opacity="0.25"/>
 </svg>`,
       tagline: "Planet Terpanas dengan Selimut Gas Tebal",
-      description: "Sering disebut 'kembaran Bumi' karena ukurannya mirip, tapi permukaannya sangat panas!",
+      description: "Sering disebut 'kembaran Bumi' karena ukurannya mirip, tapi atmosfer asamnya menciptakan efek rumah kaca ekstrem!",
       facts: [
         "🌡️ Suhu permukaan: 465°C (terpanas di Tata Surya!)",
         "💨 Atmosfer sangat tebal: 96% karbon dioksida (CO₂)",
         "🔄 Rotasi retrograd: berputar berlawanan arah planet lain",
-        "🌫️ Tekanan atmosfer 90x lipat tekanan di Bumi",
+        "🌫️ Tekanan atmosfer 90x lipat tekanan di permukaan Bumi",
         "☀️ Jarak ke Matahari: 108,2 juta km"
       ],
       interactionTitle: "Misi: Aktifkan Sensor Asam & Tekanan!",
@@ -103,8 +108,11 @@ const GAME_DATA = {
       interactionType: "atmosphere",
       gravity: 8.87,
       mpiColor: "#DAA520",
-      image: "assets/Ilustrasi Permukaan Venus.webp",
-      imageCaption: "📸 Citra Radar Permukaan Venus: Suhu >450°C di bawah selimut gas CO₂ pekat"
+      image: "assets/planet-venus.jpg",
+      surfaceImage: "assets/Ilustrasi Permukaan Venus.webp",
+      imageCaption: "📸 Citra Radar NASA Magellan: Permukaan vulkanik Venus di bawah selimut awan tebal gas CO₂ dan asam sulfat.",
+      nasaCredit: "NASA / Jet Propulsion Laboratory (JPL Magellan Radar Mission)",
+      narrationSpeech: "Waspada Kadet! Kita berada di atas planet Venus, planet terpanas di seluruh Tata Surya. Atmosfernya 96 persen gas karbon dioksida dengan tekanan 90 kali lipat Bumi, menjebak panas matahari bagaikan oven raksasa!"
     },
     {
       id: "bumi",
@@ -116,19 +124,24 @@ const GAME_DATA = {
       orbitSpeed: 0.01,
       icon: "🌍",
       tagline: "Planet Biru — Rumah Kita",
-      description: "Satu-satunya planet yang diketahui memiliki kehidupan. Punya air cair, atmosfer oksigen, dan medan magnet pelindung.",
+      description: "Satu-satunya oasis kehidupan yang diketahui di alam semesta. Memiliki air cair, atmosfer kaya oksigen, dan medan magnet pelindung.",
       facts: [
         "💧 70% permukaan tertutup air cair",
-        "🌡️ Suhu rata-rata: 15°C (zona laik huni)",
-        "🛡️ Medan magnet melindungi dari radiasi Matahari",
-        "🌙 Punya 1 satelit alami: Bulan",
-        "☀️ Jarak ke Matahari: 149,6 juta km"
+        "🌡️ Suhu rata-rata: 15°C (zona laik huni yang seimbang)",
+        "🛡️ Medan magnet melindungi dari radiasi badai Matahari",
+        "🌙 Punya 1 satelit alami setia: Bulan",
+        "☀️ Jarak ke Matahari: 149,6 juta km (1 Satuan Astronomi)"
       ],
       interactionTitle: "Misi: Bandingkan Zona Laik Huni!",
-      interactionDesc: "Bumi berada di zona laik huni (habitable zone). Bandingkan kondisi Bumi dengan planet lain untuk memahami mengapa kehidupan bisa ada di sini!",
+      interactionDesc: "Bumi berada di zona laik huni (Goldilocks zone). Analisis 3 syarat utama mengapa kehidupan bisa berkembang di Bumi!",
       interactionType: "habitable",
       gravity: 9.8,
-      mpiColor: "#4169E1"
+      mpiColor: "#4169E1",
+      image: "assets/planet-bumi.jpg",
+      surfaceImage: "assets/surface-bumi.jpg",
+      imageCaption: "📸 Citra NASA DSCOVR Blue Marble & Apollo: Planet biru dengan lautan luas, atmosfer hidup, dan jejak manusia di Bulan.",
+      nasaCredit: "NASA / NOAA / GSFC (DSCOVR Mission & Apollo 11)",
+      narrationSpeech: "Selamat kembali memandang Bumi dari orbit! Rumah kita adalah permata biru yang unik, berada di zona laik huni dengan air cair, atmosfer kaya oksigen, serta medan magnet pelindung dari radiasi kosmik."
     },
     {
       id: "mars",
@@ -158,19 +171,24 @@ const GAME_DATA = {
   <path d="M 5 50 A 45 45 0 0 1 50 5 A 45 45 0 0 0 5 50 Z" fill="#ffffff" opacity="0.25"/>
 </svg>`,
       tagline: "Planet Merah — Target Eksplorasi Manusia",
-      description: "Disebut Planet Merah karena tanahnya mengandung oksida besi (karat). Punya gunung tertinggi di Tata Surya!",
+      description: "Disebut Planet Merah karena tanahnya kaya oksida besi (karat). Memiliki gunung berapi tertinggi di Tata Surya, Olympus Mons!",
       facts: [
-        "🏔️ Olympus Mons: gunung tertinggi (21,9 km!)",
-        "🔴 Warna merah dari oksida besi (Fe₂O₃)",
-        "🌡️ Suhu rata-rata: -63°C",
-        "🌙 Punya 2 bulan kecil: Phobos & Deimos",
+        "🏔️ Olympus Mons: gunung tertinggi di Tata Surya (21,9 km!)",
+        "🔴 Warna merah berasal dari senyawa oksida besi (karat)",
+        "🌡️ Suhu rata-rata dingin: -63°C",
+        "🌙 Punya 2 bulan kecil: Phobos dan Deimos",
         "☀️ Jarak ke Matahari: 227,9 juta km"
       ],
       interactionTitle: "Misi: Jalankan Rover Virtual!",
-      interactionDesc: "Kendalikan rover untuk mengambil sampel tanah merah Mars. Analisis kandungan mineralnya!",
+      interactionDesc: "Kendalikan rover penjelajah untuk mengambil sampel tanah merah Mars. Analisis kandungan mineral oksida besinya!",
       interactionType: "rover",
       gravity: 3.72,
-      mpiColor: "#CD5C5C"
+      mpiColor: "#CD5C5C",
+      image: "assets/planet-mars.jpg",
+      surfaceImage: "assets/surface-mars.jpg",
+      imageCaption: "📸 Citra NASA Viking & Curiosity Rover: Pemandangan global Mars dan dataran Kawah Gale kaya batuan oksida besi.",
+      nasaCredit: "NASA / JPL-Caltech / USGS (Mars Global Surveyor & Curiosity Rover)",
+      narrationSpeech: "Orbit Mars tercapai! Kadet, perhatikan rona merah karat pada permukaannya yang disebabkan debu besi teroksidasi. Gravitasi di sini hanya 0,38 kali gravitasi Bumi, membuat langkah rover terasa sangat ringan!"
     },
     {
       id: "jupiter",
@@ -182,19 +200,24 @@ const GAME_DATA = {
       orbitSpeed: 0.004,
       icon: "♃",
       tagline: "Raksasa Gas Terbesar",
-      description: "Planet terbesar di Tata Surya. Tidak punya permukaan padat — seluruhnya gas!",
+      description: "Planet raksasa gas terbesar dengan massa 2,5 kali gabungan semua planet lain. Tidak memiliki daratan padat untuk mendarat!",
       facts: [
-        "🌀 Bintik Merah Raksasa: badai yang lebih besar dari Bumi!",
-        "💨 Tersusun dari hidrogen (H₂) dan helium (He)",
-        "🚫 Tidak punya permukaan padat untuk mendarat",
-        "🌙 Punya 95+ satelit alami (termasuk Ganymede, terbesar)",
+        "🌀 Bintik Merah Raksasa: badai pusaran yang lebih luas dari Bumi!",
+        "💨 Tersusun mayoritas dari hidrogen (H₂) dan helium (He)",
+        "🚫 Tidak punya permukaan padat — modul roket tidak bisa mendarat",
+        "🌙 Memiliki 95+ satelit alami (Ganymede adalah satelit terbesar)",
         "☀️ Jarak ke Matahari: 778,5 juta km"
       ],
       interactionTitle: "Misi: Terobos Badai Bintik Merah!",
-      interactionDesc: "Jupiter adalah raksasa gas — tidak bisa mendarat! Navigasikan roket melewati Badai Bintik Merah Raksasa sambil mengumpulkan data!",
+      interactionDesc: "Jupiter adalah raksasa gas — tidak bisa mendarat padat! Navigasikan sensor roket menerobos badai Bintik Merah Raksasa!",
       interactionType: "storm",
       gravity: 24.79,
-      mpiColor: "#D2691E"
+      mpiColor: "#D2691E",
+      image: "assets/planet-jupiter.jpg",
+      surfaceImage: "assets/surface-jupiter.jpg",
+      imageCaption: "📸 Citra NASA Cassini & Juno: Pusaran badai atmosfer raksasa gas dan detail Badai Bintik Merah Raksasa.",
+      nasaCredit: "NASA / JPL-Caltech / SwRI / MSSS (Cassini & Juno Mission)",
+      narrationSpeech: "Selamat datang di medan gravitasi masif Jupiter! Raksasa gas terbesar di tata surya kita. Ingat, Jupiter tidak memiliki daratan padat, seluruh strukturnya tersusun dari pusaran gas hidrogen dan helium yang bergolak kencang."
     },
     {
       id: "saturnus",
@@ -206,19 +229,24 @@ const GAME_DATA = {
       orbitSpeed: 0.003,
       icon: "♄",
       tagline: "Si Cantik Bercincin",
-      description: "Terkenal dengan cincin megahnya yang terbuat dari miliaran partikel es dan batu angkasa.",
+      description: "Planet tercantik dengan lembaran cincin megah dari miliaran serpihan es air murni dan debu kosmik.",
       facts: [
-        "💍 Cincin terdiri dari es air, debu, dan batu",
-        "⚖️ Densitas sangat rendah — bisa mengapung di air!",
-        "💨 Juga raksasa gas seperti Jupiter",
-        "🌙 Punya 146+ satelit (termasuk Titan yang punya atmosfer)",
+        "💍 Cincin terdiri dari 99% es air murni, debu, dan batuan",
+        "⚖️ Densitas rata-rata lebih rendah dari air (bisa mengapung!)",
+        "💨 Kelompok planet Jovian: raksasa gas hidrogen dan helium",
+        "🌙 Memiliki 146+ satelit (termasuk Titan yang memiliki atmosfer padat)",
         "☀️ Jarak ke Matahari: 1,43 miliar km"
       ],
       interactionTitle: "Misi: Analisis Partikel Cincin!",
-      interactionDesc: "Terbang melewati cincin Saturnus dan analisis komposisi partikelnya. Apa saja yang menyusun cincin megah ini?",
+      interactionDesc: "Terbang mendekati cincin Saturnus dan aktifkan spektrometer untuk menganalisis partikel es dan densitasnya!",
       interactionType: "rings",
       gravity: 10.44,
-      mpiColor: "#F0E68C"
+      mpiColor: "#F0E68C",
+      image: "assets/planet-saturnus.jpg",
+      surfaceImage: "assets/surface-saturnus.jpg",
+      imageCaption: "📸 Citra NASA Cassini: Kemegahan cakrawala cincin es Saturnus dan struktur celah Cassini yang memukau.",
+      nasaCredit: "NASA / JPL-Caltech / Space Science Institute (Cassini-Huygens Mission)",
+      narrationSpeech: "Pemandangan spektakuler! Kita memasuki orbit Saturnus. Cincin megah yang terlihat padat ini sebenarnya adalah miliaran partikel bongkahan es air jernih dan debu antariksa yang memantulkan sinar mentari."
     },
     {
       id: "uranus",
@@ -230,19 +258,24 @@ const GAME_DATA = {
       orbitSpeed: 0.002,
       icon: "⛢",
       tagline: "Planet yang Tidur Miring",
-      description: "Unik karena berotasi dengan poros yang hampir rebah (~98°), seolah-olah berguling di orbitnya!",
+      description: "Raksasa es unik dengan kemiringan poros rotasi hampir 98°, berputar seolah berguling di bidang orbitnya!",
       facts: [
-        "🔄 Kemiringan poros rotasi: ~98° (hampir rebah!)",
-        "💎 Warna biru-hijau dari gas metana (CH₄)",
-        "🥶 Suhu terdingin: -224°C",
-        "💍 Punya cincin tipis vertikal",
+        "🔄 Kemiringan poros rotasi: ~98° (hampir rebah horizontal!)",
+        "💎 Warna biru kehijauan berasal dari gas metana (CH₄) di atmosfernya",
+        "🥶 Atmosfer terdingin di Tata Surya: mencapai -224°C",
+        "💍 Memiliki 13 cincin tipis yang berorientasi vertikal",
         "☀️ Jarak ke Matahari: 2,87 miliar km"
       ],
       interactionTitle: "Misi: Sesuaikan Kemiringan Roket!",
-      interactionDesc: "Poros rotasi Uranus hampir rebah 98°! Sesuaikan orientasi roket agar bisa mengorbit dengan benar!",
+      interactionDesc: "Poros rotasi Uranus hampir rebah 98°! Kalibrasi orientasi roket agar sejajar dengan medan gravitasi unik Uranus!",
       interactionType: "tilt",
       gravity: 8.87,
-      mpiColor: "#7EC8E3"
+      mpiColor: "#7EC8E3",
+      image: "assets/planet-uranus.jpg",
+      surfaceImage: "assets/planet-uranus.jpg",
+      imageCaption: "📸 Citra NASA Voyager 2: Raksasa es biru kehijauan dengan atmosfer metana beku dan rotasi rebah 98 derajat.",
+      nasaCredit: "NASA / Jet Propulsion Laboratory (Voyager 2 Mission)",
+      narrationSpeech: "Memasuki wilayah Uranus, sang raksasa es beku. Keunikan paling dramatis planet ini adalah kemiringan sumbu rotasinya hingga 98 derajat, sehingga Uranus seakan berguling saat mengitari orbitnya!"
     },
     {
       id: "neptunus",
@@ -254,19 +287,24 @@ const GAME_DATA = {
       orbitSpeed: 0.001,
       icon: "♆",
       tagline: "Planet Terjauh yang Penuh Badai",
-      description: "Planet terjauh dari Matahari dengan angin tercepat di Tata Surya — hingga 2.100 km/jam!",
+      description: "Planet terjauh di Tata Surya dengan badai supersonik tercepat hingga 2.100 km/jam!",
       facts: [
-        "💨 Angin tercepat di Tata Surya: 2.100 km/jam!",
-        "🔵 Warna biru pekat dari metana (CH₄)",
-        "🌀 Punya badai es raksasa (Great Dark Spot)",
-        "⏰ 1 tahun Neptunus = 165 tahun Bumi",
-        "☀️ Jarak ke Matahari: 4,5 miliar km"
+        "💨 Angin tercepat di Tata Surya: melesat hingga 2.100 km/jam!",
+        "🔵 Warna biru laut pekat akibat penyerapan spektrum merah oleh metana",
+        "🌀 Memiliki sistem badai es raksasa Great Dark Spot",
+        "⏰ Periode revolusi sangat panjang: 1 tahun Neptunus = 165 tahun Bumi",
+        "☀️ Jarak ke Matahari: 4,5 miliar km (30 Satuan Astronomi)"
       ],
       interactionTitle: "Misi: Hadapi Turbulensi Angin!",
-      interactionDesc: "Neptunus punya angin tercepat di Tata Surya! Stabilkan roket di tengah turbulensi dahsyat!",
+      interactionDesc: "Neptunus memiliki angin supersonik tercepat di Tata Surya! Aktifkan pendorong stabilitas di tengah badai es!",
       interactionType: "wind",
       gravity: 11.15,
-      mpiColor: "#1E90FF"
+      mpiColor: "#1E90FF",
+      image: "assets/planet-neptunus.jpg",
+      surfaceImage: "assets/planet-neptunus.jpg",
+      imageCaption: "📸 Citra NASA Voyager 2: Biru pekat planet Neptunus di batas terjauh tata surya dengan pusaran badai es raksasa.",
+      nasaCredit: "NASA / Jet Propulsion Laboratory (Voyager 2 Planetary Encounters)",
+      narrationSpeech: "Kita telah mencapai garis batas terluar, Neptunus! Planet biru pekat berangin supersonik yang membutuhkan waktu 165 tahun bumi untuk menyelesaikan satu putaran orbit penuh mengelilingi Matahari."
     }
   ],
 
@@ -275,7 +313,7 @@ const GAME_DATA = {
     venus: {
       planet: "Venus",
       image: "assets/Ilustrasi Permukaan Venus.webp",
-      imageCaption: "📸 Citra Radar Permukaan Venus: Suhu >450°C di bawah selimut awan tebal CO₂",
+      imageCaption: "📸 Citra Radar NASA Magellan: Suhu permukaan >450°C akibat efek rumah kaca ekstrem gas CO₂.",
       prompt: "Sensor luar mendeteksi suhu permukaan lebih dari 450°C, bahkan lebih panas dari Merkurius padahal letaknya lebih jauh dari Matahari. Mengapa fenomena ini terjadi?",
       options: [
         { text: "Inti planet Venus terdiri atas magma cair yang bocor ke seluruh permukaan.", correct: false },
@@ -286,6 +324,8 @@ const GAME_DATA = {
     },
     mars: {
       planet: "Mars",
+      image: "assets/surface-mars.jpg",
+      imageCaption: "📸 Citra NASA Curiosity Rover: Penjelajah robotik menganalisis dataran merah dan batuan di Kawah Gale Mars.",
       prompt: "Rover kita mendarat di dataran merah Mars. Bobot rover di Bumi adalah 600 N. Bagaimana bobot rover saat berada di permukaan Mars?",
       options: [
         { text: "Menjadi lebih kecil karena percepatan gravitasi Mars lebih rendah daripada Bumi.", correct: true },
@@ -296,6 +336,8 @@ const GAME_DATA = {
     },
     jupiter: {
       planet: "Jupiter",
+      image: "assets/surface-jupiter.jpg",
+      imageCaption: "📸 Citra Wahana NASA Juno: Turbulensi awan badai Bintik Merah Raksasa di atmosfer gas Jovian.",
       prompt: "Kadet mencoba mencari koordinat daratan berbatu untuk mendaratkan kaki roket di Jupiter. Mengapa modul roket menolak perintah pendaratan padat?",
       options: [
         { text: "Jupiter tertutup lapisan es abadi setebal ribuan kilometer.", correct: false },
@@ -306,6 +348,8 @@ const GAME_DATA = {
     },
     saturnus: {
       planet: "Saturnus",
+      image: "assets/surface-saturnus.jpg",
+      imageCaption: "📸 Citra Wahana NASA Cassini: Tampilan dekat cincin es Saturnus yang tersusun dari miliaran serpihan es air.",
       prompt: "Sensor spektrum menganalisis materi penyusun cincin megah Saturnus. Terbuat dari apakah lembaran cincin tipis tersebut?",
       options: [
         { text: "Gas beracun metana yang memadat karena suhu dingin.", correct: false },
@@ -316,6 +360,8 @@ const GAME_DATA = {
     },
     neptunus: {
       planet: "Neptunus",
+      image: "assets/planet-neptunus.jpg",
+      imageCaption: "📸 Citra Wahana NASA Voyager 2: Planet Neptunus yang membutuhkan 165 tahun bumi untuk satu kali revolusi orbit.",
       prompt: "Sistem navigasi mencatat 1 tahun (kala revolusi) di Neptunus jauh lebih panjang daripada di Merkurius (sekitar 165 tahun Bumi). Apa penyebab utamanya?",
       options: [
         { text: "Neptunus memiliki lintasan orbit yang jauh lebih panjang dan kecepatan orbit yang lebih lambat.", correct: true },
@@ -352,12 +398,20 @@ const GAME_DATA = {
     }
   ],
 
-  // ── Konfigurasi Game ───────────────────────────────────────
+  // ── Konfigurasi Game & Penilaian ───────────────────────────
   config: {
     maxFuel: 100,
     fuelPerTravel: 8,
     fuelPerWrongAnswer: 5,
     fuelBonusCorrect: 3,
-    startingFuel: 100
+    startingFuel: 100,
+    scoring: {
+      planetPoints: 5,       // 8 planet x 5 = 40 poin
+      quizPoints: 8,         // 5 kuis x 8 = 40 poin
+      maxFuelPoints: 20,     // Sisa bahan bakar dikalikan 0.20 = 20 poin max
+      pointsPerPlanet: 5,
+      pointsPerQuiz: 8,
+      fuelEfficiencyMax: 20
+    }
   }
 };

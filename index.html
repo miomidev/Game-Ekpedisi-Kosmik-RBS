@@ -9,11 +9,15 @@
 <body>
   <div id="game-container">
 
-    <!-- ═══ Global Audio Controls (BGM & SFX) ═══ -->
+    <!-- ═══ Global Audio Controls (BGM & SFX & Suara Narasi) ═══ -->
     <div class="audio-controls" id="audio-controls">
-      <button id="btn-toggle-audio" class="btn-audio" title="Matikan / Nyalakan Suara (Musik & SFX)" aria-label="Toggle Suara">
+      <button id="btn-toggle-audio" class="btn-audio" title="Matikan / Nyalakan Musik (BGM)" aria-label="Toggle Musik">
         <span class="audio-icon" id="audio-icon">🔊</span>
         <span class="audio-label" id="audio-label">Musik: Aktif</span>
+      </button>
+      <button id="btn-toggle-voice" class="btn-audio btn-voice" title="Matikan / Nyalakan Suara Narasi (Voice)" aria-label="Toggle Suara Narasi">
+        <span class="audio-icon" id="voice-icon">🎙️</span>
+        <span class="audio-label" id="voice-label">Suara: Aktif</span>
       </button>
     </div>
 
@@ -186,6 +190,27 @@
         <!-- Solar System Canvas -->
         <canvas id="solar-canvas"></canvas>
 
+        <!-- Cockpit Glass & Frame Overlays (Immersive Simulator Canopy) -->
+        <div class="cockpit-canopy" aria-hidden="true">
+          <div class="canopy-top-arch"></div>
+          <div class="canopy-pillar pillar-left"></div>
+          <div class="canopy-pillar pillar-right"></div>
+          <div class="canopy-glass-reflection"></div>
+          <div class="cockpit-hud-overlay">
+            <div class="hud-target-reticle"></div>
+            <div class="hud-horizon-line"></div>
+            <div class="hud-telemetry hud-telemetry-left">
+              <span>ORBIT: STABIL</span>
+              <span>RADAR: AKTIF</span>
+            </div>
+            <div class="hud-telemetry hud-telemetry-right">
+              <span>SISTEM: OK</span>
+              <span>SENSOR: SIAP</span>
+            </div>
+          </div>
+          <div class="canopy-dashboard-rim"></div>
+        </div>
+
         <!-- Planet Info Tooltip -->
         <div id="planet-tooltip" class="planet-tooltip hidden">
           <h3 id="tooltip-name"></h3>
@@ -331,9 +356,46 @@
           </div>
         </div>
 
+        <!-- Voice Narration Player Bar -->
+        <div class="planet-voice-bar">
+          <button id="btn-speak-planet" class="btn-voice-play" title="Dengarkan Narasi Suara Komputer Penerbangan">
+            <span class="voice-play-icon" id="voice-play-icon">🔊</span>
+            <span class="voice-play-text" id="voice-play-text">Dengarkan Narasi Planet</span>
+          </button>
+          <div class="voice-playing-indicator hidden" id="voice-playing-indicator">
+            <span class="voice-wave w1"></span>
+            <span class="voice-wave w2"></span>
+            <span class="voice-wave w3"></span>
+            <span class="voice-wave w4"></span>
+            <span class="voice-status-text">Membacakan data transmisi...</span>
+          </div>
+        </div>
+
         <!-- Planet Description -->
         <div class="planet-section">
           <p id="planet-visit-desc" class="planet-desc"></p>
+        </div>
+
+        <!-- Observatorium Citra Asli NASA (Teleskopik & Permukaan) -->
+        <div class="planet-section nasa-observatory-section" id="nasa-observatory-section">
+          <div class="nasa-section-header">
+            <div class="nasa-badge">
+              <span class="nasa-logo-pill">NASA</span>
+              <span class="nasa-mission-title">OBSERVATORI CITRA RESMI</span>
+            </div>
+            <div class="nasa-view-tabs" id="nasa-view-tabs">
+              <button class="nasa-tab-btn active" id="btn-tab-planet" data-view="planet">🔭 Foto Planet</button>
+              <button class="nasa-tab-btn" id="btn-tab-surface" data-view="surface">🔬 Permukaan Nyata</button>
+            </div>
+          </div>
+
+          <div class="nasa-photo-frame">
+            <img id="nasa-photo-img" src="" alt="Citra Observasi NASA">
+            <div class="nasa-photo-overlay">
+              <div id="nasa-photo-caption" class="nasa-photo-caption"></div>
+              <div id="nasa-photo-credit" class="nasa-photo-credit"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Facts -->
@@ -423,8 +485,57 @@
       <div class="stars-bg"></div>
       <div class="ending-content">
         <div class="ending-badge">🏅</div>
-        <h2>Misi Selesai!</h2>
+        <h2>Misi Antariksa Selesai!</h2>
         <p id="ending-text"></p>
+
+        <!-- Evaluasi & Kartu Skor Akhir Kadet -->
+        <div class="ending-score-card" id="ending-score-card">
+          <div class="score-header">
+            <span class="score-badge-ribbon">HASIL EVALUASI MISI KOSMIK</span>
+            <div class="final-score-circle">
+              <span class="final-score-number" id="final-score-val">100</span>
+              <span class="final-score-max">/100</span>
+            </div>
+            <div class="final-grade-badge" id="final-grade-badge">A+</div>
+            <p class="final-grade-title" id="final-grade-title">Kadet Astronom Teladan</p>
+          </div>
+
+          <div class="score-breakdown-grid">
+            <div class="score-item">
+              <span class="score-item-icon">🪐</span>
+              <div class="score-item-detail">
+                <span class="score-item-title">Eksplorasi Planet</span>
+                <span class="score-item-sub">8 Planet x 5 Poin</span>
+              </div>
+              <span class="score-item-points" id="score-planet-points">40 / 40</span>
+            </div>
+            <div class="score-item">
+              <span class="score-item-icon">🎯</span>
+              <div class="score-item-detail">
+                <span class="score-item-title">Kuis & Misi Sains</span>
+                <span class="score-item-sub">5 Checkpoint x 8 Poin</span>
+              </div>
+              <span class="score-item-points" id="score-quiz-points">0 / 40</span>
+            </div>
+            <div class="score-item">
+              <span class="score-item-icon">⛽</span>
+              <div class="score-item-detail">
+                <span class="score-item-title">Efisiensi Bahan Bakar</span>
+                <span class="score-item-sub">Sisa Bahan Bakar x 0.20</span>
+              </div>
+              <span class="score-item-points" id="score-fuel-points">0 / 20</span>
+            </div>
+          </div>
+
+          <div class="instructor-note-box">
+            <div class="instructor-header">
+              <span class="instructor-icon">👩‍🏫</span>
+              <span class="instructor-name">Catatan Instruktur — Ibu Linda (Bimbel RBS):</span>
+            </div>
+            <p id="instructor-note-text" class="instructor-note-text">Memuat evaluasi...</p>
+          </div>
+        </div>
+
         <div class="ending-stats">
           <div class="stat-item">
             <span class="stat-number" id="stat-planets">8</span>
@@ -439,14 +550,77 @@
             <span class="stat-label">% Sisa Bahan Bakar</span>
           </div>
         </div>
-        <div class="ending-certificate" id="printable-cert">
-          <p>🎓 Sertifikat diberikan kepada:</p>
-          <h3 id="cert-name"></h3>
-          <p><strong>Ahli Astronomi Tata Surya</strong></p>
-          <p style="font-size: 0.85rem; color: #88aacc; margin-top: 6px;">Ekspedisi Kosmik Penjelajah Tata Surya — Bimbel RBS</p>
+
+        <!-- Sertifikat Resmi Kelulusan Bimbel RBS -->
+        <div class="ending-certificate luxury-cert" id="printable-cert">
+          <div class="cert-outer-border">
+            <div class="cert-inner-border">
+              <!-- Watermark Emblem -->
+              <div class="cert-watermark" aria-hidden="true">🪐</div>
+
+              <!-- Header Sertifikat -->
+              <div class="cert-header">
+                <div class="cert-logo-row">
+                  <span class="cert-rbs-badge">BIMBEL RBS</span>
+                  <span class="cert-sub-badge">PROGRAM IPA INTERAKTIF</span>
+                </div>
+                <h2 class="cert-main-title">SERTIFIKAT KELULUSAN</h2>
+                <h4 class="cert-mission-subtitle">EKSPEDISI KOSMIK: MISI PENJELAJAH TATA SURYA</h4>
+                <div class="cert-divider-line"></div>
+              </div>
+
+              <!-- Isi Sertifikat -->
+              <div class="cert-body">
+                <p class="cert-lead-text">Dengan bangga Pusat Misi Antariksa Bimbel RBS menyatakan bahwa:</p>
+                <h1 class="cert-cadet-name" id="cert-name">—</h1>
+                <p class="cert-achievement-text">
+                  Telah berhasil menyelesaikan pelayaran antariksa mengitari 8 planet Tata Surya, melakukan pengamatan spektrum dan geologi berbasis arsip resmi <strong>NASA</strong>, serta membuktikan penguasaan konsep fisika astronomi dengan predikat:
+                </p>
+                <div class="cert-grade-callout">
+                  <span class="callout-label">NILAI AKHIR:</span>
+                  <strong class="callout-score" id="cert-score-display">100 / 100</strong>
+                  <span class="callout-sep">|</span>
+                  <span class="callout-label">PREDIKAT:</span>
+                  <strong class="callout-grade" id="cert-grade-display">A+ (Sangat Memuaskan)</strong>
+                </div>
+              </div>
+
+              <!-- Footer Tanda Tangan & Segel Emas -->
+              <div class="cert-footer">
+                <div class="cert-sig-block">
+                  <div class="sig-signature font-script">Linda Kusuma, S.Pd.</div>
+                  <div class="sig-line"></div>
+                  <div class="sig-name">Ibu Linda</div>
+                  <div class="sig-title">Instruktur Sains & Pembina RBS</div>
+                </div>
+
+                <!-- Segel Emas Resmi -->
+                <div class="cert-gold-seal">
+                  <div class="seal-inner">
+                    <span class="seal-stars">★ ★ ★</span>
+                    <span class="seal-center">RBS</span>
+                    <span class="seal-desc">KADET RESMI</span>
+                  </div>
+                </div>
+
+                <div class="cert-sig-block">
+                  <div class="sig-signature font-script">RBS Mission Control</div>
+                  <div class="sig-line"></div>
+                  <div class="sig-name">Pusat Kendali Bumi</div>
+                  <div class="sig-title">Direktur Penerbangan RBS-01</div>
+                </div>
+              </div>
+
+              <div class="cert-meta-row">
+                <span id="cert-id-number">No: RBS-EXP-2025-0001</span>
+                <span id="cert-flight-date">Tanggal: —</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-          <button id="btn-print-cert" class="btn-primary" style="background: linear-gradient(135deg, #00bb77, #008855);">🖨️ Cetak / Unduh Sertifikat</button>
+
+        <div class="ending-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+          <button id="btn-print-cert" class="btn-primary btn-print" style="background: linear-gradient(135deg, #00bb77, #008855);">🖨️ Cetak / Unduh Sertifikat</button>
           <button id="btn-replay" class="btn-primary">🔄 Main Lagi</button>
         </div>
       </div>

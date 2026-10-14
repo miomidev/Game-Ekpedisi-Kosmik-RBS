@@ -608,6 +608,111 @@
     }
   };
 
+  // ── Web Speech API: Narator Suara Bahasa Indonesia ────────
+  const VoiceEngine = {
+    synth: null,
+    voice: null,
+    isMuted: false,
+    isPlaying: false,
+    currentUtterance: null,
+
+    init() {
+      if ('speechSynthesis' in window) {
+        this.synth = window.speechSynthesis;
+        this.loadVoices();
+        if (this.synth.onvoiceschanged !== undefined) {
+          this.synth.onvoiceschanged = () => this.loadVoices();
+        }
+      }
+      this.updateUI();
+    },
+
+    loadVoices() {
+      if (!this.synth) return;
+      const voices = this.synth.getVoices();
+      if (!voices || voices.length === 0) return;
+      // Cari suara Bahasa Indonesia yang natural
+      this.voice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id' || v.lang.startsWith('id')) ||
+                   voices.find(v => v.name.toLowerCase().includes('indonesia')) ||
+                   voices.find(v => v.lang.startsWith('en')) ||
+                   voices[0] || null;
+    },
+
+    speak(text, onStartCallback, onEndCallback) {
+      if (!this.synth || this.isMuted || !text) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+
+      this.stop();
+
+      try {
+        const cleanText = text.replace(/[*_#~`]/g, '').trim();
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        if (this.voice) {
+          utterance.voice = this.voice;
+        }
+        utterance.lang = 'id-ID';
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+
+        utterance.onstart = () => {
+          this.isPlaying = true;
+          if (onStartCallback) onStartCallback();
+        };
+
+        utterance.onend = () => {
+          this.isPlaying = false;
+          this.currentUtterance = null;
+          if (onEndCallback) onEndCallback();
+        };
+
+        utterance.onerror = () => {
+          this.isPlaying = false;
+          this.currentUtterance = null;
+          if (onEndCallback) onEndCallback();
+        };
+
+        this.currentUtterance = utterance;
+        this.synth.speak(utterance);
+      } catch (err) {
+        this.isPlaying = false;
+        if (onEndCallback) onEndCallback();
+      }
+    },
+
+    stop() {
+      if (this.synth) {
+        try {
+          this.synth.cancel();
+        } catch (e) {}
+      }
+      this.isPlaying = false;
+      this.currentUtterance = null;
+    },
+
+    toggleMute() {
+      this.isMuted = !this.isMuted;
+      if (this.isMuted) {
+        this.stop();
+      }
+      this.updateUI();
+    },
+
+    updateUI() {
+      const btn = document.getElementById('btn-toggle-voice');
+      const icon = document.getElementById('voice-icon');
+      const label = document.getElementById('voice-label');
+      if (btn) {
+        btn.classList.toggle('muted', this.isMuted);
+        btn.setAttribute('title', this.isMuted ? 'Nyalakan Narasi Suara' : 'Matikan Narasi Suara');
+        btn.setAttribute('aria-label', this.isMuted ? 'Nyalakan Narasi Suara' : 'Matikan Narasi Suara');
+      }
+      if (icon) icon.textContent = this.isMuted ? '🔇' : '🎙️';
+      if (label) label.textContent = this.isMuted ? 'Suara: Off' : 'Suara: Aktif';
+    }
+  };
+
   // ── State Permainan ────────────────────────────────────────
   const state = {
     playerName: '',
@@ -680,6 +785,14 @@
       tagline: document.getElementById('planet-visit-tagline'),
       desc: document.getElementById('planet-visit-desc'),
       facts: document.getElementById('planet-facts'),
+      observatorySection: document.getElementById('nasa-observatory-section'),
+      btnTabPlanet: document.getElementById('btn-tab-planet'),
+      btnTabSurface: document.getElementById('btn-tab-surface'),
+      nasaPhotoImg: document.getElementById('nasa-photo-img'),
+      nasaPhotoCaption: document.getElementById('nasa-photo-caption'),
+      nasaPhotoCredit: document.getElementById('nasa-photo-credit'),
+      btnSpeakPlanet: document.getElementById('btn-speak-planet'),
+      voiceStatus: document.getElementById('planet-voice-status'),
       interactionSection: document.getElementById('interaction-section'),
       interactionTitle: document.getElementById('interaction-title'),
       interactionDesc: document.getElementById('interaction-desc'),
@@ -713,7 +826,18 @@
       statPlanets: document.getElementById('stat-planets'),
       statQuizzes: document.getElementById('stat-quizzes'),
       statFuel: document.getElementById('stat-fuel'),
+      scoreTotal: document.getElementById('final-score-val'),
+      scoreGrade: document.getElementById('final-grade-badge'),
+      scoreGradeTitle: document.getElementById('final-grade-title'),
+      scoreExplore: document.getElementById('score-planet-points'),
+      scoreQuiz: document.getElementById('score-quiz-points'),
+      scoreFuel: document.getElementById('score-fuel-points'),
+      evalNotes: document.getElementById('instructor-note-text'),
       certName: document.getElementById('cert-name'),
+      certFinalScore: document.getElementById('cert-score-display'),
+      certFinalGrade: document.getElementById('cert-grade-display'),
+      certRegNumber: document.getElementById('cert-id-number'),
+      certDate: document.getElementById('cert-flight-date'),
       btnPrintCert: document.getElementById('btn-print-cert'),
       btnReplay: document.getElementById('btn-replay')
     },
@@ -724,7 +848,10 @@
     audio: {
       btnToggle: document.getElementById('btn-toggle-audio'),
       icon: document.getElementById('audio-icon'),
-      label: document.getElementById('audio-label')
+      label: document.getElementById('audio-label'),
+      btnToggleVoice: document.getElementById('btn-toggle-voice'),
+      voiceIcon: document.getElementById('voice-icon'),
+      voiceLabel: document.getElementById('voice-label')
     },
     tutorial: {
       modal: document.getElementById('cockpit-tutorial-modal'),
@@ -891,18 +1018,23 @@
   function renderIntroStep() {
     const lines = GAME_DATA.narration.intro;
     if (state.introIndex < lines.length) {
-      dom.intro.text.textContent = lines[state.introIndex];
+      const lineText = lines[state.introIndex];
+      dom.intro.text.textContent = lineText;
       if (state.introIndex === lines.length - 1) {
         dom.intro.btnNext.textContent = 'Luncurkan Roket! 🚀';
       } else {
         dom.intro.btnNext.textContent = 'Lanjut ▶';
       }
+
+      // Suarakan narasi kokpit intro jika audio aktif
+      VoiceEngine.speak(lineText);
     }
   }
 
   dom.intro.btnNext.addEventListener('click', () => {
     AudioEngine.init();
     AudioEngine.click();
+    VoiceEngine.stop();
     state.introIndex++;
     if (state.introIndex < GAME_DATA.narration.intro.length) {
       renderIntroStep();
@@ -1227,6 +1359,9 @@
     dom.asteroid.feedback.classList.add('hidden');
     dom.asteroid.btnNext.classList.add('hidden');
 
+    // Suarakan peringatan radar sabuk asteroid
+    VoiceEngine.speak("Peringatan! Radar mendeteksi pecahan batuan padat di antara orbit Mars dan Jupiter. Jawab protokol navigasi untuk membuka jalur aman!");
+
     q.options.forEach((optText, optIdx) => {
       const btn = document.createElement('button');
       btn.className = 'quiz-option';
@@ -1271,6 +1406,7 @@
 
   dom.asteroid.btnNext.addEventListener('click', () => {
     AudioEngine.click();
+    VoiceEngine.stop();
     const targetPlanet = GAME_DATA.planets.find(p => p.id === state.targetPlanetId);
     if (targetPlanet) {
       performRocketTravel(targetPlanet);
@@ -1324,6 +1460,12 @@
     // Interaktivitas unik sesuai planet
     setupPlanetInteraction(planet);
 
+    // Observatorium Citra Asli NASA
+    setupNasaObservatory(planet);
+
+    // Narasi Suara Komputer Penerbangan
+    setupPlanetVoice(planet);
+
     // Kuis checkpoint jika ada
     setupPlanetQuiz(planet);
 
@@ -1331,6 +1473,127 @@
     state.visitedPlanets.add(planet.id);
     dom.planet.badge.classList.remove('hidden');
     updateHUDProgress();
+  }
+
+  // ── MODUL OBSERVATORIUM CITRA NASA ─────────────────────────
+  let activeObservatoryPlanet = null;
+
+  function setupNasaObservatory(planet) {
+    activeObservatoryPlanet = planet;
+    if (!dom.planet.observatorySection) return;
+
+    // Default ke Teleskop Luar Angkasa
+    setObservatoryView('planet');
+
+    // Cek ketersediaan foto permukaan resolusi tinggi
+    if (planet.surfaceImage) {
+      if (dom.planet.btnTabSurface) {
+        dom.planet.btnTabSurface.classList.remove('hidden');
+      }
+    } else {
+      if (dom.planet.btnTabSurface) {
+        dom.planet.btnTabSurface.classList.add('hidden');
+      }
+    }
+  }
+
+  function setObservatoryView(viewType) {
+    if (!activeObservatoryPlanet) return;
+    const p = activeObservatoryPlanet;
+
+    if (viewType === 'surface' && p.surfaceImage) {
+      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.remove('active');
+      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.add('active');
+      if (dom.planet.nasaPhotoImg) dom.planet.nasaPhotoImg.src = p.surfaceImage;
+      if (dom.planet.nasaPhotoCaption) dom.planet.nasaPhotoCaption.textContent = p.surfaceImageCaption || `Citra permukaan resolusi tinggi penjelajahan ${p.name}`;
+      if (dom.planet.nasaPhotoCredit) dom.planet.nasaPhotoCredit.textContent = p.nasaCredit || 'NASA / JPL-Caltech';
+    } else {
+      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.add('active');
+      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.remove('active');
+      if (dom.planet.nasaPhotoImg) dom.planet.nasaPhotoImg.src = p.image || '';
+      if (dom.planet.nasaPhotoCaption) dom.planet.nasaPhotoCaption.textContent = p.imageCaption || `Citra teleskopik spektral ${p.name}`;
+      if (dom.planet.nasaPhotoCredit) dom.planet.nasaPhotoCredit.textContent = p.nasaCredit || 'NASA / JPL-Caltech';
+    }
+  }
+
+  if (dom.planet.btnTabPlanet) {
+    dom.planet.btnTabPlanet.addEventListener('click', () => {
+      AudioEngine.click();
+      setObservatoryView('planet');
+    });
+  }
+
+  if (dom.planet.btnTabSurface) {
+    dom.planet.btnTabSurface.addEventListener('click', () => {
+      AudioEngine.click();
+      setObservatoryView('surface');
+    });
+  }
+
+  // ── MODUL NARATOR SUARA KOMPUTER PENERBANGAN ───────────────
+  let activePlanetForVoice = null;
+
+  function setupPlanetVoice(planet) {
+    activePlanetForVoice = planet;
+    updatePlanetVoiceUI(false, 'Klik untuk mendengarkan');
+
+    // Auto-narration jika suara aktif
+    if (!VoiceEngine.isMuted && planet.narrationSpeech) {
+      setTimeout(() => {
+        // Pastikan masih berada di layar planet yang sama
+        if (dom.screens.planet.classList.contains('active') && activePlanetForVoice?.id === planet.id) {
+          playPlanetVoice();
+        }
+      }, 700);
+    }
+  }
+
+  function updatePlanetVoiceUI(isSpeaking, statusText) {
+    const btn = dom.planet.btnSpeakPlanet;
+    const status = dom.planet.voiceStatus;
+    const wave = document.querySelector('.voice-wave');
+
+    if (btn) {
+      btn.classList.toggle('speaking', isSpeaking);
+      const label = btn.querySelector('.voice-btn-label');
+      if (label) {
+        label.textContent = isSpeaking ? 'Hentikan Narasi' : 'Dengarkan Narasi Planet';
+      }
+    }
+    if (status && statusText) {
+      status.textContent = statusText;
+    }
+    if (wave) {
+      wave.classList.toggle('active', isSpeaking);
+    }
+  }
+
+  function playPlanetVoice() {
+    if (!activePlanetForVoice || !activePlanetForVoice.narrationSpeech) return;
+
+    if (VoiceEngine.isPlaying) {
+      VoiceEngine.stop();
+      updatePlanetVoiceUI(false, 'Narasi dihentikan');
+      return;
+    }
+
+    updatePlanetVoiceUI(true, '🎙️ Komputer transmisi sedang berbicara...');
+    VoiceEngine.speak(
+      activePlanetForVoice.narrationSpeech,
+      () => {
+        updatePlanetVoiceUI(true, '🎙️ Komputer transmisi sedang berbicara...');
+      },
+      () => {
+        updatePlanetVoiceUI(false, '✅ Transmisi selesai');
+      }
+    );
+  }
+
+  if (dom.planet.btnSpeakPlanet) {
+    dom.planet.btnSpeakPlanet.addEventListener('click', () => {
+      AudioEngine.click();
+      playPlanetVoice();
+    });
   }
 
   // Interaktivitas unik untuk masing-masing dari 8 planet
@@ -1684,6 +1947,8 @@
   // Kembali ke Peta Kokpit dari Halaman Planet
   dom.planet.btnBackMap.addEventListener('click', () => {
     AudioEngine.click();
+    VoiceEngine.stop();
+    updatePlanetVoiceUI(false, 'Siap menerima transmisi');
     showScreen('map');
   });
 
@@ -1737,12 +2002,77 @@
 
   function showEndingScreen() {
     showScreen('ending');
-    dom.ending.certName.textContent = state.playerName;
-    dom.ending.statPlanets.textContent = `${state.visitedPlanets.size} / 8`;
-    dom.ending.statQuizzes.textContent = `${state.correctQuizzesCount}`;
-    dom.ending.statFuel.textContent = `${state.fuel}%`;
 
-    dom.ending.text.textContent = GAME_DATA.narration.outro.join(' ');
+    // 1. Perhitungan Skor Transparan (0 - 100)
+    const scoring = (GAME_DATA.config && GAME_DATA.config.scoring) || {};
+    const pointsPerPlanet = scoring.planetPoints || scoring.pointsPerPlanet || 5;
+    const pointsPerQuiz = scoring.quizPoints || scoring.pointsPerQuiz || 8;
+    const maxFuelPoints = scoring.maxFuelPoints || scoring.fuelEfficiencyMax || 20;
+
+    const visitedCount = state.visitedPlanets ? state.visitedPlanets.size : 0;
+    const quizzesCount = state.correctQuizzesCount || 0;
+    const currentFuel = typeof state.fuel === 'number' ? state.fuel : 100;
+
+    const exploreScore = Math.min(40, visitedCount * pointsPerPlanet);
+    const quizScore = Math.min(40, quizzesCount * pointsPerQuiz);
+    const fuelScore = Math.round(Math.min(20, Math.max(0, (currentFuel / 100) * maxFuelPoints)));
+    const totalScore = Math.min(100, Math.max(0, exploreScore + quizScore + fuelScore));
+
+    // 2. Tentukan Predikat Akademik & Catatan Evaluasi Ibu Linda
+    let grade = 'B';
+    let gradeLabel = 'Baik (Lulus)';
+    let evalNote = 'Penerbangan berhasil menyelesaikan misi dasar penjelajahan tata surya. Disarankan untuk lebih teliti mempelajari sifat atmosfer gas dan komposisi cincin pada modul kuis.';
+
+    if (totalScore >= 95) {
+      grade = 'A+';
+      gradeLabel = 'Istimewa / Magna Cum Laude';
+      evalNote = 'Luar biasa! Kadet menunjukkan pemahaman sains antariksa yang sempurna, navigasi orbit yang sangat hemat bahan bakar, dan ketelitian tinggi dalam pengamatan citra NASA.';
+    } else if (totalScore >= 85) {
+      grade = 'A';
+      gradeLabel = 'Sangat Baik / Cum Laude';
+      evalNote = 'Sangat mengagumkan! Semua instrumen observatorium berhasil dipelajari dengan sangat baik. Kadet menguasai konsep dasar gravitasi dan perbedaan planet terestrial vs Jovian.';
+    } else if (totalScore >= 75) {
+      grade = 'B+';
+      gradeLabel = 'Baik Sekali';
+      evalNote = 'Kinerja penerbangan yang memuaskan. Misi eksplorasi 8 planet tercapai dengan aman. Tingkatkan lagi akurasi pada tantangan kuis atmosfer ekstrem.';
+    }
+
+    // 3. Tampilkan Data Statistik & Evaluasi Nilai di Layar Akhir
+    if (dom.ending.statPlanets) dom.ending.statPlanets.textContent = `${state.visitedPlanets.size} / 8`;
+    if (dom.ending.statQuizzes) dom.ending.statQuizzes.textContent = `${state.correctQuizzesCount} Benar`;
+    if (dom.ending.statFuel) dom.ending.statFuel.textContent = `${state.fuel}%`;
+
+    if (dom.ending.scoreTotal) dom.ending.scoreTotal.textContent = totalScore;
+    if (dom.ending.scoreGrade) {
+      dom.ending.scoreGrade.textContent = grade;
+      dom.ending.scoreGrade.className = `final-grade-badge grade-${grade.toLowerCase().replace('+', '-plus')}`;
+    }
+    if (dom.ending.scoreGradeTitle) dom.ending.scoreGradeTitle.textContent = `Predikat: ${grade} (${gradeLabel})`;
+    if (dom.ending.scoreExplore) dom.ending.scoreExplore.textContent = `${exploreScore} / 40 Poin`;
+    if (dom.ending.scoreQuiz) dom.ending.scoreQuiz.textContent = `${quizScore} / 40 Poin`;
+    if (dom.ending.scoreFuel) dom.ending.scoreFuel.textContent = `${fuelScore} / 20 Poin`;
+    if (dom.ending.evalNotes) dom.ending.evalNotes.textContent = `"${evalNote}"`;
+
+    // 4. Update Data Sertifikat Cetak Resmi Bimbel RBS
+    if (dom.ending.certName) dom.ending.certName.textContent = state.playerName;
+    if (dom.ending.certCadetName) dom.ending.certCadetName.textContent = state.playerName;
+    if (dom.ending.certFinalScore) dom.ending.certFinalScore.textContent = `${totalScore} / 100`;
+    if (dom.ending.certFinalGrade) dom.ending.certFinalGrade.textContent = `${grade} (${gradeLabel})`;
+
+    // Generate Nomor Registrasi Misi Unik & Tanggal
+    const today = new Date();
+    const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const regCode = `RBS-ASTRO-${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    if (dom.ending.certDate) dom.ending.certDate.textContent = dateFormatted;
+    if (dom.ending.certRegNumber) dom.ending.certRegNumber.textContent = regCode;
+
+    if (dom.ending.text) {
+      dom.ending.text.textContent = GAME_DATA.narration.outro.join(' ');
+    }
+
+    // 5. Suarakan Outro Narasi Komputer Penerbangan
+    VoiceEngine.speak(GAME_DATA.narration.outro.join(' '));
   }
 
   if (dom.ending.btnPrintCert) {
@@ -1822,6 +2152,7 @@
 
   // ── RESET STATE ────────────────────────────────────────────
   function resetGame() {
+    VoiceEngine.stop();
     state.fuel = GAME_DATA.config.startingFuel;
     state.visitedPlanets.clear();
     state.answeredQuizzes.clear();
@@ -1849,9 +2180,19 @@
     });
   }
 
-  // Buka AudioContext otomatis pada interaksi pertama kadet (syarat browser Web Audio)
+  // ── KONTROL NARASI SUARA ──────────────────────────────────
+  if (dom.audio.btnToggleVoice) {
+    dom.audio.btnToggleVoice.addEventListener('click', (e) => {
+      e.stopPropagation();
+      VoiceEngine.toggleMute();
+      AudioEngine.click();
+    });
+  }
+
+  // Buka AudioContext & Web Speech otomatis pada interaksi pertama kadet (syarat browser Web Audio)
   const unlockAudio = () => {
     AudioEngine.init();
+    VoiceEngine.init();
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       document.removeEventListener(evt, unlockAudio);
     });
