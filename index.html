@@ -346,13 +346,111 @@
     <!-- ═══ SCREEN: Planet Visit ═══ -->
     <div id="screen-planet" class="screen">
       <div class="planet-visit-bg" id="planet-visit-bg"></div>
+
+      <!-- Cockpit Observation Canopy Overlays (Immersive Simulator) -->
+      <div class="cockpit-canopy planet-cockpit-canopy" aria-hidden="true">
+        <div class="canopy-top-arch">
+          <div class="canopy-title-chip">
+            <span class="status-dot"></span>
+            <span class="canopy-title-text">MODUL KOKPIT RBS-01 • OBSERVASI ORBITAL</span>
+          </div>
+        </div>
+        <div class="canopy-pillar pillar-left">
+          <div class="canopy-avionics-box">
+            <div class="avionics-row"><span class="dot-green"></span> KABIN: 1.0 ATM</div>
+            <div class="avionics-row"><span class="dot-green"></span> O₂: 98.2%</div>
+            <div class="avionics-row"><span class="dot-blue"></span> PERISAI: AKTIF</div>
+          </div>
+        </div>
+        <div class="canopy-pillar pillar-right">
+          <div class="canopy-avionics-box">
+            <div class="avionics-row"><span class="dot-green"></span> RADAR: TERKUNCI</div>
+            <div class="avionics-row"><span class="dot-blue"></span> NASA OPTIK: ON</div>
+            <div class="avionics-row"><span class="dot-amber"></span> KOKPIT: 21°C</div>
+          </div>
+        </div>
+        <div class="canopy-glass-reflection"></div>
+        <div class="cockpit-hud-overlay">
+          <div class="hud-target-reticle"></div>
+          <div class="hud-horizon-line"></div>
+          <div class="hud-telemetry hud-telemetry-left">
+            <span>ORBIT: TERKUNCI</span>
+            <span>SENSOR: AKTIF</span>
+          </div>
+          <div class="hud-telemetry hud-telemetry-right">
+            <span>TRANSMISI: TERHUBUNG</span>
+            <span>DATA: MEREKAM</span>
+          </div>
+        </div>
+        <div class="canopy-dashboard-rim"></div>
+      </div>
+
       <div class="planet-visit-content">
-        <!-- Planet Header -->
+        <!-- Pita Susunan 8 Planet Kokpit (Solar System Tracker) -->
+        <div class="cockpit-solar-strip" id="cockpit-solar-strip">
+          <div class="solar-strip-header">
+            <div class="strip-header-left">
+              <span class="strip-badge-icon">☀️</span>
+              <span class="strip-title">SUSUNAN 8 PLANET DARI MATAHARI</span>
+            </div>
+            <div id="solar-strip-active-info" class="solar-strip-active-info">Target: —</div>
+          </div>
+          <div class="solar-strip-track" id="solar-strip-track">
+            <!-- Diisi secara dinamis oleh JavaScript -->
+          </div>
+        </div>
+
+        <!-- Planet Header dengan NASA 3D Real Globe -->
         <div class="planet-header">
-          <div class="planet-icon-large" id="planet-icon-large"></div>
-          <div>
+          <div class="planet-globe-container">
+            <div class="planet-real-globe" id="planet-real-globe">
+              <div class="planet-globe-sphere" id="planet-globe-sphere"></div>
+              <div class="planet-globe-shadow"></div>
+              <div class="planet-globe-glow" id="planet-globe-glow"></div>
+              <div class="planet-globe-ring" id="planet-globe-ring"></div>
+            </div>
+            <div class="planet-icon-large hidden" id="planet-icon-large"></div>
+          </div>
+
+          <div class="planet-header-info">
+            <div class="planet-badges-row">
+              <span id="planet-order-badge" class="order-badge">Planet ke-? dari Matahari</span>
+              <span id="planet-category-badge" class="category-badge">Planet Dalam</span>
+            </div>
             <h2 id="planet-visit-name"></h2>
             <p id="planet-visit-tagline" class="tagline"></p>
+          </div>
+        </div>
+
+        <!-- Telemetri Data Fisik & Orbit Astronomi Kokpit -->
+        <div class="planet-telemetry-grid" id="planet-telemetry-grid">
+          <div class="telemetry-card">
+            <div class="telemetry-icon">📏</div>
+            <div class="telemetry-content">
+              <span class="telemetry-label">Jarak dari Matahari</span>
+              <span id="telemetry-distance" class="telemetry-val">—</span>
+            </div>
+          </div>
+          <div class="telemetry-card">
+            <div class="telemetry-icon">🔄</div>
+            <div class="telemetry-content">
+              <span class="telemetry-label">Kala Revolusi (1 Tahun)</span>
+              <span id="telemetry-revolution" class="telemetry-val">—</span>
+            </div>
+          </div>
+          <div class="telemetry-card">
+            <div class="telemetry-icon">⏱️</div>
+            <div class="telemetry-content">
+              <span class="telemetry-label">Kala Rotasi (1 Hari)</span>
+              <span id="telemetry-rotation" class="telemetry-val">—</span>
+            </div>
+          </div>
+          <div class="telemetry-card">
+            <div class="telemetry-icon">🌡️</div>
+            <div class="telemetry-content">
+              <span class="telemetry-label">Suhu Rata-rata</span>
+              <span id="telemetry-temp" class="telemetry-val">—</span>
+            </div>
           </div>
         </div>
 
@@ -376,26 +474,58 @@
           <p id="planet-visit-desc" class="planet-desc"></p>
         </div>
 
-        <!-- Observatorium Citra Asli NASA (Teleskopik & Permukaan) -->
+        <!-- Observatorium Citra Asli NASA (Dual Viewport: Orbit & Permukaan) -->
         <div class="planet-section nasa-observatory-section" id="nasa-observatory-section">
           <div class="nasa-section-header">
             <div class="nasa-badge">
               <span class="nasa-logo-pill">NASA</span>
-              <span class="nasa-mission-title">OBSERVATORI CITRA RESMI</span>
+              <span class="nasa-mission-title">OBSERVATORI CITRA RESMI • DUAL SENSOR CONSOLE</span>
             </div>
             <div class="nasa-view-tabs" id="nasa-view-tabs">
-              <button class="nasa-tab-btn active" id="btn-tab-planet" data-view="planet">🔭 Foto Planet</button>
+              <button class="nasa-tab-btn active" id="btn-tab-dual" data-view="dual">🖥️ Monitor Ganda</button>
+              <button class="nasa-tab-btn" id="btn-tab-planet" data-view="planet">🔭 Citra Orbit</button>
               <button class="nasa-tab-btn" id="btn-tab-surface" data-view="surface">🔬 Permukaan Nyata</button>
             </div>
           </div>
 
-          <div class="nasa-photo-frame">
-            <img id="nasa-photo-img" src="" alt="Citra Observasi NASA">
-            <div class="nasa-photo-overlay">
-              <div id="nasa-photo-caption" class="nasa-photo-caption"></div>
-              <div id="nasa-photo-credit" class="nasa-photo-credit"></div>
+          <!-- Dual Viewport Grid -->
+          <div class="nasa-dual-grid" id="nasa-dual-grid">
+            <!-- Monitor 1: Foto Orbit Global -->
+            <div class="nasa-monitor-card" id="nasa-monitor-orbit">
+              <div class="monitor-card-header">
+                <span class="monitor-tag">🔭 OBSERVASI ORBIT GLOBAL</span>
+                <span class="monitor-source">NASA ORBITER</span>
+              </div>
+              <div class="nasa-photo-frame">
+                <img id="nasa-photo-img-orbit" src="" alt="Citra Orbit Planet NASA">
+                <!-- Tetap pertahankan elemen id nasa-photo-img sebagai kompatibilitas -->
+                <img id="nasa-photo-img" class="hidden" src="" alt="Citra Observasi NASA">
+                <div class="nasa-photo-overlay">
+                  <div id="nasa-photo-caption-orbit" class="nasa-photo-caption"></div>
+                  <div id="nasa-photo-credit-orbit" class="nasa-photo-credit"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monitor 2: Foto Permukaan / Atmosfer Nyata -->
+            <div class="nasa-monitor-card" id="nasa-monitor-surface">
+              <div class="monitor-card-header">
+                <span class="monitor-tag" id="nasa-surface-monitor-tag">🔬 PEMINDAIAN PERMUKAAN NYATA</span>
+                <span class="monitor-source" id="nasa-surface-source-tag">NASA ROVER / RADAR</span>
+              </div>
+              <div class="nasa-photo-frame">
+                <img id="nasa-photo-img-surface" src="" alt="Citra Permukaan Nyata NASA">
+                <div class="nasa-photo-overlay">
+                  <div id="nasa-photo-caption-surface" class="nasa-photo-caption"></div>
+                  <div id="nasa-photo-credit-surface" class="nasa-photo-credit"></div>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- Hidden fallback elements for backwards compatibility -->
+          <div id="nasa-photo-caption" class="hidden"></div>
+          <div id="nasa-photo-credit" class="hidden"></div>
         </div>
 
         <!-- Facts -->

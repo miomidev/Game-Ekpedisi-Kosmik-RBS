@@ -1298,26 +1298,451 @@ html, body {
   background-size: cover;
   background-position: center;
 }
+
+/* Kanopi Kokpit Khusus Layar Observasi Planet */
+.planet-cockpit-canopy {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  overflow: hidden;
+}
+.planet-cockpit-canopy .canopy-top-arch {
+  top: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.planet-cockpit-canopy .canopy-pillar {
+  top: 44px;
+  bottom: 0;
+}
+.planet-cockpit-canopy .pillar-left {
+  clip-path: polygon(0 0, 100% 0, 45% 100%, 0 100%);
+}
+.planet-cockpit-canopy .pillar-right {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 55% 100%);
+}
+.planet-cockpit-canopy .canopy-glass-reflection {
+  inset: 44px 0 0 0;
+}
+.planet-cockpit-canopy .cockpit-hud-overlay {
+  inset: 44px 0 0 0;
+}
+.planet-cockpit-canopy .canopy-dashboard-rim {
+  bottom: 0;
+}
+
+/* Chip Judul Kanopi Atas */
+.canopy-title-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(2, 6, 20, 0.88);
+  border: 1px solid rgba(0, 212, 255, 0.45);
+  border-radius: 20px;
+  padding: 4px 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+.canopy-title-text {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #00d4ff;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+/* Kotak Telemetri Avionik Pilar Samping */
+.canopy-avionics-box {
+  position: absolute;
+  top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.64rem;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.pillar-left .canopy-avionics-box {
+  left: 36px;
+  color: rgba(0, 212, 255, 0.85);
+}
+.pillar-right .canopy-avionics-box {
+  right: 36px;
+  text-align: right;
+  color: rgba(0, 212, 255, 0.85);
+}
+.avionics-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(3, 10, 28, 0.78);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.pillar-right .avionics-row {
+  justify-content: flex-end;
+}
+.dot-green {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #44dd88;
+  box-shadow: 0 0 6px #44dd88;
+  display: inline-block;
+  animation: dotBlink 2.5s infinite;
+}
+.dot-blue {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00d4ff;
+  box-shadow: 0 0 6px #00d4ff;
+  display: inline-block;
+}
+.dot-amber {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffaa00;
+  box-shadow: 0 0 6px #ffaa00;
+  display: inline-block;
+  animation: dotBlink 3.2s infinite;
+}
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 .planet-visit-content {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 800px;
+  max-width: 860px;
   max-height: 100vh;
   overflow-y: auto;
-  padding: 24px 30px;
+  padding: 48px 32px 40px;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) transparent;
 }
 .planet-visit-content::-webkit-scrollbar { width: 6px; }
 .planet-visit-content::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 
+/* ── Pita Susunan 8 Planet Kokpit (Solar System Tracker) ─────── */
+.cockpit-solar-strip {
+  background: linear-gradient(180deg, rgba(6, 16, 42, 0.94) 0%, rgba(3, 8, 24, 0.98) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(0, 212, 255, 0.2);
+}
+.solar-strip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #9bb5d6;
+  letter-spacing: 0.8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 6px;
+}
+.strip-header-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.strip-badge-icon {
+  font-size: 0.95rem;
+}
+.strip-title {
+  color: #00d4ff;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+}
+.solar-strip-active-info {
+  color: #ffdd88;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.solar-strip-track {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 4px 2px 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 212, 255, 0.4) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.solar-strip-track::-webkit-scrollbar { height: 4px; }
+.solar-strip-track::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.4); border-radius: 2px; }
+
+.strip-sun-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: rgba(255, 170, 0, 0.12);
+  border: 1px solid rgba(255, 170, 0, 0.35);
+  flex-shrink: 0;
+}
+.strip-sun-icon {
+  font-size: 1.3rem;
+  filter: drop-shadow(0 0 6px rgba(255, 180, 0, 0.8));
+  animation: sunPulse 3s ease-in-out infinite alternate;
+}
+.strip-sun-label {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #ffaa00;
+}
+
+.strip-item-planet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 7px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  min-width: 58px;
+  position: relative;
+  touch-action: manipulation;
+}
+.strip-item-planet:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: rgba(0, 212, 255, 0.4);
+  transform: translateY(-2px);
+}
+.strip-item-planet.active {
+  background: linear-gradient(180deg, rgba(0, 180, 255, 0.25) 0%, rgba(0, 80, 180, 0.4) 100%);
+  border: 1.5px solid #00d4ff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.6), inset 0 0 8px rgba(0, 212, 255, 0.3);
+  transform: scale(1.04);
+}
+.strip-planet-disc {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+.strip-item-planet.active .strip-planet-disc {
+  box-shadow: 0 0 8px #00d4ff;
+}
+.strip-planet-order {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #00d4ff;
+}
+.strip-planet-name {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #eaf4ff;
+  white-space: nowrap;
+}
+.strip-planet-au {
+  font-size: 0.56rem;
+  color: #8da4be;
+  font-family: 'Consolas', 'Courier New', monospace;
+}
+.strip-visited-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #44dd88;
+  border: 1px solid #030712;
+  box-shadow: 0 0 4px #44dd88;
+}
+
+.strip-asteroid-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(180, 140, 100, 0.1);
+  border: 1px dashed rgba(200, 160, 120, 0.35);
+  flex-shrink: 0;
+}
+.strip-asteroid-icon {
+  font-size: 0.95rem;
+  animation: asteroidSpin 8s linear infinite;
+}
+.strip-asteroid-text {
+  font-size: 0.54rem;
+  color: #d8b894;
+  white-space: nowrap;
+  font-weight: 700;
+}
+@keyframes asteroidSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Planet Header & NASA 3D Globe ─────────────────────────── */
 .planet-header {
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 20px;
+  gap: 22px;
+  margin-bottom: 18px;
 }
+.planet-globe-container {
+  position: relative;
+  flex-shrink: 0;
+}
+.planet-real-globe {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.planet-globe-sphere {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: slowGlobeRotate 35s linear infinite;
+}
+@keyframes slowGlobeRotate {
+  0% { background-position-x: 0%; }
+  100% { background-position-x: 200%; }
+}
+.planet-globe-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 28%, rgba(0, 0, 0, 0.45) 60%, rgba(0, 0, 0, 0.96) 95%);
+  pointer-events: none;
+}
+.planet-globe-glow {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.45);
+  pointer-events: none;
+  transition: box-shadow 0.5s ease;
+}
+.planet-globe-ring {
+  display: none;
+  position: absolute;
+  width: 175px;
+  height: 48px;
+  border: 5px solid rgba(215, 195, 140, 0.7);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(215, 195, 140, 0.3);
+}
+.planet-real-globe.has-ring .planet-globe-ring {
+  display: block;
+}
+
+.planet-header-info {
+  flex: 1;
+}
+.planet-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.order-badge {
+  background: rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  color: #00d4ff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+.category-badge {
+  background: rgba(255, 170, 0, 0.15);
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  color: #ffbb33;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+.planet-header h2 { font-size: 2.1rem; color: var(--accent); line-height: 1.15; margin-bottom: 4px; }
+.tagline { color: var(--text-dim); font-size: 1rem; }
+
+/* ── Telemetri Data Fisik & Orbit Astronomi Kokpit ─────────── */
+.planet-telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.telemetry-card {
+  background: rgba(5, 15, 40, 0.8);
+  border: 1px solid rgba(0, 212, 255, 0.22);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+.telemetry-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.telemetry-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.telemetry-label {
+  font-size: 0.66rem;
+  color: #8da4be;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.telemetry-val {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #00d4ff;
+  font-family: 'Consolas', 'Courier New', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .planet-icon-large { 
   font-size: 4rem; 
   display: flex;
@@ -1342,8 +1767,6 @@ html, body {
     transform: translateY(-4px);
   }
 }
-.planet-header h2 { font-size: 2rem; color: var(--accent); }
-.tagline { color: var(--text-dim); font-size: 1rem; }
 
 /* ── Voice Narration Player Bar ────────────────────────────── */
 .planet-voice-bar {
@@ -1435,13 +1858,13 @@ html, body {
 .planet-section h3 { color: var(--accent-warm); margin-bottom: 12px; font-size: 1.1rem; }
 .planet-desc { line-height: 1.7; font-size: 1.05rem; }
 
-/* ── Observatorium Citra Asli NASA (Teleskopik & Permukaan) ── */
+/* ── Observatorium Citra Asli NASA (Dual Viewport Console) ── */
 .nasa-observatory-section {
-  border: 1px solid rgba(11, 61, 145, 0.7);
-  background: linear-gradient(180deg, rgba(8, 20, 52, 0.9) 0%, rgba(4, 12, 32, 0.96) 100%);
+  border: 1px solid rgba(11, 61, 145, 0.75);
+  background: linear-gradient(180deg, rgba(8, 20, 52, 0.94) 0%, rgba(4, 12, 32, 0.98) 100%);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(0, 212, 255, 0.25);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(0, 212, 255, 0.3);
 }
 
 .nasa-section-header {
@@ -1471,7 +1894,7 @@ html, body {
   box-shadow: 0 2px 6px rgba(224, 58, 62, 0.4);
 }
 .nasa-mission-title {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #cce4ff;
   letter-spacing: 1.2px;
@@ -1480,8 +1903,8 @@ html, body {
 
 .nasa-view-tabs {
   display: flex;
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.4);
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.45);
   padding: 3px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1490,9 +1913,9 @@ html, body {
   background: transparent;
   border: none;
   color: #9bb5d6;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1507,53 +1930,119 @@ html, body {
 .nasa-tab-btn.active {
   background: linear-gradient(135deg, #0b3d91, #1a56be);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 140, 255, 0.4);
+  box-shadow: 0 2px 8px rgba(0, 140, 255, 0.45);
 }
 
-.nasa-photo-frame {
-  position: relative;
+/* ── Grid Dua Monitor Avionik NASA (Dual Console) ──────────── */
+.nasa-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 8px;
+}
+.nasa-monitor-card {
+  background: #020614;
+  border: 1px solid rgba(0, 212, 255, 0.28);
   border-radius: var(--radius-sm);
   overflow: hidden;
-  background: #020510;
-  border: 1px solid rgba(0, 212, 255, 0.25);
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
 }
-#nasa-photo-img {
+.monitor-card-header {
+  background: rgba(8, 22, 54, 0.95);
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+.monitor-tag {
+  color: #cce4ff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.monitor-source {
+  color: #00d4ff;
+  font-size: 0.65rem;
+  background: rgba(0, 212, 255, 0.12);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  font-family: 'Consolas', monospace;
+}
+
+.nasa-dual-grid .nasa-photo-frame {
+  position: relative;
+  overflow: hidden;
+  background: #020510;
+  height: 250px;
+}
+.nasa-dual-grid .nasa-photo-frame img {
   width: 100%;
-  max-height: 380px;
+  height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s ease, filter 0.4s ease;
+  transition: transform 0.6s ease;
 }
-.nasa-photo-frame:hover #nasa-photo-img {
-  transform: scale(1.02);
+.nasa-monitor-card:hover .nasa-photo-frame img {
+  transform: scale(1.03);
 }
+
+/* Mode Tampilan Fokus Orbit */
+.nasa-dual-grid.focus-orbit {
+  grid-template-columns: 1fr;
+}
+.nasa-dual-grid.focus-orbit #nasa-monitor-surface {
+  display: none !important;
+}
+.nasa-dual-grid.focus-orbit .nasa-photo-frame {
+  height: 380px;
+}
+
+/* Mode Tampilan Fokus Permukaan */
+.nasa-dual-grid.focus-surface {
+  grid-template-columns: 1fr;
+}
+.nasa-dual-grid.focus-surface #nasa-monitor-orbit {
+  display: none !important;
+}
+.nasa-dual-grid.focus-surface .nasa-photo-frame {
+  height: 380px;
+}
+
 .nasa-photo-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent 0%, rgba(3, 7, 20, 0.85) 30%, rgba(3, 7, 20, 0.98) 100%);
-  padding: 16px 16px 12px;
+  background: linear-gradient(transparent 0%, rgba(2, 6, 18, 0.85) 30%, rgba(2, 6, 18, 0.98) 100%);
+  padding: 14px 14px 10px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   pointer-events: none;
 }
 .nasa-photo-caption {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: #ffffff;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.35;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 .nasa-photo-credit {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #00d4ff;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   font-weight: 700;
-  opacity: 0.9;
+  opacity: 0.95;
+  font-family: 'Consolas', monospace;
 }
 
 .facts-list {
@@ -2438,11 +2927,69 @@ html, body {
     max-height: 100dvh;
     -webkit-overflow-scrolling: touch;
   }
+  .cockpit-solar-strip {
+    margin: -6px -6px 14px -6px;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+  .strip-item-planet {
+    min-width: 52px;
+    padding: 4px 6px;
+  }
+  .strip-planet-disc {
+    width: 20px;
+    height: 20px;
+  }
+  .strip-planet-name {
+    font-size: 0.62rem;
+  }
   .planet-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 12px;
     margin-bottom: 14px;
+  }
+  .planet-real-globe {
+    width: 68px;
+    height: 68px;
+  }
+  .planet-globe-ring {
+    width: 125px;
+    height: 36px;
+  }
+  .planet-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+  }
+  .tagline {
+    font-size: 0.85rem;
+  }
+  .planet-badges-row {
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+  .order-badge, .category-badge {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+  }
+  .planet-telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .telemetry-card {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .telemetry-icon {
+    font-size: 1.2rem;
+  }
+  .telemetry-label {
+    font-size: 0.6rem;
+  }
+  .telemetry-val {
+    font-size: 0.78rem;
   }
   .planet-icon-large {
     font-size: 3rem;
@@ -2452,12 +2999,6 @@ html, body {
   .planet-icon-large svg {
     width: 52px;
     height: 52px;
-  }
-  .planet-title-group h2 {
-    font-size: 1.4rem;
-  }
-  .planet-tagline {
-    font-size: 0.85rem;
   }
   .planet-traits {
     gap: 6px;
@@ -2666,19 +3207,29 @@ html, body {
     align-items: flex-start;
     gap: 8px;
   }
-  .nasa-tabs {
+  .nasa-view-tabs {
     width: 100%;
     display: flex;
-    gap: 4px;
+    gap: 3px;
+    justify-content: stretch;
   }
   .nasa-tab-btn {
     flex: 1;
     text-align: center;
-    padding: 6px 8px;
-    font-size: 0.75rem;
+    padding: 6px 6px;
+    font-size: 0.72rem;
+    justify-content: center;
   }
-  .nasa-photo-frame {
-    max-height: 220px;
+  .nasa-dual-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .nasa-dual-grid .nasa-photo-frame {
+    height: 190px;
+  }
+  .nasa-dual-grid.focus-orbit .nasa-photo-frame,
+  .nasa-dual-grid.focus-surface .nasa-photo-frame {
+    height: 240px;
   }
   .nasa-photo-caption {
     font-size: 0.78rem;

@@ -605,6 +605,95 @@
       notes.forEach((freq, idx) => {
         setTimeout(() => this.playBeep(freq, 'sine', 0.22, 0.14), idx * 65);
       });
+    },
+
+    // Radio walkie-talkie / comms chirp transmisi luar angkasa
+    radioChirp() {
+      if (!this.ctx || this.isMuted) return;
+      try {
+        const now = this.ctx.currentTime;
+        // Dual beep radio tone
+        const osc1 = this.ctx.createOscillator();
+        const gain1 = this.ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(1760, now); // A6
+        osc1.frequency.setValueAtTime(2349, now + 0.045); // D7
+        gain1.gain.setValueAtTime(0.09, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.095);
+        osc1.connect(gain1);
+        gain1.connect(this.sfxGain || this.masterGain);
+        osc1.start(now);
+        osc1.stop(now + 0.1);
+
+        // Radio static burst
+        if (this.noiseBuffer) {
+          const noise = this.ctx.createBufferSource();
+          noise.buffer = this.noiseBuffer;
+          const filter = this.ctx.createBiquadFilter();
+          const nGain = this.ctx.createGain();
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(2200, now + 0.04);
+          filter.Q.setValueAtTime(3.0, now + 0.04);
+          nGain.gain.setValueAtTime(0.001, now);
+          nGain.gain.setValueAtTime(0.065, now + 0.04);
+          nGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+          noise.connect(filter);
+          filter.connect(nGain);
+          nGain.connect(this.sfxGain || this.masterGain);
+          noise.start(now + 0.04);
+          noise.stop(now + 0.14);
+        }
+      } catch (e) {}
+    },
+
+    // Dengungan mesin reaktor kokpit roket (Ambient Cockpit Hum)
+    cockpitHumOsc: null,
+    cockpitHumGain: null,
+    startCockpitHum() {
+      if (!this.ctx || this.cockpitHumOsc || this.isMuted) return;
+      try {
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const filter = this.ctx.createBiquadFilter();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(58.0, now); // 58 Hz deep hum
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(150, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.045, now + 2.0); // Ambient halus
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.masterGain);
+
+        osc.start(now);
+        this.cockpitHumOsc = osc;
+        this.cockpitHumGain = gain;
+      } catch (e) {}
+    },
+
+    stopCockpitHum() {
+      if (!this.cockpitHumOsc || !this.ctx) return;
+      try {
+        const now = this.ctx.currentTime;
+        if (this.cockpitHumGain) {
+          this.cockpitHumGain.gain.linearRampToValueAtTime(0.0001, now + 0.6);
+        }
+        setTimeout(() => {
+          try {
+            if (this.cockpitHumOsc) {
+              this.cockpitHumOsc.stop();
+              this.cockpitHumOsc.disconnect();
+              this.cockpitHumOsc = null;
+              this.cockpitHumGain = null;
+            }
+          } catch (e) {}
+        }, 700);
+      } catch (e) {}
     }
   };
 
@@ -684,92 +773,100 @@
       this.isPlaying = true;
       const myToken = ++this.activeToken;
 
-      // 1. Jika browser memiliki voice native Bahasa Indonesia, gunakan SpeechSynthesis
-      if (this.synth && this.voice) {
-        try {
-          const cleanText = text.replace(/[*_#~`]/g, '').trim();
-          const utterance = new SpeechSynthesisUtterance(cleanText);
-          utterance.voice = this.voice;
-          utterance.lang = this.voice.lang || 'id-ID';
-          utterance.rate = 1.0;
-          utterance.pitch = 1.0;
+      // Bunyikan efek radio chirp sebelum transmisi suara
+      AudioEngine.radioChirp();
 
-          utterance.onstart = () => {
-            if (this.activeToken !== myToken) return;
-            if (onStartCallback) onStartCallback();
-          };
+      // Beri sedikit jeda 160ms agar efek radio walkie-talkie terdengar sebelum suara bicara
+      setTimeout(() => {
+        if (this.activeToken !== myToken || !this.isPlaying || this.isMuted) return;
 
-          utterance.onend = () => {
-            if (this.activeToken !== myToken) return;
-            this.isPlaying = false;
-            this.currentUtterance = null;
-            if (onEndCallback) onEndCallback();
-          };
+        // 1. Jika browser memiliki voice native Bahasa Indonesia, gunakan SpeechSynthesis
+        if (this.synth && this.voice) {
+          try {
+            const cleanText = text.replace(/[*_#~`]/g, '').trim();
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.voice = this.voice;
+            utterance.lang = this.voice.lang || 'id-ID';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
 
-          utterance.onerror = () => {
-            if (this.activeToken !== myToken) return;
-            this.isPlaying = false;
-            this.currentUtterance = null;
-            if (onEndCallback) onEndCallback();
-          };
+            utterance.onstart = () => {
+              if (this.activeToken !== myToken) return;
+              if (onStartCallback) onStartCallback();
+            };
 
-          this.currentUtterance = utterance;
-          this.synth.speak(utterance);
-          return;
-        } catch (err) {
-          // Fallback ke streaming Google TTS di bawah
-        }
-      }
+            utterance.onend = () => {
+              if (this.activeToken !== myToken) return;
+              this.isPlaying = false;
+              this.currentUtterance = null;
+              if (onEndCallback) onEndCallback();
+            };
 
-      // 2. Fallback cerdas alami: Streaming TTS Bahasa Indonesia resmi (penutur asli Indonesia jernih)
-      const chunks = this.chunkText(text, 130);
-      let idx = 0;
+            utterance.onerror = () => {
+              if (this.activeToken !== myToken) return;
+              this.isPlaying = false;
+              this.currentUtterance = null;
+              if (onEndCallback) onEndCallback();
+            };
 
-      const playNextChunk = () => {
-        if (this.activeToken !== myToken || !this.isPlaying || this.isMuted) {
-          this.isPlaying = false;
-          if (onEndCallback) onEndCallback();
-          return;
-        }
-
-        if (idx >= chunks.length) {
-          this.isPlaying = false;
-          this.currentAudio = null;
-          if (onEndCallback) onEndCallback();
-          return;
-        }
-
-        const chunk = chunks[idx++];
-        const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=' + encodeURIComponent(chunk);
-        const audio = new Audio();
-        this.currentAudio = audio;
-
-        audio.oncanplay = () => {
-          if (this.activeToken !== myToken) return;
-          if (idx === 1 && onStartCallback) {
-            onStartCallback();
+            this.currentUtterance = utterance;
+            this.synth.speak(utterance);
+            return;
+          } catch (err) {
+            // Fallback ke streaming Google TTS di bawah
           }
+        }
+
+        // 2. Fallback cerdas alami: Streaming TTS Bahasa Indonesia resmi (penutur asli Indonesia jernih)
+        const chunks = this.chunkText(text, 130);
+        let idx = 0;
+
+        const playNextChunk = () => {
+          if (this.activeToken !== myToken || !this.isPlaying || this.isMuted) {
+            this.isPlaying = false;
+            if (onEndCallback) onEndCallback();
+            return;
+          }
+
+          if (idx >= chunks.length) {
+            this.isPlaying = false;
+            this.currentAudio = null;
+            if (onEndCallback) onEndCallback();
+            return;
+          }
+
+          const chunk = chunks[idx++];
+          const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=' + encodeURIComponent(chunk);
+          const audio = new Audio();
+          this.currentAudio = audio;
+
+          audio.oncanplay = () => {
+            if (this.activeToken !== myToken) return;
+            if (idx === 1 && onStartCallback) {
+              onStartCallback();
+            }
+          };
+
+          audio.onended = () => {
+            if (this.activeToken !== myToken) return;
+            playNextChunk();
+          };
+
+          audio.onerror = () => {
+            if (this.activeToken !== myToken) return;
+            // Lanjut ke potongan berikutnya jika terkendala jaringan
+            playNextChunk();
+          };
+
+          audio.src = url;
+          audio.play().catch(err => {
+            if (this.activeToken !== myToken) return;
+            playNextChunk();
+          });
         };
 
-        audio.onended = () => {
-          if (this.activeToken !== myToken) return;
-          playNextChunk();
-        };
-
-        audio.onerror = () => {
-          if (this.activeToken !== myToken) return;
-          // Lanjut ke potongan berikutnya jika terkendala jaringan
-          playNextChunk();
-        };
-
-        audio.src = url;
-        audio.play().catch(err => {
-          if (this.activeToken !== myToken) return;
-          playNextChunk();
-        });
-      };
-
-      playNextChunk();
+        playNextChunk();
+      }, 160);
     },
 
     stop() {
@@ -880,13 +977,33 @@
     planet: {
       bg: document.getElementById('planet-visit-bg'),
       iconLarge: document.getElementById('planet-icon-large'),
+      realGlobe: document.getElementById('planet-real-globe'),
+      globeSphere: document.getElementById('planet-globe-sphere'),
+      orderBadge: document.getElementById('planet-order-badge'),
+      categoryBadge: document.getElementById('planet-category-badge'),
+      solarStripTrack: document.getElementById('solar-strip-track'),
+      solarStripActiveInfo: document.getElementById('solar-strip-active-info'),
+      telemDistance: document.getElementById('telemetry-distance'),
+      telemRevolution: document.getElementById('telemetry-revolution'),
+      telemRotation: document.getElementById('telemetry-rotation'),
+      telemTemp: document.getElementById('telemetry-temp'),
       name: document.getElementById('planet-visit-name'),
       tagline: document.getElementById('planet-visit-tagline'),
       desc: document.getElementById('planet-visit-desc'),
       facts: document.getElementById('planet-facts'),
       observatorySection: document.getElementById('nasa-observatory-section'),
+      nasaDualGrid: document.getElementById('nasa-dual-grid'),
+      btnTabDual: document.getElementById('btn-tab-dual'),
       btnTabPlanet: document.getElementById('btn-tab-planet'),
       btnTabSurface: document.getElementById('btn-tab-surface'),
+      nasaMonitorOrbit: document.getElementById('nasa-monitor-orbit'),
+      nasaOrbitImg: document.getElementById('nasa-orbit-img'),
+      nasaOrbitCaption: document.getElementById('nasa-orbit-caption'),
+      nasaOrbitCredit: document.getElementById('nasa-orbit-credit'),
+      nasaMonitorSurface: document.getElementById('nasa-monitor-surface'),
+      nasaSurfaceImg: document.getElementById('nasa-surface-img'),
+      nasaSurfaceCaption: document.getElementById('nasa-surface-caption'),
+      nasaSurfaceCredit: document.getElementById('nasa-surface-credit'),
       nasaPhotoImg: document.getElementById('nasa-photo-img'),
       nasaPhotoCaption: document.getElementById('nasa-photo-caption'),
       nasaPhotoCredit: document.getElementById('nasa-photo-credit'),
@@ -970,6 +1087,14 @@
     if (dom.screens[screenKey]) {
       dom.screens[screenKey].classList.add('active');
     }
+
+    // Kelola dengungan ambient mesin reaktor kokpit
+    if (screenKey === 'map' || screenKey === 'planet' || screenKey === 'asteroid') {
+      AudioEngine.startCockpitHum();
+    } else {
+      AudioEngine.stopCockpitHum();
+    }
+
     // Jika pindah ke peta, resize canvas
     if (screenKey === 'map') {
       resizeCanvas();
@@ -1169,6 +1294,19 @@
   let canvasCenter = { x: 0, y: 0 };
   let hoveredPlanet = null;
 
+  // Preload citra asli NASA untuk canvas peta
+  const nasaPlanetImages = {};
+  GAME_DATA.planets.forEach(p => {
+    if (p.image) {
+      const img = new Image();
+      img.src = p.image;
+      nasaPlanetImages[p.id] = img;
+    }
+  });
+
+  // Sudut orbit Bulan mini mengitari Bumi
+  let moonOrbitAngle = 0;
+
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
@@ -1197,58 +1335,74 @@
     const cx = canvasCenter.x;
     const cy = canvasCenter.y;
 
-    // 1. Gambar Matahari di pusat
-    const sunGlow = ctx.createRadialGradient(cx, cy, 10, cx, cy, 45);
+    // 1. Gambar Matahari di pusat tata surya
+    const sunGlow = ctx.createRadialGradient(cx, cy, 8, cx, cy, 48);
     sunGlow.addColorStop(0, '#ffffff');
     sunGlow.addColorStop(0.2, '#ffdd44');
-    sunGlow.addColorStop(0.6, '#ff8800');
+    sunGlow.addColorStop(0.55, '#ff8800');
+    sunGlow.addColorStop(0.85, 'rgba(255, 68, 0, 0.35)');
     sunGlow.addColorStop(1, 'rgba(255, 68, 0, 0)');
     ctx.fillStyle = sunGlow;
     ctx.beginPath();
-    ctx.arc(cx, cy, 45, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 48, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#ffbb00';
+    const sunCore = ctx.createRadialGradient(cx - 3, cy - 3, 2, cx, cy, 18);
+    sunCore.addColorStop(0, '#ffffff');
+    sunCore.addColorStop(0.4, '#ffee55');
+    sunCore.addColorStop(1, '#ff7700');
+    ctx.fillStyle = sunCore;
     ctx.beginPath();
     ctx.arc(cx, cy, 18, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = '#fff';
-    ctx.font = '10px "Segoe UI", sans-serif';
+    ctx.font = 'bold 9.5px "Segoe UI", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Matahari', cx, cy + 32);
+    ctx.fillText('Matahari', cx, cy + 30);
 
-    // 2. Gambar Sabuk Asteroid (antara Mars & Jupiter: ~225 scaled)
+    // 2. Gambar Sabuk Asteroid (Pemisah Planet Dalam vs Planet Luar: ~225 scaled)
     const asteroidR = 225 * state.canvasScale;
-    ctx.strokeStyle = 'rgba(255, 180, 80, 0.2)';
-    ctx.setLineDash([2, 6]);
-    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(255, 190, 100, 0.22)';
+    ctx.setLineDash([3, 7]);
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
     ctx.arc(cx, cy, asteroidR, 0, Math.PI * 2);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    // Partikel asteroid statis & berputar halus
-    for (let i = 0; i < 36; i++) {
-      const angle = (i * (Math.PI * 2 / 36)) + (Date.now() * 0.0001);
-      const rOffset = ((i % 5) - 2) * 4;
+    // Partikel asteroid batuan 3D berputar di jalurnya
+    const asteroidCount = 56;
+    for (let i = 0; i < asteroidCount; i++) {
+      const angle = (i * (Math.PI * 2 / asteroidCount)) + (Date.now() * 0.00008);
+      const rOffset = ((i % 7) - 3) * 3.5;
       const ax = cx + Math.cos(angle) * (asteroidR + rOffset);
       const ay = cy + Math.sin(angle) * (asteroidR + rOffset);
-      ctx.fillStyle = 'rgba(180, 160, 140, 0.45)';
+      const size = (i % 3 === 0) ? 2.2 : (i % 2 === 0 ? 1.6 : 1.2);
+
+      ctx.fillStyle = i % 2 === 0 ? 'rgba(195, 175, 150, 0.65)' : 'rgba(150, 135, 120, 0.5)';
       ctx.beginPath();
-      ctx.arc(ax, ay, (i % 2 === 0 ? 1.5 : 2), 0, Math.PI * 2);
+      ctx.arc(ax, ay, size, 0, Math.PI * 2);
       ctx.fill();
     }
 
+    // Label Penanda Zona Astronomis di Sabuk Asteroid
+    ctx.fillStyle = 'rgba(255, 200, 120, 0.45)';
+    ctx.font = '8.5px "Consolas", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚡ SABUK ASTEROID (PEMISAH PLANET DALAM & LUAR)', cx, cy - asteroidR - 6);
+
     // 3. Update sudut orbit & render setiap planet
+    moonOrbitAngle += 0.035;
+
     GAME_DATA.planets.forEach((planet) => {
       // Update pergerakan orbit
-      state.planetAngles[planet.id] += planet.orbitSpeed * 0.4;
+      state.planetAngles[planet.id] += planet.orbitSpeed * 0.38;
       const angle = state.planetAngles[planet.id];
       const r = planet.orbitRadius * state.canvasScale;
 
-      // Gambar lintasan orbit
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      // Gambar garis lintasan orbit
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.09)';
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
@@ -1263,59 +1417,182 @@
       const isVisited = state.visitedPlanets.has(planet.id);
       const isHovered = hoveredPlanet && hoveredPlanet.id === planet.id;
       const isSelected = state.selectedPlanetId === planet.id;
+      const renderR = Math.max(7, planet.size * 0.44);
 
-      // Cincin Saturnus / Uranus
+      // Cincin Belakang Saturnus (Digambar sebelum bola planet)
       if (planet.id === 'saturnus') {
         ctx.save();
         ctx.translate(px, py);
-        ctx.rotate(0.3);
-        ctx.strokeStyle = 'rgba(220, 200, 140, 0.5)';
-        ctx.lineWidth = 3;
+        ctx.rotate(0.35);
+        ctx.strokeStyle = 'rgba(215, 195, 140, 0.6)';
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.ellipse(0, 0, (planet.size * 0.45) * 1.8, (planet.size * 0.45) * 0.6, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, renderR * 2.2, renderR * 0.75, 0, Math.PI, Math.PI * 2);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(160, 140, 95, 0.35)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, renderR * 2.5, renderR * 0.88, 0, Math.PI, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
 
       // Aura highlight jika dihover/dipilih
       if (isHovered || isSelected) {
-        ctx.fillStyle = 'rgba(0, 212, 255, 0.35)';
+        ctx.fillStyle = 'rgba(0, 212, 255, 0.32)';
         ctx.beginPath();
-        ctx.arc(px, py, (planet.size * 0.4) + 8, 0, Math.PI * 2);
+        ctx.arc(px, py, renderR + 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = 'rgba(0, 212, 255, 0.75)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(px, py, renderR + 6, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // ── Render Bola Planet Fotorealistik NASA ──
+      const img = nasaPlanetImages[planet.id];
+      if (img && img.complete && img.naturalWidth > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(px, py, renderR, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Gambar tekstur asli NASA
+        ctx.drawImage(img, px - renderR, py - renderR, renderR * 2, renderR * 2);
+
+        // Pencahayaan 3D Terminator (Matahari di pusat cx, cy)
+        const dxToSun = cx - px;
+        const dyToSun = cy - py;
+        const distToSun = Math.hypot(dxToSun, dyToSun) || 1;
+        const nx = dxToSun / distToSun;
+        const ny = dyToSun / distToSun;
+
+        const shadowGrad = ctx.createRadialGradient(
+          px + nx * renderR * 0.45,
+          py + ny * renderR * 0.45,
+          renderR * 0.2,
+          px - nx * renderR * 0.35,
+          py - ny * renderR * 0.35,
+          renderR * 1.05
+        );
+        shadowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
+        shadowGrad.addColorStop(0.35, 'rgba(0, 0, 0, 0)');
+        shadowGrad.addColorStop(0.75, 'rgba(0, 0, 0, 0.6)');
+        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0.94)');
+        ctx.fillStyle = shadowGrad;
+        ctx.beginPath();
+        ctx.arc(px, py, renderR, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      } else {
+        // Fallback gradien bola jika gambar sedang memuat
+        const planetGrad = ctx.createRadialGradient(
+          px - (planet.size * 0.1),
+          py - (planet.size * 0.1),
+          2,
+          px,
+          py,
+          renderR
+        );
+        planetGrad.addColorStop(0, '#ffffff');
+        planetGrad.addColorStop(0.35, planet.color);
+        planetGrad.addColorStop(1, '#0c1020');
+        ctx.fillStyle = planetGrad;
+        ctx.beginPath();
+        ctx.arc(px, py, renderR, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Lingkaran planet
-      const planetGrad = ctx.createRadialGradient(
-        px - (planet.size * 0.1),
-        py - (planet.size * 0.1),
-        2,
-        px,
-        py,
-        planet.size * 0.45
-      );
-      planetGrad.addColorStop(0, '#ffffff');
-      planetGrad.addColorStop(0.3, planet.color);
-      planetGrad.addColorStop(1, '#111122');
-
-      ctx.fillStyle = planetGrad;
+      // Lapisan glow atmosfer tipis
+      ctx.save();
+      ctx.strokeStyle = planet.color;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.5;
       ctx.beginPath();
-      ctx.arc(px, py, planet.size * 0.4, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.arc(px, py, renderR + 0.5, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
 
-      // Indikator sudah dikunjungi
+      // Cincin Depan Saturnus (Digambar setelah bola planet)
+      if (planet.id === 'saturnus') {
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(0.35);
+        ctx.strokeStyle = 'rgba(215, 195, 140, 0.75)';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, renderR * 2.2, renderR * 0.75, 0, 0, Math.PI);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(160, 140, 95, 0.45)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, renderR * 2.5, renderR * 0.88, 0, 0, Math.PI);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Khusus Bumi: Gambar Bulan (Luna) yang mengorbit Bumi
+      if (planet.id === 'bumi') {
+        const moonDist = renderR + 11;
+        const mx = px + Math.cos(moonOrbitAngle) * moonDist;
+        const my = py + Math.sin(moonOrbitAngle) * moonDist;
+
+        // Lintasan mini orbit Bulan
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.setLineDash([1, 2]);
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(px, py, moonDist, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Bola Bulan Luna
+        ctx.fillStyle = '#e8e8e8';
+        ctx.beginPath();
+        ctx.arc(mx, my, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Cincin Vertikal Uranus
+      if (planet.id === 'uranus') {
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(1.52); // Miring vertikal ~87 derajat
+        ctx.strokeStyle = 'rgba(140, 210, 220, 0.45)';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, renderR * 1.7, renderR * 0.45, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Indikator Lencana Centang Hijau jika sudah dikunjungi
       if (isVisited) {
         ctx.fillStyle = '#44dd88';
         ctx.beginPath();
-        ctx.arc(px + (planet.size * 0.35), py - (planet.size * 0.35), 4, 0, Math.PI * 2);
+        ctx.arc(px + (renderR * 0.8), py - (renderR * 0.8), 4.5, 0, Math.PI * 2);
         ctx.fill();
+
+        ctx.strokeStyle = '#030712';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(px + (renderR * 0.8), py - (renderR * 0.8), 4.5, 0, Math.PI * 2);
+        ctx.stroke();
       }
 
-      // Label Nama Planet
-      ctx.fillStyle = isHovered || isSelected ? '#00d4ff' : '#ccddee';
+      // Label Susunan: Nomor Urut (1-8), Nama, dan Jarak AU
+      ctx.fillStyle = isHovered || isSelected ? '#00d4ff' : '#e2ecf5';
       ctx.font = `${isHovered ? 'bold ' : ''}11px "Segoe UI", sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(planet.name, px, py + (planet.size * 0.45) + 12);
+      ctx.fillText(`${planet.order}. ${planet.name}`, px, py + renderR + 12);
+
+      // Sub-label Jarak AU
+      ctx.fillStyle = isHovered || isSelected ? '#aaffee' : 'rgba(165, 185, 210, 0.7)';
+      ctx.font = '9px "Consolas", monospace';
+      ctx.fillText(planet.distanceAU || '', px, py + renderR + 22);
     });
 
     animationFrameId = requestAnimationFrame(renderSolarSystem);
@@ -1533,6 +1810,47 @@
     } else {
       dom.planet.iconLarge.textContent = planet.icon;
     }
+
+    // NASA 3D Real Globe di Header Kokpit
+    if (dom.planet.globeSphere) {
+      dom.planet.globeSphere.style.backgroundImage = `url("${encodeURI(planet.image || '')}")`;
+    }
+    if (dom.planet.realGlobe) {
+      if (planet.hasRings) {
+        dom.planet.realGlobe.classList.add('has-ring');
+      } else {
+        dom.planet.realGlobe.classList.remove('has-ring');
+      }
+    }
+
+    // Badges astronomis resmi
+    if (dom.planet.orderBadge) {
+      dom.planet.orderBadge.textContent = `Orbit #${planet.order} dari Matahari`;
+    }
+    if (dom.planet.categoryBadge) {
+      dom.planet.categoryBadge.textContent = planet.category || (planet.isGasGiant ? 'Raksasa Gas' : 'Planet Terestrial');
+    }
+
+    // Grid Telemetri Data Fisik & Orbit Astronomis
+    if (dom.planet.solarStripActiveInfo) {
+      dom.planet.solarStripActiveInfo.textContent = `Target: #${planet.order} ${planet.name} (${planet.distanceAU || '-'})`;
+    }
+    if (dom.planet.telemDistance) {
+      dom.planet.telemDistance.textContent = `${planet.distanceAU || ''} (${planet.distanceKm || '-'})`;
+    }
+    if (dom.planet.telemRevolution) {
+      dom.planet.telemRevolution.textContent = planet.revolutionPeriod || '-';
+    }
+    if (dom.planet.telemRotation) {
+      dom.planet.telemRotation.textContent = planet.rotationPeriod || '-';
+    }
+    if (dom.planet.telemTemp) {
+      dom.planet.telemTemp.textContent = planet.temp || '-';
+    }
+
+    // Pita Navigasi Susunan 8 Planet Tata Surya
+    setupCockpitSolarStrip(planet);
+
     dom.planet.name.textContent = planet.name;
     dom.planet.tagline.textContent = planet.tagline;
     dom.planet.desc.textContent = planet.description;
@@ -1559,7 +1877,7 @@
     // Interaktivitas unik sesuai planet
     setupPlanetInteraction(planet);
 
-    // Observatorium Citra Asli NASA
+    // Observatorium Citra Asli NASA (Dual Viewport Console)
     setupNasaObservatory(planet);
 
     // Narasi Suara Komputer Penerbangan
@@ -1574,63 +1892,145 @@
     updateHUDProgress();
   }
 
-  // ── MODUL OBSERVATORIUM CITRA NASA ─────────────────────────
+  // ── MODUL PITA SUSUNAN TATA SURYA KOKPIT ───────────────────
+  function setupCockpitSolarStrip(activePlanet) {
+    if (!dom.planet.solarStripTrack) return;
+    dom.planet.solarStripTrack.innerHTML = '';
+
+    // Matahari (Sol) di titik orbit pusat
+    const sunNode = document.createElement('div');
+    sunNode.className = 'strip-sun-node';
+    sunNode.title = 'Matahari (Pusat Tata Surya)';
+    sunNode.innerHTML = `
+      <span class="strip-sun-icon">☀️</span>
+      <span class="strip-sun-label">SOL</span>
+    `;
+    dom.planet.solarStripTrack.appendChild(sunNode);
+
+    GAME_DATA.planets.forEach((p, index) => {
+      // Sisipkan pembatas Sabuk Asteroid antara Mars (#4) dan Jupiter (#5)
+      if (index === 4) {
+        const beltDiv = document.createElement('div');
+        beltDiv.className = 'strip-asteroid-divider';
+        beltDiv.title = 'Zona Sabuk Asteroid Utama (Pemisah Planet Dalam Terestrial & Planet Luar Jovian)';
+        beltDiv.innerHTML = `
+          <span class="strip-asteroid-icon">☄️</span>
+          <span class="strip-asteroid-text">SABUK ASTEROID</span>
+        `;
+        dom.planet.solarStripTrack.appendChild(beltDiv);
+      }
+
+      const item = document.createElement('div');
+      item.className = 'strip-item-planet' + (p.id === activePlanet.id ? ' active' : '');
+      item.title = `${p.order}. ${p.name} (${p.distanceAU || ''}) - ${p.category || ''}`;
+
+      const isVisited = state.visitedPlanets.has(p.id);
+      item.innerHTML = `
+        <div class="strip-planet-disc" style="background-image: url('${encodeURI(p.image || '')}');"></div>
+        <span class="strip-planet-order">${p.order}.</span>
+        <span class="strip-planet-name">${p.name}</span>
+        <span class="strip-planet-au">${p.distanceAU || ''}</span>
+        ${isVisited ? '<span class="strip-visited-dot" title="Sudah dieksplorasi"></span>' : ''}
+      `;
+
+      item.addEventListener('click', () => {
+        AudioEngine.click();
+        if (p.id === activePlanet.id) return;
+        VoiceEngine.stop();
+        startTravelToPlanet(p);
+      });
+
+      dom.planet.solarStripTrack.appendChild(item);
+    });
+
+    // Auto-scroll track agar planet aktif berada di tengah pita
+    setTimeout(() => {
+      const activeEl = dom.planet.solarStripTrack.querySelector('.strip-item-planet.active');
+      if (activeEl) {
+        activeEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }, 120);
+  }
+
+  // ── MODUL OBSERVATORIUM CITRA NASA (DUAL MONITOR CONSOLE) ──
   let activeObservatoryPlanet = null;
 
   function setupNasaObservatory(planet) {
     activeObservatoryPlanet = planet;
     if (!dom.planet.observatorySection) return;
 
-    // Update label tab kedua secara dinamis sesuai sifat planet (permukaan padat vs atmosfer gas / cincin es)
+    // Monitor 1: Teleskop Orbit Global NASA
+    if (dom.planet.nasaOrbitImg) {
+      dom.planet.nasaOrbitImg.src = planet.image || '';
+    }
+    if (dom.planet.nasaOrbitCaption) {
+      dom.planet.nasaOrbitCaption.textContent = planet.imageCaption || `Citra Teleskopik Spektral ${planet.name}`;
+    }
+    if (dom.planet.nasaOrbitCredit) {
+      dom.planet.nasaOrbitCredit.textContent = planet.nasaCredit || 'NASA / JPL-Caltech';
+    }
+
+    // Monitor 2: Pemindaian Permukaan Nyata / Atmosfer Eksplorasi NASA
+    const surfaceSrc = planet.surfaceImage || planet.image || '';
+    if (dom.planet.nasaSurfaceImg) {
+      dom.planet.nasaSurfaceImg.src = surfaceSrc;
+    }
+    if (dom.planet.nasaSurfaceCaption) {
+      dom.planet.nasaSurfaceCaption.textContent = planet.surfaceImageCaption || `Pemindaian Resolusi Tinggi ${planet.name}`;
+    }
+    if (dom.planet.nasaSurfaceCredit) {
+      dom.planet.nasaSurfaceCredit.textContent = planet.nasaCredit || 'NASA / JPL-Caltech';
+    }
+
+    // Update label tab permukaan dinamis
     if (dom.planet.btnTabSurface) {
       dom.planet.btnTabSurface.textContent = planet.surfaceTabTitle || '🌋 Permukaan Nyata';
     }
 
-    // Default ke Teleskop Luar Angkasa
-    setObservatoryView('planet');
+    // Default ke tampilan monitor ganda (Dual Viewport)
+    setNasaMonitorMode('dual');
+  }
 
-    // Cek ketersediaan foto permukaan resolusi tinggi
-    if (planet.surfaceImage) {
-      if (dom.planet.btnTabSurface) {
-        dom.planet.btnTabSurface.classList.remove('hidden');
-      }
+  function setNasaMonitorMode(mode) {
+    if (!dom.planet.nasaDualGrid) return;
+
+    if (mode === 'orbit') {
+      dom.planet.nasaDualGrid.className = 'nasa-dual-grid focus-orbit';
+      if (dom.planet.btnTabDual) dom.planet.btnTabDual.classList.add('active');
+      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.add('active');
+      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.remove('active');
+    } else if (mode === 'surface') {
+      dom.planet.nasaDualGrid.className = 'nasa-dual-grid focus-surface';
+      if (dom.planet.btnTabDual) dom.planet.btnTabDual.classList.remove('active');
+      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.remove('active');
+      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.add('active');
     } else {
-      if (dom.planet.btnTabSurface) {
-        dom.planet.btnTabSurface.classList.add('hidden');
-      }
+      // dual mode
+      dom.planet.nasaDualGrid.className = 'nasa-dual-grid';
+      if (dom.planet.btnTabDual) dom.planet.btnTabDual.classList.add('active');
+      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.remove('active');
+      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.remove('active');
     }
   }
 
-  function setObservatoryView(viewType) {
-    if (!activeObservatoryPlanet) return;
-    const p = activeObservatoryPlanet;
-
-    if (viewType === 'surface' && p.surfaceImage) {
-      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.remove('active');
-      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.add('active');
-      if (dom.planet.nasaPhotoImg) dom.planet.nasaPhotoImg.src = p.surfaceImage;
-      if (dom.planet.nasaPhotoCaption) dom.planet.nasaPhotoCaption.textContent = p.surfaceImageCaption || `Citra permukaan resolusi tinggi penjelajahan ${p.name}`;
-      if (dom.planet.nasaPhotoCredit) dom.planet.nasaPhotoCredit.textContent = p.nasaCredit || 'NASA / JPL-Caltech';
-    } else {
-      if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.add('active');
-      if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.remove('active');
-      if (dom.planet.nasaPhotoImg) dom.planet.nasaPhotoImg.src = p.image || '';
-      if (dom.planet.nasaPhotoCaption) dom.planet.nasaPhotoCaption.textContent = p.imageCaption || `Citra teleskopik spektral ${p.name}`;
-      if (dom.planet.nasaPhotoCredit) dom.planet.nasaPhotoCredit.textContent = p.nasaCredit || 'NASA / JPL-Caltech';
-    }
+  if (dom.planet.btnTabDual) {
+    dom.planet.btnTabDual.addEventListener('click', () => {
+      AudioEngine.click();
+      setNasaMonitorMode('dual');
+    });
   }
 
   if (dom.planet.btnTabPlanet) {
     dom.planet.btnTabPlanet.addEventListener('click', () => {
       AudioEngine.click();
-      setObservatoryView('planet');
+      setNasaMonitorMode('orbit');
     });
   }
 
   if (dom.planet.btnTabSurface) {
     dom.planet.btnTabSurface.addEventListener('click', () => {
       AudioEngine.click();
-      setObservatoryView('surface');
+      setNasaMonitorMode('surface');
     });
   }
 
