@@ -997,16 +997,16 @@
       btnTabPlanet: document.getElementById('btn-tab-planet'),
       btnTabSurface: document.getElementById('btn-tab-surface'),
       nasaMonitorOrbit: document.getElementById('nasa-monitor-orbit'),
-      nasaOrbitImg: document.getElementById('nasa-orbit-img'),
-      nasaOrbitCaption: document.getElementById('nasa-orbit-caption'),
-      nasaOrbitCredit: document.getElementById('nasa-orbit-credit'),
+      nasaOrbitImg: document.getElementById('nasa-photo-img-orbit') || document.getElementById('nasa-orbit-img'),
+      nasaOrbitCaption: document.getElementById('nasa-photo-caption-orbit') || document.getElementById('nasa-orbit-caption'),
+      nasaOrbitCredit: document.getElementById('nasa-photo-credit-orbit') || document.getElementById('nasa-orbit-credit'),
       nasaMonitorSurface: document.getElementById('nasa-monitor-surface'),
-      nasaSurfaceImg: document.getElementById('nasa-surface-img'),
-      nasaSurfaceCaption: document.getElementById('nasa-surface-caption'),
-      nasaSurfaceCredit: document.getElementById('nasa-surface-credit'),
-      nasaPhotoImg: document.getElementById('nasa-photo-img'),
-      nasaPhotoCaption: document.getElementById('nasa-photo-caption'),
-      nasaPhotoCredit: document.getElementById('nasa-photo-credit'),
+      nasaSurfaceImg: document.getElementById('nasa-photo-img-surface') || document.getElementById('nasa-surface-img'),
+      nasaSurfaceCaption: document.getElementById('nasa-photo-caption-surface') || document.getElementById('nasa-surface-caption'),
+      nasaSurfaceCredit: document.getElementById('nasa-photo-credit-surface') || document.getElementById('nasa-surface-credit'),
+      nasaPhotoImg: document.getElementById('nasa-photo-img') || document.getElementById('nasa-photo-img-orbit'),
+      nasaPhotoCaption: document.getElementById('nasa-photo-caption') || document.getElementById('nasa-photo-caption-orbit'),
+      nasaPhotoCredit: document.getElementById('nasa-photo-credit') || document.getElementById('nasa-photo-credit-orbit'),
       btnSpeakPlanet: document.getElementById('btn-speak-planet'),
       voiceStatus: document.getElementById('planet-voice-status'),
       interactionSection: document.getElementById('interaction-section'),
@@ -1962,6 +1962,7 @@
     // Monitor 1: Teleskop Orbit Global NASA
     if (dom.planet.nasaOrbitImg) {
       dom.planet.nasaOrbitImg.src = planet.image || '';
+      dom.planet.nasaOrbitImg.alt = `Citra Orbit ${planet.name} NASA`;
     }
     if (dom.planet.nasaOrbitCaption) {
       dom.planet.nasaOrbitCaption.textContent = planet.imageCaption || `Citra Teleskopik Spektral ${planet.name}`;
@@ -1974,6 +1975,7 @@
     const surfaceSrc = planet.surfaceImage || planet.image || '';
     if (dom.planet.nasaSurfaceImg) {
       dom.planet.nasaSurfaceImg.src = surfaceSrc;
+      dom.planet.nasaSurfaceImg.alt = `Citra Permukaan Nyata ${planet.name} NASA`;
     }
     if (dom.planet.nasaSurfaceCaption) {
       dom.planet.nasaSurfaceCaption.textContent = planet.surfaceImageCaption || `Pemindaian Resolusi Tinggi ${planet.name}`;
@@ -1996,7 +1998,7 @@
 
     if (mode === 'orbit') {
       dom.planet.nasaDualGrid.className = 'nasa-dual-grid focus-orbit';
-      if (dom.planet.btnTabDual) dom.planet.btnTabDual.classList.add('active');
+      if (dom.planet.btnTabDual) dom.planet.btnTabDual.classList.remove('active');
       if (dom.planet.btnTabPlanet) dom.planet.btnTabPlanet.classList.add('active');
       if (dom.planet.btnTabSurface) dom.planet.btnTabSurface.classList.remove('active');
     } else if (mode === 'surface') {
