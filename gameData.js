@@ -66,8 +66,10 @@ const GAME_DATA = {
       mpiColor: "#8B7355",
       image: "assets/planet-merkurius.jpg",
       surfaceImage: "assets/surface-merkurius.jpg",
-      imageCaption: "📸 Citra NASA MESSENGER: Permukaan berkawah Merkurius mirip Bulan akibat hantaman asteroid purba.",
-      nasaCredit: "NASA / Johns Hopkins University APL / Carnegie Institution of Washington (MESSENGER)",
+      imageCaption: "📸 Citra NASA MESSENGER: Mosaik warna spektral Merkurius mengungkap variasi mineral dan struktur geologis unik yang kaya logam berat.",
+      surfaceImageCaption: "📸 Permukaan Nyata: Cekungan Caloris Basin dan patahan Apollodorus Mons di permukaan Merkurius yang penuh jejak tumbukan purba.",
+      surfaceTabTitle: "🌋 Permukaan Nyata",
+      nasaCredit: "NASA / Johns Hopkins University APL / Carnegie Institution of Washington (MESSENGER Mission)",
       narrationSpeech: "Kita telah tiba di orbit Merkurius, planet terkecil dan terdekat dari Matahari. Karena tidak memiliki atmosfer penahan suhu, bagian siangnya mendidih hingga 430 derajat Celsius, sementara malamnya membeku hingga minus 180 derajat Celsius!"
     },
     {
@@ -109,9 +111,11 @@ const GAME_DATA = {
       gravity: 8.87,
       mpiColor: "#DAA520",
       image: "assets/planet-venus.jpg",
-      surfaceImage: "assets/Ilustrasi Permukaan Venus.webp",
-      imageCaption: "📸 Citra Radar NASA Magellan: Permukaan vulkanik Venus di bawah selimut awan tebal gas CO₂ dan asam sulfat.",
-      nasaCredit: "NASA / Jet Propulsion Laboratory (JPL Magellan Radar Mission)",
+      surfaceImage: "assets/surface-venus.jpg",
+      imageCaption: "📸 Citra NASA Pioneer & Mariner: Lapisan awan tebal gas karbon dioksida dan kabut asam sulfat yang menyelimuti seluruh planet Venus.",
+      surfaceImageCaption: "📸 Permukaan Nyata: Rekonstruksi radar 3D wahana NASA Magellan menembus awan tebal, mengungkap gunung berapi Sif Mons dan dataran batuan beku lava.",
+      surfaceTabTitle: "🌋 Permukaan Nyata",
+      nasaCredit: "NASA / Jet Propulsion Laboratory (JPL Magellan Radar & Pioneer Venus)",
       narrationSpeech: "Waspada Kadet! Kita berada di atas planet Venus, planet terpanas di seluruh Tata Surya. Atmosfernya 96 persen gas karbon dioksida dengan tekanan 90 kali lipat Bumi, menjebak panas matahari bagaikan oven raksasa!"
     },
     {
@@ -139,8 +143,10 @@ const GAME_DATA = {
       mpiColor: "#4169E1",
       image: "assets/planet-bumi.jpg",
       surfaceImage: "assets/surface-bumi.jpg",
-      imageCaption: "📸 Citra NASA DSCOVR Blue Marble & Apollo: Planet biru dengan lautan luas, atmosfer hidup, dan jejak manusia di Bulan.",
-      nasaCredit: "NASA / NOAA / GSFC (DSCOVR Mission & Apollo 11)",
+      imageCaption: "📸 Citra NASA DSCOVR: Planet Biru rumah kita dari kejauhan 1,5 juta km, menampilkan perpaduan benua hijau, awan putih, dan samudra luas.",
+      surfaceImageCaption: "📸 Permukaan & Atmosfer Nyata: Pemandangan nyata lengkung cakrawala Bumi, atmosfer biru tipis, dan birunya samudra dari Stasiun Luar Angkasa Internasional (ISS).",
+      surfaceTabTitle: "🌍 Permukaan & Atmosfer",
+      nasaCredit: "NASA / NOAA / International Space Station (ISS Expedition)",
       narrationSpeech: "Selamat kembali memandang Bumi dari orbit! Rumah kita adalah permata biru yang unik, berada di zona laik huni dengan air cair, atmosfer kaya oksigen, serta medan magnet pelindung dari radiasi kosmik."
     },
     {
@@ -186,7 +192,9 @@ const GAME_DATA = {
       mpiColor: "#CD5C5C",
       image: "assets/planet-mars.jpg",
       surfaceImage: "assets/surface-mars.jpg",
-      imageCaption: "📸 Citra NASA Viking & Curiosity Rover: Pemandangan global Mars dan dataran Kawah Gale kaya batuan oksida besi.",
+      imageCaption: "📸 Citra NASA Viking Orbiter: Panorama global Planet Merah memperlihatkan ngarai raksasa Valles Marineris dan tudung es kutub.",
+      surfaceImageCaption: "📸 Permukaan Nyata: Foto langsung dari Rover Curiosity di Kawah Gale, memperlihatkan hamparan batuan berlapis dan tanah merah kaya oksida besi (karat).",
+      surfaceTabTitle: "🌋 Permukaan Nyata",
       nasaCredit: "NASA / JPL-Caltech / USGS (Mars Global Surveyor & Curiosity Rover)",
       narrationSpeech: "Orbit Mars tercapai! Kadet, perhatikan rona merah karat pada permukaannya yang disebabkan debu besi teroksidasi. Gravitasi di sini hanya 0,38 kali gravitasi Bumi, membuat langkah rover terasa sangat ringan!"
     },
@@ -215,7 +223,9 @@ const GAME_DATA = {
       mpiColor: "#D2691E",
       image: "assets/planet-jupiter.jpg",
       surfaceImage: "assets/surface-jupiter.jpg",
-      imageCaption: "📸 Citra NASA Cassini & Juno: Pusaran badai atmosfer raksasa gas dan detail Badai Bintik Merah Raksasa.",
+      imageCaption: "📸 Citra NASA Cassini: Potret warna asli raksasa gas terbesar dengan pita sabuk awan hidrogen dan helium yang berputar konstan.",
+      surfaceImageCaption: "📸 Atmosfer & Badai Nyata: Pusaran siklon Bintik Merah Raksasa (Great Red Spot) dipotret dari jarak sangat dekat oleh wahana antariksa NASA Juno.",
+      surfaceTabTitle: "🌪️ Atmosfer & Badai Nyata",
       nasaCredit: "NASA / JPL-Caltech / SwRI / MSSS (Cassini & Juno Mission)",
       narrationSpeech: "Selamat datang di medan gravitasi masif Jupiter! Raksasa gas terbesar di tata surya kita. Ingat, Jupiter tidak memiliki daratan padat, seluruh strukturnya tersusun dari pusaran gas hidrogen dan helium yang bergolak kencang."
     },
@@ -244,7 +254,9 @@ const GAME_DATA = {
       mpiColor: "#F0E68C",
       image: "assets/planet-saturnus.jpg",
       surfaceImage: "assets/surface-saturnus.jpg",
-      imageCaption: "📸 Citra NASA Cassini: Kemegahan cakrawala cincin es Saturnus dan struktur celah Cassini yang memukau.",
+      imageCaption: "📸 Citra NASA Cassini: Keindahan planet cincin Saturnus dengan bayangan lembaran cincin membentang di atas atmosfer gas keemasan.",
+      surfaceImageCaption: "📸 Cincin & Partikel Es Nyata: Struktur detail cincin Saturnus dan Celah Cassini yang tersusun dari miliaran bongkahan es air murni dan debu antariksa.",
+      surfaceTabTitle: "💍 Cincin & Partikel Es",
       nasaCredit: "NASA / JPL-Caltech / Space Science Institute (Cassini-Huygens Mission)",
       narrationSpeech: "Pemandangan spektakuler! Kita memasuki orbit Saturnus. Cincin megah yang terlihat padat ini sebenarnya adalah miliaran partikel bongkahan es air jernih dan debu antariksa yang memantulkan sinar mentari."
     },
@@ -272,9 +284,11 @@ const GAME_DATA = {
       gravity: 8.87,
       mpiColor: "#7EC8E3",
       image: "assets/planet-uranus.jpg",
-      surfaceImage: "assets/planet-uranus.jpg",
-      imageCaption: "📸 Citra NASA Voyager 2: Raksasa es biru kehijauan dengan atmosfer metana beku dan rotasi rebah 98 derajat.",
-      nasaCredit: "NASA / Jet Propulsion Laboratory (Voyager 2 Mission)",
+      surfaceImage: "assets/surface-uranus.jpg",
+      imageCaption: "📸 Citra NASA Voyager 2: Raksasa es biru kehijauan dengan atmosfer metana beku dan poros rotasi unik yang rebah 98 derajat.",
+      surfaceImageCaption: "📸 Cincin & Atmosfer Nyata: Citra teleskop inframerah NASA Hubble & Keck mengungkap struktur atmosfer dinamis dan sistem 13 cincin vertikal Uranus.",
+      surfaceTabTitle: "💍 Cincin & Atmosfer Vertikal",
+      nasaCredit: "NASA / JPL / STScI / Keck Observatory",
       narrationSpeech: "Memasuki wilayah Uranus, sang raksasa es beku. Keunikan paling dramatis planet ini adalah kemiringan sumbu rotasinya hingga 98 derajat, sehingga Uranus seakan berguling saat mengitari orbitnya!"
     },
     {
@@ -301,8 +315,10 @@ const GAME_DATA = {
       gravity: 11.15,
       mpiColor: "#1E90FF",
       image: "assets/planet-neptunus.jpg",
-      surfaceImage: "assets/planet-neptunus.jpg",
-      imageCaption: "📸 Citra NASA Voyager 2: Biru pekat planet Neptunus di batas terjauh tata surya dengan pusaran badai es raksasa.",
+      surfaceImage: "assets/surface-neptunus.jpg",
+      imageCaption: "📸 Citra NASA Voyager 2: Planet terjauh berwarna biru laut pekat dengan hembusan angin supersonik hingga 2.100 km/jam.",
+      surfaceImageCaption: "📸 Badai Supersonik Nyata: Sistem badai siklon raksasa Great Dark Spot dan pita awan metana putih yang melaju kencang di batas luar tata surya.",
+      surfaceTabTitle: "🌪️ Badai Supersonik Nyata",
       nasaCredit: "NASA / Jet Propulsion Laboratory (Voyager 2 Planetary Encounters)",
       narrationSpeech: "Kita telah mencapai garis batas terluar, Neptunus! Planet biru pekat berangin supersonik yang membutuhkan waktu 165 tahun bumi untuk menyelesaikan satu putaran orbit penuh mengelilingi Matahari."
     }
@@ -312,8 +328,8 @@ const GAME_DATA = {
   quizzes: {
     venus: {
       planet: "Venus",
-      image: "assets/Ilustrasi Permukaan Venus.webp",
-      imageCaption: "📸 Citra Radar NASA Magellan: Suhu permukaan >450°C akibat efek rumah kaca ekstrem gas CO₂.",
+      image: "assets/surface-venus.jpg",
+      imageCaption: "📸 Citra Radar NASA Magellan: Permukaan vulkanik batuan basal Venus dengan suhu >450°C akibat efek rumah kaca ekstrem gas CO₂.",
       prompt: "Sensor luar mendeteksi suhu permukaan lebih dari 450°C, bahkan lebih panas dari Merkurius padahal letaknya lebih jauh dari Matahari. Mengapa fenomena ini terjadi?",
       options: [
         { text: "Inti planet Venus terdiri atas magma cair yang bocor ke seluruh permukaan.", correct: false },

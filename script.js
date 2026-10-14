@@ -608,13 +608,15 @@
     }
   };
 
-  // ── Web Speech API: Narator Suara Bahasa Indonesia ────────
+  // ── Web Speech API & Fallback Audio: Narator Suara Bahasa Indonesia ──
   const VoiceEngine = {
     synth: null,
     voice: null,
     isMuted: false,
     isPlaying: false,
     currentUtterance: null,
+    currentAudio: null,
+    activeToken: 0,
 
     init() {
       if ('speechSynthesis' in window) {
@@ -629,63 +631,160 @@
 
     loadVoices() {
       if (!this.synth) return;
-      const voices = this.synth.getVoices();
-      if (!voices || voices.length === 0) return;
-      // Cari suara Bahasa Indonesia yang natural
-      this.voice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id' || v.lang.startsWith('id')) ||
-                   voices.find(v => v.name.toLowerCase().includes('indonesia')) ||
-                   voices.find(v => v.lang.startsWith('en')) ||
-                   voices[0] || null;
+      try {
+        const voices = this.synth.getVoices();
+        if (!voices || voices.length === 0) return;
+        // Hanya izinkan jika benar-benar voice penutur Bahasa Indonesia
+        this.voice = voices.find(v => {
+          const l = (v.lang || '').toLowerCase();
+          const n = (v.name || '').toLowerCase();
+          return l === 'id-id' || l === 'id' || l.startsWith('id_') || l.startsWith('id-') || n.includes('indonesia') || n.includes('bahasa');
+        }) || null;
+      } catch (e) {
+        this.voice = null;
+      }
+    },
+
+    // Memecah teks narasi menjadi potongan kalimat alami (maks ~130 karakter)
+    chunkText(text, maxLen = 130) {
+      const clean = text.replace(/[*_#~`]/g, '').trim();
+      const rawSentences = clean.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [clean];
+      const chunks = [];
+      for (const raw of rawSentences) {
+        const s = raw.trim();
+        if (!s) continue;
+        if (s.length <= maxLen) {
+          chunks.push(s);
+        } else {
+          // Bagi per koma jika kalimat panjang
+          const commaSplit = s.split(/,\s*/);
+          let temp = '';
+          for (const part of commaSplit) {
+            const nextCandidate = temp ? `${temp}, ${part}` : part;
+            if (nextCandidate.length <= maxLen) {
+              temp = nextCandidate;
+            } else {
+              if (temp) chunks.push(temp.trim());
+              temp = part;
+            }
+          }
+          if (temp) chunks.push(temp.trim());
+        }
+      }
+      return chunks.length > 0 ? chunks : [clean];
     },
 
     speak(text, onStartCallback, onEndCallback) {
-      if (!this.synth || this.isMuted || !text) {
+      if (this.isMuted || !text) {
         if (onEndCallback) onEndCallback();
         return;
       }
 
       this.stop();
+      this.isPlaying = true;
+      const myToken = ++this.activeToken;
 
-      try {
-        const cleanText = text.replace(/[*_#~`]/g, '').trim();
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        if (this.voice) {
+      // 1. Jika browser memiliki voice native Bahasa Indonesia, gunakan SpeechSynthesis
+      if (this.synth && this.voice) {
+        try {
+          const cleanText = text.replace(/[*_#~`]/g, '').trim();
+          const utterance = new SpeechSynthesisUtterance(cleanText);
           utterance.voice = this.voice;
+          utterance.lang = this.voice.lang || 'id-ID';
+          utterance.rate = 1.0;
+          utterance.pitch = 1.0;
+
+          utterance.onstart = () => {
+            if (this.activeToken !== myToken) return;
+            if (onStartCallback) onStartCallback();
+          };
+
+          utterance.onend = () => {
+            if (this.activeToken !== myToken) return;
+            this.isPlaying = false;
+            this.currentUtterance = null;
+            if (onEndCallback) onEndCallback();
+          };
+
+          utterance.onerror = () => {
+            if (this.activeToken !== myToken) return;
+            this.isPlaying = false;
+            this.currentUtterance = null;
+            if (onEndCallback) onEndCallback();
+          };
+
+          this.currentUtterance = utterance;
+          this.synth.speak(utterance);
+          return;
+        } catch (err) {
+          // Fallback ke streaming Google TTS di bawah
         }
-        utterance.lang = 'id-ID';
-        utterance.rate = 1.0;
-        utterance.pitch = 1.0;
-
-        utterance.onstart = () => {
-          this.isPlaying = true;
-          if (onStartCallback) onStartCallback();
-        };
-
-        utterance.onend = () => {
-          this.isPlaying = false;
-          this.currentUtterance = null;
-          if (onEndCallback) onEndCallback();
-        };
-
-        utterance.onerror = () => {
-          this.isPlaying = false;
-          this.currentUtterance = null;
-          if (onEndCallback) onEndCallback();
-        };
-
-        this.currentUtterance = utterance;
-        this.synth.speak(utterance);
-      } catch (err) {
-        this.isPlaying = false;
-        if (onEndCallback) onEndCallback();
       }
+
+      // 2. Fallback cerdas alami: Streaming TTS Bahasa Indonesia resmi (penutur asli Indonesia jernih)
+      const chunks = this.chunkText(text, 130);
+      let idx = 0;
+
+      const playNextChunk = () => {
+        if (this.activeToken !== myToken || !this.isPlaying || this.isMuted) {
+          this.isPlaying = false;
+          if (onEndCallback) onEndCallback();
+          return;
+        }
+
+        if (idx >= chunks.length) {
+          this.isPlaying = false;
+          this.currentAudio = null;
+          if (onEndCallback) onEndCallback();
+          return;
+        }
+
+        const chunk = chunks[idx++];
+        const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=' + encodeURIComponent(chunk);
+        const audio = new Audio();
+        this.currentAudio = audio;
+
+        audio.oncanplay = () => {
+          if (this.activeToken !== myToken) return;
+          if (idx === 1 && onStartCallback) {
+            onStartCallback();
+          }
+        };
+
+        audio.onended = () => {
+          if (this.activeToken !== myToken) return;
+          playNextChunk();
+        };
+
+        audio.onerror = () => {
+          if (this.activeToken !== myToken) return;
+          // Lanjut ke potongan berikutnya jika terkendala jaringan
+          playNextChunk();
+        };
+
+        audio.src = url;
+        audio.play().catch(err => {
+          if (this.activeToken !== myToken) return;
+          playNextChunk();
+        });
+      };
+
+      playNextChunk();
     },
 
     stop() {
+      this.activeToken++;
       if (this.synth) {
         try {
           this.synth.cancel();
         } catch (e) {}
+      }
+      if (this.currentAudio) {
+        try {
+          this.currentAudio.pause();
+          this.currentAudio.src = '';
+        } catch (e) {}
+        this.currentAudio = null;
       }
       this.isPlaying = false;
       this.currentUtterance = null;
@@ -1482,6 +1581,11 @@
     activeObservatoryPlanet = planet;
     if (!dom.planet.observatorySection) return;
 
+    // Update label tab kedua secara dinamis sesuai sifat planet (permukaan padat vs atmosfer gas / cincin es)
+    if (dom.planet.btnTabSurface) {
+      dom.planet.btnTabSurface.textContent = planet.surfaceTabTitle || '🌋 Permukaan Nyata';
+    }
+
     // Default ke Teleskop Luar Angkasa
     setObservatoryView('planet');
 
@@ -1549,22 +1653,27 @@
   }
 
   function updatePlanetVoiceUI(isSpeaking, statusText) {
-    const btn = dom.planet.btnSpeakPlanet;
-    const status = dom.planet.voiceStatus;
-    const wave = document.querySelector('.voice-wave');
+    const btn = dom.planet.btnSpeakPlanet || document.getElementById('btn-speak-planet');
+    const label = document.getElementById('voice-play-text');
+    const icon = document.getElementById('voice-play-icon');
+    const indicator = document.getElementById('voice-playing-indicator');
+    const statusEl = indicator ? indicator.querySelector('.voice-status-text') : null;
 
     if (btn) {
       btn.classList.toggle('speaking', isSpeaking);
-      const label = btn.querySelector('.voice-btn-label');
-      if (label) {
-        label.textContent = isSpeaking ? 'Hentikan Narasi' : 'Dengarkan Narasi Planet';
+    }
+    if (label) {
+      label.textContent = isSpeaking ? 'Hentikan Narasi' : 'Dengarkan Narasi Planet';
+    }
+    if (icon) {
+      icon.textContent = isSpeaking ? '⏹️' : '🔊';
+    }
+    if (indicator) {
+      indicator.classList.toggle('hidden', !isSpeaking);
+      indicator.querySelectorAll('.voice-wave').forEach(w => w.classList.toggle('active', isSpeaking));
+      if (statusEl && statusText) {
+        statusEl.textContent = statusText;
       }
-    }
-    if (status && statusText) {
-      status.textContent = statusText;
-    }
-    if (wave) {
-      wave.classList.toggle('active', isSpeaking);
     }
   }
 
