@@ -697,7 +697,7 @@
     }
   };
 
-  // ── Web Speech API & Fallback Audio: Narator Suara Bahasa Indonesia ──
+  // ── Web Speech API & Streaming Audio: Narator Suara Bahasa Indonesia ──
   const VoiceEngine = {
     synth: null,
     voice: null,
@@ -705,9 +705,19 @@
     isPlaying: false,
     currentUtterance: null,
     currentAudio: null,
+    audioElement: null,
     activeToken: 0,
 
     init() {
+      this.audioElement = document.getElementById('narration-audio-player');
+      if (!this.audioElement) {
+        this.audioElement = document.createElement('audio');
+        this.audioElement.id = 'narration-audio-player';
+        this.audioElement.style.display = 'none';
+        document.body.appendChild(this.audioElement);
+      }
+      this.audioElement.referrerPolicy = 'no-referrer';
+
       if ('speechSynthesis' in window) {
         this.synth = window.speechSynthesis;
         this.loadVoices();
@@ -721,22 +731,43 @@
     loadVoices() {
       if (!this.synth) return;
       try {
-        const voices = this.synth.getVoices();
+        const voices = this.synth.getVoices() || [];
         if (!voices || voices.length === 0) return;
-        // Hanya izinkan jika benar-benar voice penutur Bahasa Indonesia
-        this.voice = voices.find(v => {
-          const l = (v.lang || '').toLowerCase();
-          const n = (v.name || '').toLowerCase();
-          return l === 'id-id' || l === 'id' || l.startsWith('id_') || l.startsWith('id-') || n.includes('indonesia') || n.includes('bahasa');
-        }) || null;
+
+        // 1. Cari suara penutur Bahasa Indonesia resmi (id-ID, id, in-ID)
+        let matched = voices.find(v => {
+          const l = (v.lang || '').toLowerCase().replace(/_/g, '-');
+          return l === 'id-id' || l === 'id' || l.startsWith('id-') || l === 'in-id' || l === 'in';
+        });
+
+        // 2. Cari berdasarkan nama voice sistem (Microsoft Gadis, Ardi, Google Bahasa Indonesia, Apple Damayanti)
+        if (!matched) {
+          matched = voices.find(v => {
+            const n = (v.name || '').toLowerCase();
+            return n.includes('indonesia') || n.includes('bahasa') || n.includes('gadis') || n.includes('ardi') || n.includes('damayanti');
+          });
+        }
+
+        this.voice = matched || null;
       } catch (e) {
         this.voice = null;
       }
     },
 
-    // Memecah teks narasi menjadi potongan kalimat alami (maks ~130 karakter)
-    chunkText(text, maxLen = 130) {
-      const clean = text.replace(/[*_#~`]/g, '').trim();
+    cleanSpeechText(text) {
+      if (!text) return '';
+      return text
+        // Hapus karakter emoji antariksa/simbol yang mengganggu TTS
+        .replace(/[\u{1F300}-\u{1FAFF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
+        .replace(/[*_#~`]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    },
+
+    // Memecah teks narasi menjadi potongan kalimat alami (maks ~120 karakter)
+    chunkText(text, maxLen = 120) {
+      const clean = this.cleanSpeechText(text);
+      if (!clean) return [];
       const rawSentences = clean.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [clean];
       const chunks = [];
       for (const raw of rawSentences) {
@@ -769,6 +800,12 @@
         return;
       }
 
+      const cleanText = this.cleanSpeechText(text);
+      if (!cleanText) {
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+
       this.stop();
       this.isPlaying = true;
       const myToken = ++this.activeToken;
@@ -776,97 +813,143 @@
       // Bunyikan efek radio chirp sebelum transmisi suara
       AudioEngine.radioChirp();
 
-      // Beri sedikit jeda 160ms agar efek radio walkie-talkie terdengar sebelum suara bicara
+      // Selalu muat ulang voice agar mendeteksi voice yang baru siap di background
+      this.loadVoices();
+
+      // Beri sedikit jeda 140ms agar radio chirp terdengar sebelum transmisi suara
       setTimeout(() => {
         if (this.activeToken !== myToken || !this.isPlaying || this.isMuted) return;
 
-        // 1. Jika browser memiliki voice native Bahasa Indonesia, gunakan SpeechSynthesis
+        // METODE 1: Jika browser memiliki voice native Bahasa Indonesia, gunakan SpeechSynthesis
         if (this.synth && this.voice) {
-          try {
-            const cleanText = text.replace(/[*_#~`]/g, '').trim();
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.voice = this.voice;
-            utterance.lang = this.voice.lang || 'id-ID';
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
-
-            utterance.onstart = () => {
-              if (this.activeToken !== myToken) return;
-              if (onStartCallback) onStartCallback();
-            };
-
-            utterance.onend = () => {
-              if (this.activeToken !== myToken) return;
-              this.isPlaying = false;
-              this.currentUtterance = null;
-              if (onEndCallback) onEndCallback();
-            };
-
-            utterance.onerror = () => {
-              if (this.activeToken !== myToken) return;
-              this.isPlaying = false;
-              this.currentUtterance = null;
-              if (onEndCallback) onEndCallback();
-            };
-
-            this.currentUtterance = utterance;
-            this.synth.speak(utterance);
-            return;
-          } catch (err) {
-            // Fallback ke streaming Google TTS di bawah
-          }
+          this.speakWithSynth(cleanText, myToken, onStartCallback, onEndCallback);
+          return;
         }
 
-        // 2. Fallback cerdas alami: Streaming TTS Bahasa Indonesia resmi (penutur asli Indonesia jernih)
-        const chunks = this.chunkText(text, 130);
-        let idx = 0;
-
-        const playNextChunk = () => {
-          if (this.activeToken !== myToken || !this.isPlaying || this.isMuted) {
+        // METODE 2: Streaming TTS Bahasa Indonesia Natural (no-referrer agar tidak dicegat ORB browser)
+        this.speakWithAudioStream(cleanText, myToken, onStartCallback, () => {
+          if (onEndCallback) onEndCallback();
+        }, () => {
+          // Fallback darurat jika streaming offline/terkendala:
+          // Gunakan SpeechSynthesis browser dengan lang id-ID agar kadet tetap mendengar suara
+          if (this.synth && this.activeToken === myToken && this.isPlaying) {
+            this.speakWithSynth(cleanText, myToken, onStartCallback, onEndCallback);
+          } else {
             this.isPlaying = false;
             if (onEndCallback) onEndCallback();
-            return;
           }
+        });
+      }, 140);
+    },
 
-          if (idx >= chunks.length) {
-            this.isPlaying = false;
-            this.currentAudio = null;
-            if (onEndCallback) onEndCallback();
-            return;
-          }
+    speakWithSynth(text, token, onStartCallback, onEndCallback) {
+      if (!this.synth) {
+        this.isPlaying = false;
+        if (onEndCallback) onEndCallback();
+        return;
+      }
+      try {
+        const utterance = new SpeechSynthesisUtterance(text);
+        if (this.voice) {
+          utterance.voice = this.voice;
+          utterance.lang = this.voice.lang || 'id-ID';
+        } else {
+          utterance.lang = 'id-ID';
+        }
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
 
-          const chunk = chunks[idx++];
-          const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=' + encodeURIComponent(chunk);
-          const audio = new Audio();
-          this.currentAudio = audio;
-
-          audio.oncanplay = () => {
-            if (this.activeToken !== myToken) return;
-            if (idx === 1 && onStartCallback) {
-              onStartCallback();
-            }
-          };
-
-          audio.onended = () => {
-            if (this.activeToken !== myToken) return;
-            playNextChunk();
-          };
-
-          audio.onerror = () => {
-            if (this.activeToken !== myToken) return;
-            // Lanjut ke potongan berikutnya jika terkendala jaringan
-            playNextChunk();
-          };
-
-          audio.src = url;
-          audio.play().catch(err => {
-            if (this.activeToken !== myToken) return;
-            playNextChunk();
-          });
+        utterance.onstart = () => {
+          if (this.activeToken !== token) return;
+          if (onStartCallback) onStartCallback();
         };
 
-        playNextChunk();
-      }, 160);
+        utterance.onend = () => {
+          if (this.activeToken !== token) return;
+          this.isPlaying = false;
+          this.currentUtterance = null;
+          if (onEndCallback) onEndCallback();
+        };
+
+        utterance.onerror = () => {
+          if (this.activeToken !== token) return;
+          this.isPlaying = false;
+          this.currentUtterance = null;
+          if (onEndCallback) onEndCallback();
+        };
+
+        this.currentUtterance = utterance;
+        this.synth.speak(utterance);
+      } catch (err) {
+        this.isPlaying = false;
+        if (onEndCallback) onEndCallback();
+      }
+    },
+
+    speakWithAudioStream(text, token, onStartCallback, onEndCallback, onErrorFallback) {
+      const chunks = this.chunkText(text, 120);
+      let idx = 0;
+      let hasStarted = false;
+
+      const player = this.audioElement || new Audio();
+      player.referrerPolicy = 'no-referrer';
+      this.currentAudio = player;
+
+      const playNextChunk = () => {
+        if (this.activeToken !== token || !this.isPlaying || this.isMuted) {
+          this.isPlaying = false;
+          this.currentAudio = null;
+          if (onEndCallback) onEndCallback();
+          return;
+        }
+
+        if (idx >= chunks.length) {
+          this.isPlaying = false;
+          this.currentAudio = null;
+          if (onEndCallback) onEndCallback();
+          return;
+        }
+
+        const chunk = chunks[idx++];
+        const url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=id&client=tw-ob&q=' + encodeURIComponent(chunk);
+
+        player.oncanplay = () => {
+          if (this.activeToken !== token) return;
+          if (!hasStarted) {
+            hasStarted = true;
+            if (onStartCallback) onStartCallback();
+          }
+        };
+
+        player.onended = () => {
+          if (this.activeToken !== token) return;
+          playNextChunk();
+        };
+
+        player.onerror = () => {
+          if (this.activeToken !== token) return;
+          if (idx === 1 && onErrorFallback) {
+            onErrorFallback();
+          } else {
+            playNextChunk();
+          }
+        };
+
+        player.src = url;
+        const playPromise = player.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            if (this.activeToken !== token) return;
+            if (idx === 1 && onErrorFallback) {
+              onErrorFallback();
+            } else {
+              playNextChunk();
+            }
+          });
+        }
+      };
+
+      playNextChunk();
     },
 
     stop() {
@@ -2704,6 +2787,10 @@
   const unlockAudio = () => {
     AudioEngine.init();
     VoiceEngine.init();
+    // Resume speechSynthesis if in paused state
+    if (window.speechSynthesis && window.speechSynthesis.paused) {
+      try { window.speechSynthesis.resume(); } catch (e) {}
+    }
     ['click', 'touchstart', 'keydown'].forEach(evt => {
       document.removeEventListener(evt, unlockAudio);
     });
@@ -2713,6 +2800,7 @@
   });
 
   // Inisialisasi awal saat load
+  VoiceEngine.init();
   updateFuel(0);
   showScreen('title');
 
