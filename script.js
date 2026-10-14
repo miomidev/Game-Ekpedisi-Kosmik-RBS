@@ -1164,6 +1164,11 @@
 
   // ── Navigasi Screen ────────────────────────────────────────
   function showScreen(screenKey) {
+    // Hentikan suara narasi dari layar sebelumnya jika berpindah layar (kecuali intro lanjut/planet internal)
+    if (screenKey !== 'planet' && screenKey !== 'intro') {
+      VoiceEngine.stop();
+    }
+
     Object.values(dom.screens).forEach(screen => {
       if (screen) screen.classList.remove('active');
     });
@@ -2131,7 +2136,7 @@
       setTimeout(() => {
         // Pastikan masih berada di layar planet yang sama
         if (dom.screens.planet.classList.contains('active') && activePlanetForVoice?.id === planet.id) {
-          playPlanetVoice();
+          playPlanetVoice(true);
         }
       }, 700);
     }
@@ -2162,15 +2167,16 @@
     }
   }
 
-  function playPlanetVoice() {
+  function playPlanetVoice(forcePlay = false) {
     if (!activePlanetForVoice || !activePlanetForVoice.narrationSpeech) return;
 
-    if (VoiceEngine.isPlaying) {
+    if (!forcePlay && VoiceEngine.isPlaying) {
       VoiceEngine.stop();
       updatePlanetVoiceUI(false, 'Narasi dihentikan');
       return;
     }
 
+    VoiceEngine.stop();
     updatePlanetVoiceUI(true, '🎙️ Komputer transmisi sedang berbicara...');
     VoiceEngine.speak(
       activePlanetForVoice.narrationSpeech,
