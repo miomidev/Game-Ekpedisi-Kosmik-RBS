@@ -198,9 +198,82 @@
 
         <!-- Bottom HUD -->
         <div class="hud-bottom">
-          <button id="btn-logbook" class="btn-hud">📖 Logbook</button>
+          <div class="hud-actions-left">
+            <button id="btn-logbook" class="btn-hud">📖 Logbook</button>
+            <button id="btn-tutorial" class="btn-hud" title="Buka Panduan Navigasi Kokpit">❓ Panduan</button>
+          </div>
           <div id="hud-message" class="hud-message">Pilih planet tujuan di peta!</div>
           <button id="btn-finish" class="btn-hud btn-finish hidden">🏠 Kembali ke Bumi</button>
+        </div>
+
+        <!-- Cockpit Tutorial / Onboarding Modal -->
+        <div id="cockpit-tutorial-modal" class="tutorial-overlay hidden">
+          <div class="tutorial-backdrop" id="tutorial-backdrop"></div>
+          <div class="tutorial-card">
+            <button id="btn-tutorial-x" class="tutorial-close-btn" title="Tutup Panduan" aria-label="Tutup Panduan">✕</button>
+            
+            <div class="tutorial-header">
+              <div class="tutorial-ai-badge">
+                <span class="tutorial-ai-icon">🛰️</span>
+                <span class="status-dot"></span>
+                <span class="tutorial-ai-text">KOMPUTER PENERBANGAN RBS-01</span>
+              </div>
+              <h2 class="tutorial-title">Panduan Navigasi Kokpit</h2>
+              <p class="tutorial-subtitle">Halo Kadet <strong id="tutorial-cadet-name">Astronot</strong>! Selamat datang di Ruang Kemudi Tata Surya. Ikuti panduan 4 langkah berikut untuk menjalankan misimu:</p>
+            </div>
+
+            <div class="tutorial-steps-grid">
+              <!-- Step 1 -->
+              <div class="tutorial-step-card">
+                <div class="step-num-badge">1</div>
+                <div class="step-icon">🪐</div>
+                <div class="step-content">
+                  <h4>Pilih Planet Tujuan</h4>
+                  <p><strong>Klik langsung</strong> planet yang mengorbit di jendela kokpit, atau pilih lewat <strong>tombol nama planet</strong> di bilah bawah.</p>
+                </div>
+              </div>
+
+              <!-- Step 2 -->
+              <div class="tutorial-step-card">
+                <div class="step-num-badge">2</div>
+                <div class="step-icon">⛽</div>
+                <div class="step-content">
+                  <h4>Pantau Bahan Bakar</h4>
+                  <p>Setiap penerbangan antar-planet memakai bahan bakar. Atur rute penerbanganmu agar cukup menjelajahi <strong>seluruh 8 planet</strong>!</p>
+                </div>
+              </div>
+
+              <!-- Step 3 -->
+              <div class="tutorial-step-card">
+                <div class="step-num-badge">3</div>
+                <div class="step-icon">🔬</div>
+                <div class="step-content">
+                  <h4>Eksplorasi & Jawab Kuis</h4>
+                  <p>Di tiap planet, coba <strong>aktivitas sains interaktif</strong> (suhu, rover Mars, gravitasi) lalu jawab <strong>kuis tantangan</strong> untuk melengkapi data.</p>
+                </div>
+              </div>
+
+              <!-- Step 4 -->
+              <div class="tutorial-step-card">
+                <div class="step-num-badge">4</div>
+                <div class="step-icon">☄️</div>
+                <div class="step-content">
+                  <h4>Sabuk Asteroid & Logbook</h4>
+                  <p>Waspada rintangan batuan antariksa antara Mars & Jupiter. Cek progres datamu kapan saja via tombol <strong>📖 Logbook</strong>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="tutorial-footer">
+              <div class="tutorial-tip">
+                <span class="tip-icon">💡</span>
+                <span>Kamu bisa membuka panduan ini lagi kapan saja lewat tombol <strong>❓ Panduan</strong> di bilah bawah.</span>
+              </div>
+              <button id="btn-tutorial-start" class="btn-primary btn-tutorial-start">
+                <span>Siap, Mulai Jelajah!</span> 🚀
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

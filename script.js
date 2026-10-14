@@ -596,6 +596,15 @@
       setTimeout(() => {
         this.sampleFound();
       }, 1600);
+    },
+
+    // Notifikasi Panduan / Onboarding Kokpit (Arpeggio Bersahabat)
+    tutorial() {
+      if (!this.ctx || this.isMuted) return;
+      const notes = [440, 554.37, 659.25, 880]; // A4, C#5, E5, A5 major arpeggio
+      notes.forEach((freq, idx) => {
+        setTimeout(() => this.playBeep(freq, 'sine', 0.22, 0.14), idx * 65);
+      });
     }
   };
 
@@ -609,6 +618,7 @@
     currentPlanetId: null,
     targetPlanetId: null,
     hasEncounteredAsteroids: false,
+    hasSeenTutorial: false,
     introIndex: 0,
     asteroidQuizIndex: 0,
     selectedPlanetId: null,
@@ -715,6 +725,14 @@
       btnToggle: document.getElementById('btn-toggle-audio'),
       icon: document.getElementById('audio-icon'),
       label: document.getElementById('audio-label')
+    },
+    tutorial: {
+      modal: document.getElementById('cockpit-tutorial-modal'),
+      btnOpen: document.getElementById('btn-tutorial'),
+      btnStart: document.getElementById('btn-tutorial-start'),
+      btnX: document.getElementById('btn-tutorial-x'),
+      backdrop: document.getElementById('tutorial-backdrop'),
+      cadetName: document.getElementById('tutorial-cadet-name')
     }
   };
 
@@ -729,6 +747,12 @@
     // Jika pindah ke peta, resize canvas
     if (screenKey === 'map') {
       resizeCanvas();
+      // Munculkan panduan otomatis jika kadet baru pertama kali tiba di kokpit
+      if (!state.hasSeenTutorial) {
+        setTimeout(() => {
+          openTutorial();
+        }, 400);
+      }
     }
   }
 
@@ -756,6 +780,34 @@
     }
   }
 
+  // ── Helper SVG Scoper (Mencegah konflik duplicate clipPath ID antar screen) ──
+  let svgInstanceCounter = 0;
+  function getScopedSvg(svgString, prefix = 'planet') {
+    if (!svgString) return '';
+    svgInstanceCounter++;
+    const uid = `${prefix}-${svgInstanceCounter}`;
+
+    const idMap = new Map();
+    const replaced = svgString.replace(/\bid=(["'])([^"']+)\1/g, (match, quote, id) => {
+      const uniqueId = `${id}_${uid}`;
+      idMap.set(id, uniqueId);
+      return `id=${quote}${uniqueId}${quote}`;
+    });
+
+    if (idMap.size === 0) return svgString;
+
+    let result = replaced;
+    idMap.forEach((newId, oldId) => {
+      const urlRegex = new RegExp(`url\\(#${oldId}\\)`, 'g');
+      result = result.replace(urlRegex, `url(#${newId})`);
+
+      const hrefRegex = new RegExp(`(xlink:)?href=(["'])#${oldId}\\2`, 'g');
+      result = result.replace(hrefRegex, `$1href=$2#${newId}$2`);
+    });
+
+    return result;
+  }
+
   function renderPlanetSelector() {
     if (!dom.map.selector) return;
     dom.map.selector.innerHTML = '';
@@ -780,7 +832,7 @@
 
       const check = state.visitedPlanets.has(planet.id) ? '✓ ' : '';
       if (planet.iconSvg) {
-        pill.innerHTML = `${check}<span class="planet-pill-svg">${planet.iconSvg}</span> <span>${planet.name}</span>`;
+        pill.innerHTML = `${check}<span class="planet-pill-svg">${getScopedSvg(planet.iconSvg, 'pill-' + planet.id)}</span> <span>${planet.name}</span>`;
       } else {
         pill.textContent = `${check}${planet.icon} ${planet.name}`;
       }
@@ -1077,7 +1129,7 @@
   function selectPlanet(planet, rect) {
     state.selectedPlanetId = planet.id;
     if (planet.iconSvg) {
-      dom.map.tooltipName.innerHTML = `<span class="tooltip-icon-svg">${planet.iconSvg}</span> <span>${planet.name}</span>`;
+      dom.map.tooltipName.innerHTML = `<span class="tooltip-icon-svg">${getScopedSvg(planet.iconSvg, 'tooltip-' + planet.id)}</span> <span>${planet.name}</span>`;
     } else {
       dom.map.tooltipName.textContent = `${planet.icon} ${planet.name}`;
     }
@@ -1239,7 +1291,7 @@
       dom.planet.bg.style.opacity = '0.15';
     }
     if (planet.iconSvg) {
-      dom.planet.iconLarge.innerHTML = planet.iconSvg;
+      dom.planet.iconLarge.innerHTML = getScopedSvg(planet.iconSvg, 'large-' + planet.id);
     } else {
       dom.planet.iconLarge.textContent = planet.icon;
     }
@@ -1651,7 +1703,7 @@
       const card = document.createElement('div');
       card.className = `logbook-card ${visited ? 'visited' : 'locked'}`;
 
-      const iconHtml = p.iconSvg ? p.iconSvg : p.icon;
+      const iconHtml = p.iconSvg ? getScopedSvg(p.iconSvg, 'logbook-' + p.id) : p.icon;
 
       card.innerHTML = `
         <div class="logbook-card-icon">${iconHtml}</div>
@@ -1717,6 +1769,54 @@
     showScreen('map');
   });
 
+  // ── PANDUAN / TUTORIAL KOKPIT (ONBOARDING KADET) ────────────
+  function openTutorial() {
+    if (!dom.tutorial || !dom.tutorial.modal) return;
+    if (dom.tutorial.cadetName) {
+      dom.tutorial.cadetName.textContent = state.playerName || 'Astronot';
+    }
+    dom.tutorial.modal.classList.remove('hidden');
+    AudioEngine.tutorial();
+  }
+
+  function closeTutorial() {
+    if (!dom.tutorial || !dom.tutorial.modal) return;
+    dom.tutorial.modal.classList.add('hidden');
+    state.hasSeenTutorial = true;
+    AudioEngine.click();
+  }
+
+  if (dom.tutorial.btnOpen) {
+    dom.tutorial.btnOpen.addEventListener('click', () => {
+      AudioEngine.click();
+      openTutorial();
+    });
+  }
+
+  if (dom.tutorial.btnStart) {
+    dom.tutorial.btnStart.addEventListener('click', () => {
+      closeTutorial();
+    });
+  }
+
+  if (dom.tutorial.btnX) {
+    dom.tutorial.btnX.addEventListener('click', () => {
+      closeTutorial();
+    });
+  }
+
+  if (dom.tutorial.backdrop) {
+    dom.tutorial.backdrop.addEventListener('click', () => {
+      closeTutorial();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && dom.tutorial && dom.tutorial.modal && !dom.tutorial.modal.classList.contains('hidden')) {
+      closeTutorial();
+    }
+  });
+
   // ── RESET STATE ────────────────────────────────────────────
   function resetGame() {
     state.fuel = GAME_DATA.config.startingFuel;
@@ -1726,6 +1826,7 @@
     state.currentPlanetId = null;
     state.targetPlanetId = null;
     state.hasEncounteredAsteroids = false;
+    state.hasSeenTutorial = false;
     state.selectedPlanetId = null;
 
     dom.title.input.value = '';

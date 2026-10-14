@@ -798,6 +798,11 @@ html, body {
   z-index: 5;
   flex-shrink: 0;
 }
+.hud-actions-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .hud-message {
   color: var(--text-dim);
   font-size: 0.9rem;
@@ -805,6 +810,221 @@ html, body {
   flex: 1;
 }
 .btn-finish { background: rgba(0,200,100,0.15); color: var(--success); border-color: rgba(0,200,100,0.3); }
+
+/* ── Cockpit Tutorial / Onboarding Modal ────────────────────── */
+.tutorial-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.tutorial-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.tutorial-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 8, 22, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.tutorial-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: linear-gradient(150deg, rgba(13, 26, 56, 0.98), rgba(7, 16, 38, 0.98));
+  border: 1.5px solid rgba(0, 212, 255, 0.45);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(0, 212, 255, 0.25);
+  padding: 24px 28px;
+  animation: tutorialPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes tutorialPop {
+  0% { opacity: 0; transform: scale(0.92) translateY(12px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.tutorial-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ccddee;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tutorial-close-btn:hover {
+  background: rgba(255, 68, 102, 0.3);
+  border-color: var(--danger);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.tutorial-header {
+  margin-bottom: 18px;
+  text-align: left;
+}
+.tutorial-ai-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+.tutorial-ai-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+  display: inline-block;
+  animation: pulseDot 1.5s infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.tutorial-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 16px rgba(0, 212, 255, 0.4);
+  margin-bottom: 6px;
+}
+.tutorial-subtitle {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.tutorial-subtitle strong {
+  color: var(--accent);
+}
+
+.tutorial-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.tutorial-step-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 180, 255, 0.16);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  transition: all 0.25s;
+}
+.tutorial-step-card:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: rgba(0, 212, 255, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+.step-num-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #0066cc);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.35);
+  margin-top: 1px;
+}
+.step-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-content {
+  flex: 1;
+}
+.step-content h4 {
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.step-content p {
+  color: #b0c4de;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin: 0;
+}
+.step-content p strong {
+  color: #eaf6ff;
+}
+
+.tutorial-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid rgba(0, 180, 255, 0.15);
+  padding-top: 16px;
+}
+.tutorial-tip {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.tutorial-tip strong {
+  color: var(--accent);
+}
+.btn-tutorial-start {
+  padding: 10px 32px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 25px;
+  box-shadow: 0 4px 18px rgba(0, 212, 255, 0.4);
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-tutorial-start:hover {
+  transform: scale(1.04);
+  box-shadow: 0 6px 24px rgba(0, 212, 255, 0.6);
+}
 
 /* Planet Tooltip */
 .planet-tooltip {
@@ -1370,6 +1590,36 @@ html, body {
     width: 36px;
     height: 36px;
     padding: 0;
+  }
+
+  /* Tutorial on mobile */
+  .tutorial-card {
+    padding: 20px 16px;
+    max-height: 92vh;
+    border-radius: 16px;
+  }
+  .tutorial-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .tutorial-title {
+    font-size: 1.3rem;
+  }
+  .tutorial-subtitle {
+    font-size: 0.85rem;
+  }
+  .hud-bottom {
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hud-actions-left {
+    gap: 6px;
+  }
+  .btn-hud {
+    padding: 6px 12px;
+    font-size: 0.82rem;
   }
 }
 
