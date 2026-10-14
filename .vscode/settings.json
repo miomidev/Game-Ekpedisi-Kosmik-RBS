@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^python -c \"from PIL import Image; im = Image\\.open\\(r'c:\\\\Users\\\\ROMI\\\\AppData\\\\Roaming\\\\Code\\\\agentSessionData\\\\4df17389-ae45-4da3-8cd9-da8a2aca201e\\\\attachments\\\\1759b178-c001-452e-a66e-90a9ede1927f\\\\Pasted Image\\.png'\\); print\\(im\\.size\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
