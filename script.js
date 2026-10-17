@@ -1644,18 +1644,6 @@
         ctx.fill();
       }
 
-      // Cincin Vertikal Uranus
-      if (planet.id === 'uranus') {
-        ctx.save();
-        ctx.translate(px, py);
-        ctx.rotate(1.52); // Miring vertikal ~87 derajat
-        ctx.strokeStyle = 'rgba(140, 210, 220, 0.45)';
-        ctx.lineWidth = 1.8;
-        ctx.beginPath();
-        ctx.ellipse(0, 0, renderR * 1.7, renderR * 0.45, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      }
 
       // Indikator Lencana Centang Hijau jika sudah dikunjungi
       if (isVisited) {
