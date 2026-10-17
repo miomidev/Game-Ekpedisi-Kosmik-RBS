@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misi 2: Holo-Orbit Simulator — Bimbel RBS</title>
+  <meta name="description" content="Simulasi interaktif orbit Bulan, fase bulan, perigee & apogee untuk siswa Bimbel RBS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="misi2.css">
+</head>
+<body>
+<div id="game-container">
+
+  <!-- ═══ Audio Controls ═══ -->
+  <div class="audio-controls" id="audio-controls">
+    <button id="btn-toggle-audio" class="btn-audio" title="Toggle Musik">
+      <span class="audio-icon" id="audio-icon">🔊</span>
+      <span class="audio-label" id="audio-label">Musik</span>
+    </button>
+  </div>
+
+  <!-- ═══ SCREEN: Intro / Mission Select ═══ -->
+  <div id="screen-intro" class="screen active">
+    <div class="stars-bg"></div>
+    <div class="intro-content">
+      <div class="mission-badge-row">
+        <span class="mission-num-pill">MISI 2</span>
+        <span class="mission-chain">Ekspedisi Kosmik — Bimbel RBS</span>
+      </div>
+      <div class="intro-logo">🌍</div>
+      <h1 class="intro-title">Holo-Orbit Simulator</h1>
+      <p class="intro-subtitle">Penguncian Orbit Bumi – Bulan – Matahari</p>
+
+      <div class="intro-objectives">
+        <div class="obj-header">🎯 Objektif Misi</div>
+        <div class="obj-list">
+          <div class="obj-item"><span class="obj-icon">📡</span><span>Amati orbit Bulan mengelilingi Bumi secara real-time</span></div>
+          <div class="obj-item"><span class="obj-icon">🌙</span><span>Identifikasi 8 fase bulan (Baru → Purnama → kembali)</span></div>
+          <div class="obj-item"><span class="obj-icon">📍</span><span>Temukan titik <strong>Perigee</strong> (terdekat) dan <strong>Apogee</strong> (terjauh)</span></div>
+          <div class="obj-item"><span class="obj-icon">📸</span><span>Ambil foto <strong>4 fase bulan berbeda</strong> sebagai bukti eksplorasi</span></div>
+        </div>
+      </div>
+
+      <div class="narration-box-intro">
+        <div class="narration-avatar">🛰️</div>
+        <div class="narration-text-wrap">
+          <div class="narration-speaker">Komputer Penerbangan RBS-01</div>
+          <p>Kadet, roket kita telah parkir di stasiun orbit dekat Bumi. Aktifkan panel <strong>Holo-Orbit Simulator</strong> untuk mempelajari sistem Bumi–Bulan–Matahari!</p>
+        </div>
+      </div>
+
+      <div class="intro-buttons">
+        <button id="btn-start-mission" class="btn-primary">
+          <span>🚀</span> Aktifkan Simulator!
+        </button>
+        <a href="index.html" class="btn-secondary-link">◀ Kembali ke Misi 1</a>
+        <a href="misi3.html" class="btn-secondary-link" style="color: #ffd84d; border-color: rgba(255, 216, 77, 0.4);">Misi 3: Gerhana ▶</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN: Main Simulator ═══ -->
+  <div id="screen-sim" class="screen">
+
+    <!-- Top HUD Bar -->
+    <div class="hud-top-bar">
+      <div class="hud-top-left">
+        <span class="hud-mission-tag">🛰️ MISI 2</span>
+        <span class="hud-mission-name">Holo-Orbit Simulator</span>
+      </div>
+      <div class="hud-objectives-mini">
+        <span class="obj-mini" id="mini-obj-1" title="Amati orbit">📡</span>
+        <span class="obj-mini" id="mini-obj-2" title="8 Fase Bulan">🌙</span>
+        <span class="obj-mini" id="mini-obj-3" title="Perigee & Apogee">📍</span>
+        <span class="obj-mini" id="mini-obj-4" title="4 Foto Diambil">📸</span>
+        <span class="obj-mini-label" id="obj-complete-label"></span>
+      </div>
+      <div class="hud-top-right">
+        <a href="index.html" class="btn-hud">◀ Misi 1</a>
+        <a href="misi3.html" class="btn-hud" style="color: var(--cyan); border-color: rgba(0, 212, 255, 0.4);">Misi 3: Gerhana ▶</a>
+        <button id="btn-logbook-m2" class="btn-hud">📚 Catatan</button>
+      </div>
+    </div>
+
+    <!-- Main 3-Column Layout -->
+    <div class="sim-layout">
+
+      <!-- LEFT: Control Panel -->
+      <div class="control-panel">
+        <div class="panel-header"><span class="panel-badge">⚙️</span><span>Panel Kendali Orbit</span></div>
+
+        <div class="control-group">
+          <label class="ctrl-label">🔄 Kecepatan Orbit Bulan <span class="ctrl-value" id="val-speed">1.0×</span></label>
+          <input type="range" id="slider-speed" class="ctrl-slider" min="0" max="5" step="0.1" value="1">
+          <div class="ctrl-hint">Geser untuk mempercepat / memperlambat</div>
+        </div>
+
+        <div class="control-group">
+          <label class="ctrl-label">📐 Eksentrisitas Orbit <span class="ctrl-value" id="val-ecc">0.05</span></label>
+          <input type="range" id="slider-ecc" class="ctrl-slider" min="0" max="0.50" step="0.01" value="0.05">
+          <div class="ctrl-hint">Atur elipsitas lintasan (0 = lingkaran sempurna)</div>
+        </div>
+
+        <div class="control-group">
+          <label class="ctrl-label">📏 Inklinasi Orbit <span class="ctrl-value" id="val-inc">5°</span></label>
+          <input type="range" id="slider-inc" class="ctrl-slider" min="0" max="30" step="1" value="5">
+          <div class="ctrl-hint">Kemiringan bidang orbit terhadap ekliptika</div>
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Perigee / Apogee Stats -->
+        <div class="orbital-stats">
+          <div class="orbital-stat-card perigee-card" id="card-perigee">
+            <div class="os-icon">🔴</div>
+            <div class="os-body">
+              <div class="os-label">PERIGEE</div>
+              <div class="os-value" id="val-perigee">362.600 km</div>
+              <div class="os-desc">Titik orbit terdekat</div>
+            </div>
+          </div>
+          <div class="orbital-stat-card apogee-card" id="card-apogee">
+            <div class="os-icon">🔵</div>
+            <div class="os-body">
+              <div class="os-label">APOGEE</div>
+              <div class="os-value" id="val-apogee">405.500 km</div>
+              <div class="os-desc">Titik orbit terjauh</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Distance -->
+        <div class="current-dist-box">
+          <div class="cd-label">📡 Jarak Bulan Saat Ini</div>
+          <div class="cd-value" id="val-current-dist">384.400 km</div>
+          <div class="cd-bar-wrap">
+            <div class="cd-bar" id="dist-bar" style="width:50%"></div>
+            <span class="cd-bar-label cd-bar-near">Perigee</span>
+            <span class="cd-bar-label cd-bar-far">Apogee</span>
+          </div>
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Gerhana Info Panel -->
+        <div class="eclipse-info-panel" id="eclipse-info-panel">
+          <div class="eclipse-header">
+            <span>🌑 Status Gerhana</span>
+          </div>
+          <div class="eclipse-status" id="eclipse-status">Tidak ada gerhana</div>
+          <div class="eclipse-hint" id="eclipse-hint">Atur posisi Bulan sejajar dengan Matahari–Bumi untuk memicu gerhana!</div>
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <button id="btn-pause" class="btn-ctrl-primary">
+          <span id="pause-icon">⏸️</span> <span id="pause-label">Pause Simulasi</span>
+        </button>
+        <button id="btn-reset" class="btn-ctrl-secondary">🔄 Reset Orbit</button>
+      </div>
+
+      <!-- CENTER: Canvas Viewport -->
+      <div class="canvas-viewport">
+        <div class="scanline-overlay"></div>
+        <canvas id="orbit-canvas"></canvas>
+
+        <!-- Phase Overlay (top left of canvas) -->
+        <div class="phase-overlay" id="phase-overlay">
+          <div class="phase-icon-large" id="phase-icon-large">🌑</div>
+          <div class="phase-name-display" id="phase-name-display">Bulan Baru</div>
+          <div class="phase-angle-display" id="phase-angle-display">0°</div>
+        </div>
+
+        <!-- Event Toast -->
+        <div class="orbital-event-toast hidden" id="orbital-event-toast">
+          <span id="event-toast-icon">📍</span>
+          <span id="event-toast-text">Mencapai Perigee!</span>
+        </div>
+
+        <!-- Eclipse Toast -->
+        <div class="eclipse-event-toast hidden" id="eclipse-event-toast">
+          <span id="eclipse-toast-icon">🌑</span>
+          <span id="eclipse-toast-text">Gerhana Matahari Terdeteksi!</span>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-controls">
+          <button id="btn-zoom-in" class="btn-zoom">+</button>
+          <button id="btn-zoom-out" class="btn-zoom">−</button>
+          <span class="zoom-label" id="zoom-label">1.0×</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Phase Panel & Camera -->
+      <div class="phase-panel">
+        <div class="panel-header"><span class="panel-badge">🌙</span><span>8 Fase Bulan</span></div>
+        <div class="phase-grid" id="phase-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Camera Section -->
+        <div class="camera-section">
+          <div class="panel-header"><span class="panel-badge">📸</span><span>Kamera Misi</span></div>
+          <div class="camera-preview" id="camera-preview">
+            <div class="camera-reticle">
+              <span class="rc rc-tl"></span><span class="rc rc-tr"></span>
+              <span class="rc rc-bl"></span><span class="rc rc-br"></span>
+            </div>
+            <div class="cam-moon-view" id="cam-moon-view">
+              <div class="cam-moon-graphic" id="cam-moon-graphic">🌑</div>
+            </div>
+            <div class="cam-data-bar">
+              <span id="cam-phase-label">Bulan Baru</span>
+              <span id="cam-angle-label">0°</span>
+            </div>
+          </div>
+
+          <button id="btn-capture" class="btn-capture">
+            <span>📸</span> Ambil Foto Fase Bulan
+          </button>
+          <div class="capture-counter">
+            Foto: <span id="capture-count">0</span>/4 target
+            <span class="unique-badge" id="unique-badge"></span>
+          </div>
+
+          <!-- Photo Gallery -->
+          <div class="photo-gallery" id="photo-gallery"></div>
+        </div>
+
+        <div class="ctrl-divider"></div>
+
+        <!-- Mission Status -->
+        <div class="mission-status-box">
+          <div class="ms-title">📋 Progress Misi</div>
+          <div class="ms-bar-wrap"><div class="ms-bar" id="ms-bar"></div></div>
+          <div class="ms-percent" id="ms-percent">0%</div>
+        </div>
+        <button id="btn-complete" class="btn-complete hidden">🏆 Selesaikan Misi!</button>
+      </div>
+
+    </div><!-- .sim-layout -->
+
+    <!-- Bottom Ticker -->
+    <div class="bottom-ticker">
+      <span class="ticker-label">🛰️ KOMPUTER:</span>
+      <span class="ticker-text" id="ticker-text">Sistem Holo-Orbit aktif. Gunakan slider untuk mengatur orbit!</span>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN: Mission Complete ═══ -->
+  <div id="screen-complete" class="screen">
+    <div class="stars-bg"></div>
+    <div class="complete-content">
+      <div class="complete-badge">🏅</div>
+      <h2>Misi 2 Selesai!</h2>
+      <p class="complete-sub">Holo-Orbit Simulator berhasil dioperasikan, Kadet!</p>
+
+      <div class="complete-stats-grid" id="complete-stats"></div>
+
+      <div class="gallery-recap">
+        <h3>📷 Koleksi Foto Astronomimu</h3>
+        <div class="gallery-recap-grid" id="gallery-recap-grid"></div>
+      </div>
+
+      <div class="complete-certificate">
+        <div class="cert-mini-header">
+          <span class="cert-rbs">BIMBEL RBS</span> — Sertifikat Penyelesaian Misi
+        </div>
+        <div class="cert-cadet-name" id="cert-cadet-name">—</div>
+        <div class="cert-mission">telah menyelesaikan Misi 2: Holo-Orbit Simulator</div>
+        <div class="cert-grade" id="cert-grade">Predikat: —</div>
+      </div>
+
+      <div class="complete-actions">
+        <a href="misi3.html" id="btn-next-mission" class="btn-primary" style="text-decoration: none;">
+          🚀 Lanjut ke Misi 3: Detektif Gerhana
+        </a>
+        <button id="btn-replay-m2" class="btn-secondary">🔄 Ulangi Misi 2</button>
+        <a href="index.html" class="btn-secondary-link">🏠 Kembali ke Misi 1</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN: Logbook ═══ -->
+  <div id="screen-logbook" class="screen">
+    <div class="logbook-content">
+      <h2>📚 Catatan Ilmiah Orbit</h2>
+      <p class="logbook-sub">Data Sistem Bumi – Bulan – Matahari</p>
+
+      <div class="logbook-grid">
+        <div class="logbook-card">
+          <div class="lc-icon">🌍</div>
+          <div class="lc-title">Planet Bumi</div>
+          <div class="lc-items">
+            <div class="lc-row"><span>Jarak ke Matahari</span><strong>149,6 juta km (1 AU)</strong></div>
+            <div class="lc-row"><span>Kala Revolusi</span><strong>365,25 hari</strong></div>
+            <div class="lc-row"><span>Kala Rotasi</span><strong>24 jam</strong></div>
+            <div class="lc-row"><span>Kemiringan Sumbu</span><strong>23,5°</strong></div>
+          </div>
+        </div>
+        <div class="logbook-card">
+          <div class="lc-icon">🌙</div>
+          <div class="lc-title">Bulan (Luna)</div>
+          <div class="lc-items">
+            <div class="lc-row"><span>Perigee (Terdekat)</span><strong>362.600 km</strong></div>
+            <div class="lc-row"><span>Apogee (Terjauh)</span><strong>405.500 km</strong></div>
+            <div class="lc-row"><span>Rata-rata Jarak</span><strong>384.400 km</strong></div>
+            <div class="lc-row"><span>Periode Orbit</span><strong>27,3 hari</strong></div>
+            <div class="lc-row"><span>Siklus Fase (Sinodik)</span><strong>29,5 hari</strong></div>
+            <div class="lc-row"><span>Eksentrisitas Orbit</span><strong>0,0549</strong></div>
+          </div>
+        </div>
+        <div class="logbook-card">
+          <div class="lc-icon">🌑</div>
+          <div class="lc-title">8 Fase Bulan</div>
+          <div class="lc-items">
+            <div class="lc-row"><span>🌑 Bulan Baru</span><strong>0° – Tak terlihat</strong></div>
+            <div class="lc-row"><span>🌒 Sabit Muda</span><strong>45° – ~25% terang</strong></div>
+            <div class="lc-row"><span>🌓 Kuartir Pertama</span><strong>90° – Separuh kanan</strong></div>
+            <div class="lc-row"><span>🌔 Cembung Muda</span><strong>135° – ~75% terang</strong></div>
+            <div class="lc-row"><span>🌕 Bulan Purnama</span><strong>180° – Penuh terang</strong></div>
+            <div class="lc-row"><span>🌖 Cembung Tua</span><strong>225° – ~75% terang</strong></div>
+            <div class="lc-row"><span>🌗 Kuartir Terakhir</span><strong>270° – Separuh kiri</strong></div>
+            <div class="lc-row"><span>🌘 Sabit Tua</span><strong>315° – ~25% terang</strong></div>
+          </div>
+        </div>
+        <div class="logbook-card">
+          <div class="lc-icon">🌑</div>
+          <div class="lc-title">Gerhana Matahari & Bulan</div>
+          <div class="lc-items">
+            <div class="lc-row"><span>Gerhana Matahari</span><strong>Bulan di antara Matahari & Bumi (Bulan Baru)</strong></div>
+            <div class="lc-row"><span>Gerhana Bulan</span><strong>Bumi di antara Matahari & Bulan (Bulan Purnama)</strong></div>
+            <div class="lc-row"><span>Syzygy</span><strong>Konfigurasi tiga benda sejajar lurus</strong></div>
+            <div class="lc-row"><span>Umbra</span><strong>Bayangan penuh (gerhana total)</strong></div>
+            <div class="lc-row"><span>Penumbra</span><strong>Bayangan sebagian (gerhana parsial)</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-close-logbook" class="btn-secondary">◀ Kembali ke Simulator</button>
+    </div>
+  </div>
+
+</div><!-- #game-container -->
+
+<script src="misi2.js"></script>
+</body>
+</html>

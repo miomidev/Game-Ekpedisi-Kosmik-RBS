@@ -8,5 +8,6 @@
         "git commit": true,
         "git push": true,
         "gh": true
-    }
+    },
+    "liveServer.settings.port": 5501
 }

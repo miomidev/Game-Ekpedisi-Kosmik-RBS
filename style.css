@@ -48,6 +48,137 @@ html, body {
   background-repeat: no-repeat;
 }
 
+/* ── Global Mission Navigation Switcher (Misi 1, 2, 3) ──────── */
+.global-mission-nav {
+  position: absolute;
+  top: 9px;
+  left: 16px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mission-nav-brand {
+  display: flex;
+  align-items: center;
+}
+
+.nav-brand-pill {
+  background: linear-gradient(135deg, #0052cc, #0099ff);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 153, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mission-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(10, 20, 45, 0.88);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: 20px;
+  padding: 3px 6px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.mission-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mission-nav-btn.current {
+  background: rgba(0, 212, 255, 0.22);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  font-weight: 700;
+}
+
+.mission-nav-btn.link-m2:hover {
+  background: rgba(0, 212, 255, 0.18);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.mission-nav-btn.link-m3 {
+  color: #ffd84d;
+}
+
+.mission-nav-btn.link-m3:hover {
+  background: rgba(255, 140, 0, 0.22);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Cockpit HUD link buttons */
+.hud-mission-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(10, 25, 55, 0.85);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.hud-link-btn:hover {
+  background: rgba(0, 212, 255, 0.2);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.hud-link-btn.hud-link-m3 {
+  border-color: rgba(255, 170, 0, 0.45);
+  color: #ffd84d;
+}
+
+.hud-link-btn.hud-link-m3:hover {
+  background: rgba(255, 140, 0, 0.25);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .global-mission-nav {
+    top: 6px;
+    left: 8px;
+  }
+  .mission-nav-btn .mn-text {
+    display: none;
+  }
+  .mission-nav-btn {
+    padding: 4px 6px;
+  }
+}
+
 /* ── Global Audio Controls (BGM & SFX Toggle) ─────────────── */
 .audio-controls {
   position: absolute;

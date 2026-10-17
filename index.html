@@ -10,6 +10,27 @@
 <body>
   <div id="game-container">
 
+    <!-- ═══ Global Mission Navigation Switcher (Always Visible in Misi 1) ═══ -->
+    <nav class="global-mission-nav" id="global-mission-nav" aria-label="Navigasi Misi Ekspedisi Kosmik">
+      <div class="mission-nav-brand">
+        <span class="nav-brand-pill">BIMBEL RBS</span>
+      </div>
+      <div class="mission-nav-links">
+        <span class="mission-nav-btn current" title="Misi 1: Navigasi Galaksi Tata Surya (Sedang Aktif)">
+          <span class="mn-icon">🪐</span>
+          <span class="mn-text">Misi 1: Tata Surya</span>
+        </span>
+        <a href="misi2.html" class="mission-nav-btn link-m2" title="Beralih ke Misi 2: Holo-Orbit Simulator">
+          <span class="mn-icon">🌍</span>
+          <span class="mn-text">Misi 2: Holo-Orbit ▶</span>
+        </a>
+        <a href="misi3.html" class="mission-nav-btn link-m3" title="Beralih ke Misi 3: Detektif Gerhana">
+          <span class="mn-icon">🌑</span>
+          <span class="mn-text">Misi 3: Gerhana ▶</span>
+        </a>
+      </div>
+    </nav>
+
     <!-- ═══ Global Audio Controls (BGM & SFX & Suara Narasi) ═══ -->
     <div class="audio-controls" id="audio-controls">
       <button id="btn-toggle-audio" class="btn-audio" title="Matikan / Nyalakan Musik (BGM)" aria-label="Toggle Musik">
@@ -37,6 +58,28 @@
         <button id="btn-start" class="btn-primary" disabled>
           <span>🚀</span> Mulai Misi!
         </button>
+
+        <!-- Prominent Mission Select Hub Card -->
+        <div class="mission-select-box" style="margin-top: 18px; padding: 12px 14px; background: rgba(10, 20, 45, 0.85); border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 12px; width: 100%; max-width: 440px; text-align: center; backdrop-filter: blur(8px); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);">
+          <div style="font-size: 11px; font-weight: 800; color: #88c0f0; margin-bottom: 8px; letter-spacing: 0.8px;">🚀 PILIH MISI EKSPEDISI KOSMIK:</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+            <div style="background: rgba(0, 212, 255, 0.22); border: 1.5px solid #00d4ff; border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
+              <span style="font-size: 16px;">🪐</span>
+              <strong style="font-size: 11px; color: #fff;">Misi 1</strong>
+              <span style="font-size: 9px; color: #00d4ff; font-weight: 700;">Tata Surya (Aktif)</span>
+            </div>
+            <a href="misi2.html" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#00d4ff';" onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(0,212,255,0.3)';">
+              <span style="font-size: 16px;">🌍</span>
+              <strong style="font-size: 11px; color: #fff;">Misi 2</strong>
+              <span style="font-size: 9px; color: #a0c8f0;">Holo-Orbit ▶</span>
+            </a>
+            <a href="misi3.html" style="background: rgba(255, 140, 0, 0.12); border: 1px solid rgba(255, 170, 0, 0.45); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#ffaa00';" onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(255,170,0,0.45)';">
+              <span style="font-size: 16px;">🌑</span>
+              <strong style="font-size: 11px; color: #ffd84d;">Misi 3</strong>
+              <span style="font-size: 9px; color: #ffaa00;">Gerhana ▶</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -185,6 +228,13 @@
           <div class="hud-item">
             <span class="hud-label">Planet Dijelajahi</span>
             <span id="hud-progress" class="hud-value">0 / 8</span>
+          </div>
+          <div class="hud-item hud-mission-shortcuts">
+            <span class="hud-label">Pindah Misi</span>
+            <div style="display: flex; gap: 4px; margin-top: 2px;">
+              <a href="misi2.html" class="hud-link-btn" title="Pindah ke Misi 2: Holo-Orbit Simulator">🌍 Misi 2 ▶</a>
+              <a href="misi3.html" class="hud-link-btn hud-link-m3" title="Pindah ke Misi 3: Detektif Gerhana">🌑 Misi 3 ▶</a>
+            </div>
           </div>
         </div>
 
@@ -751,6 +801,8 @@
         </div>
 
         <div class="ending-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+          <a href="misi2.html" class="btn-primary" style="background: linear-gradient(135deg, #00d4ff, #0066cc); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🚀 Lanjut ke Misi 2: Holo-Orbit</a>
+          <a href="misi3.html" class="btn-primary" style="background: linear-gradient(135deg, #ff8c00, #ff3855); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🕵️ Misi 3: Detektif Gerhana</a>
           <button id="btn-print-cert" class="btn-primary btn-print" style="background: linear-gradient(135deg, #00bb77, #008855);">🖨️ Cetak / Unduh Sertifikat</button>
           <button id="btn-replay" class="btn-primary">🔄 Main Lagi</button>
         </div>
@@ -764,8 +816,11 @@
         <div class="ending-badge">⛽</div>
         <h2>Bahan Bakar Habis!</h2>
         <p>Roketmu kehabisan bahan bakar sebelum misi selesai.</p>
-        <p>Kamu berhasil menjelajahi <strong id="gameover-count">0</strong> dari 8 planet.</p>
-        <button id="btn-retry" class="btn-primary">🔄 Coba Lagi</button>
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px;">
+          <button id="btn-retry" class="btn-primary">🔄 Coba Lagi</button>
+          <a href="misi2.html" class="btn-primary" style="background: linear-gradient(135deg, #00d4ff, #0066cc); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">🌍 Misi 2</a>
+          <a href="misi3.html" class="btn-primary" style="background: linear-gradient(135deg, #ff8c00, #ff3855); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">🌑 Misi 3</a>
+        </div>
       </div>
     </div>
 

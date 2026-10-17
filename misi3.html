@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misi 3: Detektif Gerhana (Solar &amp; Lunar Eclipse) — Bimbel RBS</title>
+  <meta name="description" content="Investigasi interaktif fenomena Gerhana Matahari, Gerhana Bulan, Umbra, Penumbra, dan Syzygy untuk siswa Bimbel RBS.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="misi3.css">
+</head>
+<body>
+<div id="game-container">
+
+  <!-- ═══ Camera Flash Overlay ═══ -->
+  <div id="camera-flash" class="camera-flash"></div>
+
+  <!-- ═══ Audio Controls ═══ -->
+  <div class="audio-controls" id="audio-controls">
+    <button id="btn-toggle-audio" class="btn-audio" title="Matikan / Nyalakan Audio & Musik">
+      <span class="audio-icon" id="audio-icon">🔊</span>
+      <span class="audio-label" id="audio-label">Musik</span>
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 1: INTRO & BRIEFING DETEKTIF KOSMIK
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="screen-intro" class="screen active">
+    <div class="stars-bg"></div>
+    <div class="intro-content">
+      <div class="mission-badge-row">
+        <span class="mission-num-pill">MISI 3</span>
+        <span class="mission-chain">Ekspedisi Kosmik — Bimbel RBS</span>
+        <span class="alert-status-pill">⚠️ STATUS: DARURAT CAHAYA</span>
+      </div>
+
+      <div class="intro-hero-icon">
+        <div class="eclipse-logo-glow"></div>
+        <div class="eclipse-logo-sun"></div>
+        <div class="eclipse-logo-moon"></div>
+      </div>
+
+      <h1 class="intro-title">Detektif Gerhana</h1>
+      <p class="intro-subtitle">Investigasi Kesegarisan Orbit (Syzygy), Kerucut Umbra &amp; Penumbra</p>
+
+      <!-- Narration Box from Mission Control -->
+      <div class="briefing-box">
+        <div class="briefing-header">
+          <span class="briefing-badge">📡 TRANSMISI PUSAT KOMANDO RBS</span>
+          <span class="briefing-officer">Instruktur: Ibu Linda</span>
+        </div>
+        <p class="briefing-text">
+          "Panggilan darurat untuk seluruh Kadet Kosmik! Sensor orbit mendeteksi fenomena hilangnya cahaya matahari secara misterius di sektor Bumi! 
+          Diduga kuat terjadi fenomena <strong>Syzygy (kesegarisan orbit)</strong>. Tugasmu sebagai Detektif Kosmik: selidiki geometri berkas sinar, temukan konfigurasi Gerhana Matahari &amp; Gerhana Bulan, lalu jepret foto ilmiah <strong>Korona Matahari</strong> dan <strong>Blood Moon</strong> sebagai bukti tak terbantahkan!"
+        </p>
+      </div>
+
+      <!-- Objectives Checklist -->
+      <div class="intro-cases-grid">
+        <div class="case-card">
+          <div class="case-badge case-solar">KASUS 01</div>
+          <div class="case-icon">☀️🌑🌍</div>
+          <div class="case-title">Gerhana Matahari</div>
+          <div class="case-desc">Bulan di antara Matahari &amp; Bumi. Luruskan syzygy hingga bayangan <strong>Umbra</strong> jatuh ke Bumi, lalu jepret foto spektakuler <strong>Korona Matahari</strong>!</div>
+        </div>
+        <div class="case-card">
+          <div class="case-badge case-lunar">KASUS 02</div>
+          <div class="case-icon">☀️🌍🌑</div>
+          <div class="case-title">Gerhana Bulan</div>
+          <div class="case-desc">Bumi di antara Matahari &amp; Bulan. Bawa Bulan masuk ke kerucut <strong>Umbra Bumi</strong>, dan abadikan fenomena langka <strong>Blood Moon (Bulan Darah)</strong>!</div>
+        </div>
+        <div class="case-card">
+          <div class="case-badge case-theory">ANALISIS</div>
+          <div class="case-icon">🔍🧠📐</div>
+          <div class="case-title">Umbra, Penumbra &amp; Sudut 5.14°</div>
+          <div class="case-desc">Pahami perbedaan Umbra &amp; Penumbra, serta alasan mengapa gerhana tidak terjadi di setiap bulan baru atau purnama karena kemiringan orbit 5.14°!</div>
+        </div>
+      </div>
+
+      <!-- Cadet Profile Card -->
+      <div class="cadet-intro-card">
+        <label for="cadet-name-input">Identitas Detektif Kosmik:</label>
+        <div class="cadet-input-wrap">
+          <span class="cadet-prefix">🕵️</span>
+          <input type="text" id="cadet-name-input" placeholder="Masukkan nama detektif..." maxlength="25">
+        </div>
+      </div>
+
+      <!-- Intro Actions -->
+      <div class="intro-buttons">
+        <button id="btn-start-mission" class="btn-primary">
+          <span>🚀</span> Buka Ruang Investigasi!
+        </button>
+        <a href="misi2.html" class="btn-secondary-link">◀ Kembali ke Misi 2</a>
+        <a href="index.html" class="btn-secondary-link">🏠 Misi 1</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 2: RUANG INVESTIGASI SIMULATOR GERHANA
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="screen-sim" class="screen">
+
+    <!-- Top HUD Bar -->
+    <div class="hud-top-bar">
+      <div class="hud-top-left">
+        <span class="hud-mission-tag">🕵️ MISI 3</span>
+        <span class="hud-mission-name">Detektif Gerhana</span>
+        <span class="hud-player-tag" id="hud-cadet-name">Kadet</span>
+      </div>
+
+      <!-- Syzygy Meter in HUD -->
+      <div class="hud-syzygy-wrapper" title="Tingkat Kesegarisan Orbit (Syzygy)">
+        <span class="syzygy-hud-label">SYZYGY:</span>
+        <div class="syzygy-hud-track">
+          <div class="syzygy-hud-fill" id="hud-syzygy-fill" style="width: 0%;"></div>
+        </div>
+        <span class="syzygy-hud-val" id="hud-syzygy-pct">0%</span>
+        <span class="syzygy-hud-state" id="hud-syzygy-status">TIDAK SEGARIS</span>
+      </div>
+
+      <!-- Mini Objective Evidence Badges -->
+      <div class="hud-objectives-mini">
+        <div class="evidence-pip" id="pip-solar" title="Foto Gerhana Matahari">
+          <span>☀️</span>
+          <span class="pip-mark">○</span>
+        </div>
+        <div class="evidence-pip" id="pip-lunar" title="Foto Gerhana Bulan (Blood Moon)">
+          <span>🩸</span>
+          <span class="pip-mark">○</span>
+        </div>
+        <div class="evidence-pip" id="pip-quiz" title="Uji Teori Detektif">
+          <span>🧠</span>
+          <span class="pip-mark">○</span>
+        </div>
+      </div>
+
+      <div class="hud-top-right">
+        <button id="btn-open-archive" class="btn-hud" title="Buka Arsip Teori & Sains Gerhana">📚 Arsip Sains</button>
+        <button id="btn-open-quiz-direct" class="btn-hud" title="Uji Teori Detektif">🧠 Uji Kuis</button>
+        <a href="misi2.html" class="btn-hud">◀ Misi 2</a>
+        <a href="index.html" class="btn-hud">🏠 Misi 1</a>
+      </div>
+    </div>
+
+    <!-- Main 3-Column Layout -->
+    <div class="sim-layout">
+
+      <!-- ─── COLUMN 1: PANEL KENDALI INVESTIGASI ─── -->
+      <div class="control-panel">
+        
+        <!-- Case Switcher -->
+        <div class="case-tabs">
+          <button class="case-tab active" id="tab-case-solar" data-case="solar">
+            <span class="tab-icon">☀️</span>
+            <span class="tab-text">Kasus 1: Matahari</span>
+          </button>
+          <button class="case-tab" id="tab-case-lunar" data-case="lunar">
+            <span class="tab-icon">🩸</span>
+            <span class="tab-text">Kasus 2: Bulan</span>
+          </button>
+          <button class="case-tab" id="tab-case-sandbox" data-case="sandbox">
+            <span class="tab-icon">🔭</span>
+            <span class="tab-text">Mode Bebas</span>
+          </button>
+        </div>
+
+        <!-- Case Mission Card -->
+        <div class="case-brief-card" id="case-brief-card">
+          <div class="cbc-header">
+            <span class="cbc-badge" id="cbc-badge">KASUS 01</span>
+            <span class="cbc-title" id="cbc-title">Gerhana Matahari</span>
+          </div>
+          <p class="cbc-desc" id="cbc-desc">
+            Atur posisi Bulan di antara Matahari dan Bumi pada garis lurus. Luruskan kemiringan orbit agar bayangan <strong>Umbra</strong> tepat jatuh ke Bumi!
+          </p>
+          <div class="cbc-target-row">
+            <span class="cbc-target-label">🎯 Target Jepretan:</span>
+            <span class="cbc-target-val" id="cbc-target-val">Foto Korona Matahari (Totalitas)</span>
+          </div>
+        </div>
+
+        <!-- Syzygy Radar Gauge -->
+        <div class="syzygy-card">
+          <div class="syzygy-card-header">
+            <span>📐 Indikator Kesegarisan (Syzygy)</span>
+            <span class="syzygy-badge-lock" id="syzygy-lock-tag">BELUM SEGARIS</span>
+          </div>
+          <div class="syzygy-meter-large">
+            <div class="syzygy-meter-bar" id="syzygy-meter-bar" style="width: 0%;"></div>
+            <div class="syzygy-sweet-spot" title="Zona Gerhana Total (Totalitas)"></div>
+          </div>
+          <div class="syzygy-meta-row">
+            <span>Penyimpangan Sudut: <strong id="val-angle-offset">0.0°</strong></span>
+            <span>Zona Pengamat: <strong id="val-shadow-zone">Luar Bayangan</strong></span>
+          </div>
+        </div>
+
+        <!-- Interactive Sliders -->
+        <div class="controls-scrollable">
+
+          <!-- Moon Orbit Angle Slider -->
+          <div class="control-group">
+            <div class="ctrl-header">
+              <label class="ctrl-label">🌙 Sudut Posisi Bulan</label>
+              <span class="ctrl-value" id="val-moon-deg">0° (Bulan Baru)</span>
+            </div>
+            <input type="range" id="slider-moon-angle" class="ctrl-slider" min="0" max="360" step="0.5" value="0">
+            <div class="angle-quick-actions">
+              <button class="btn-chip" id="btn-step-prev">-15°</button>
+              <button class="btn-chip" id="btn-quick-solar">⚡ Syzygy Matahari (0°)</button>
+              <button class="btn-chip" id="btn-quick-lunar">⚡ Syzygy Bulan (180°)</button>
+              <button class="btn-chip" id="btn-step-next">+15°</button>
+            </div>
+          </div>
+
+          <!-- Moon Distance (Perigee vs Apogee) Slider -->
+          <div class="control-group">
+            <div class="ctrl-header">
+              <label class="ctrl-label">📏 Jarak Bulan (Ukuran Piringan)</label>
+              <span class="ctrl-value" id="val-moon-dist">Perigee (Terdekat)</span>
+            </div>
+            <input type="range" id="slider-moon-dist" class="ctrl-slider" min="360000" max="406000" step="1000" value="362000">
+            <div class="dist-labels">
+              <span class="dist-perigee">🟢 Perigee (362.600 km → Total)</span>
+              <span class="dist-apogee">🟠 Apogee (405.500 km → Cincin)</span>
+            </div>
+          </div>
+
+          <!-- Orbital Inclination (5.14°) Slider -->
+          <div class="control-group">
+            <div class="ctrl-header">
+              <label class="ctrl-label">📐 Kemiringan Orbit Bulan</label>
+              <span class="ctrl-value" id="val-inclination">0.0° (Sejajar)</span>
+            </div>
+            <input type="range" id="slider-inclination" class="ctrl-slider" min="0" max="5.14" step="0.1" value="0">
+            <div class="ctrl-hint">💡 Pada alam nyata, orbit bulan miring 5,14°. Gerhana HANYA terjadi saat kemiringan mendekati 0° (Simpul Orbit / Node).</div>
+          </div>
+
+          <!-- Simulation Flow Controls -->
+          <div class="control-group-sim">
+            <button id="btn-play-pause" class="btn-ctrl-toggle">⏸️ Jeda</button>
+            <div class="speed-btns">
+              <button class="btn-speed active" data-speed="1">1×</button>
+              <button class="btn-speed" data-speed="2">2×</button>
+              <button class="btn-speed" data-speed="4">4×</button>
+            </div>
+            <button id="btn-reset-pos" class="btn-ctrl-toggle" title="Reset Posisi">🔄 Reset</button>
+          </div>
+
+          <!-- Visual Layers -->
+          <div class="layer-toggles">
+            <label class="toggle-item">
+              <input type="checkbox" id="chk-show-rays" checked>
+              <span class="toggle-custom"></span>
+              <span class="toggle-text">🔦 Berkas Sinar Cahaya Geometri</span>
+            </label>
+            <label class="toggle-item">
+              <input type="checkbox" id="chk-show-cones" checked>
+              <span class="toggle-custom"></span>
+              <span class="toggle-text">🌑 Kerucut Umbra &amp; Penumbra</span>
+            </label>
+            <label class="toggle-item">
+              <input type="checkbox" id="chk-show-labels" checked>
+              <span class="toggle-custom"></span>
+              <span class="toggle-text">🏷️ Label Benda &amp; Sinar Optik</span>
+            </label>
+          </div>
+
+        </div><!-- .controls-scrollable -->
+      </div><!-- .control-panel -->
+
+      <!-- ─── COLUMN 2: RADAR & INTERACTIVE CANVAS ─── -->
+      <div class="canvas-panel">
+        
+        <!-- Canvas Status Header Banner -->
+        <div class="canvas-status-banner">
+          <div class="csb-left">
+            <span class="csb-dot pulse-dot"></span>
+            <span class="csb-title" id="canvas-status-title">Peta Geometri Cahaya &amp; Bayangan</span>
+          </div>
+          <div class="csb-right">
+            <span class="csb-phenomenon" id="csb-phenomenon">Status: Konfigurasi Normal</span>
+          </div>
+        </div>
+
+        <!-- The Main 2D Interactive Space Canvas -->
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <canvas id="simCanvas"></canvas>
+
+          <!-- Interactive Drag Prompt Overlay -->
+          <div class="canvas-hint-pill" id="canvas-hint">
+            <span>🖱️</span> Kadet dapat <strong>menggeser Bulan</strong> secara langsung di layar orbit!
+          </div>
+
+          <!-- Canvas Zoom & Reset Controls -->
+          <div class="canvas-zoom-controls">
+            <button id="btn-zoom-in" class="btn-zoom" title="Perbesar Tampilan">+</button>
+            <button id="btn-zoom-reset" class="btn-zoom" title="Reset Zoom">⊙</button>
+            <button id="btn-zoom-out" class="btn-zoom" title="Perkecil Tampilan">−</button>
+          </div>
+
+          <!-- Legend Bar on Canvas Bottom -->
+          <div class="canvas-legend">
+            <div class="legend-item"><span class="legend-swatch swatch-umbra"></span><span>Umbra (Gelap Total)</span></div>
+            <div class="legend-item"><span class="legend-swatch swatch-penumbra"></span><span>Penumbra (Gelap Sebagian)</span></div>
+            <div class="legend-item"><span class="legend-swatch swatch-ray"></span><span>Berkas Sinar Matahari</span></div>
+          </div>
+        </div>
+
+      </div><!-- .canvas-panel -->
+
+      <!-- ─── COLUMN 3: VIEWFINDER TELESKOP & KAMERA BUKTI ─── -->
+      <div class="viewfinder-panel">
+
+        <div class="vf-header">
+          <div class="vf-title-wrap">
+            <span class="vf-badge">TELESKOP SPEKTROSKOPI RBS-03</span>
+            <div class="vf-title">Perspektif Pengamat Bumi</div>
+          </div>
+          <span class="vf-status-live" id="vf-live-tag">● LIVE</span>
+        </div>
+
+        <!-- Circular High-Tech Viewfinder Canvas -->
+        <div class="viewfinder-circle-wrap">
+          <div class="vf-reticle-ring"></div>
+          <div class="vf-crosshairs"></div>
+          <canvas id="telescopeCanvas" width="320" height="320"></canvas>
+          <div class="vf-scan-line"></div>
+          <div class="vf-corner tl"></div>
+          <div class="vf-corner tr"></div>
+          <div class="vf-corner bl"></div>
+          <div class="vf-corner br"></div>
+        </div>
+
+        <!-- Viewfinder Telemetry Data -->
+        <div class="vf-telemetry-grid">
+          <div class="vft-item">
+            <span class="vft-label">OBJEK FOKUS</span>
+            <strong class="vft-val" id="tele-target">Matahari (Surya)</strong>
+          </div>
+          <div class="vft-item">
+            <span class="vft-label">KONDISI VISUAL</span>
+            <strong class="vft-val" id="tele-condition">Terbuka Penuh</strong>
+          </div>
+          <div class="vft-item">
+            <span class="vft-label">TUTUPAN CAHAYA</span>
+            <strong class="vft-val highlight" id="tele-obscuration">0.0%</strong>
+          </div>
+          <div class="vft-item">
+            <span class="vft-label">FENOMENA FISIKA</span>
+            <strong class="vft-val" id="tele-phenom">—</strong>
+          </div>
+        </div>
+
+        <!-- Evidence Camera Action Section -->
+        <div class="camera-action-card">
+          <div class="cam-status-message" id="cam-status-msg">
+            Arahkan posisi Bulan ke garis Syzygy untuk menjepret foto gerhana!
+          </div>
+
+          <button id="btn-capture-photo" class="btn-capture" disabled>
+            <span class="cam-shutter-icon">📷</span>
+            <div class="cam-btn-texts">
+              <span class="cam-btn-main">AMBIL FOTO BUKTI</span>
+              <span class="cam-btn-sub" id="cam-btn-sub">Terkunci saat Totalitas Gerhana</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- Evidence Dossier Slots -->
+        <div class="evidence-dossier-card">
+          <div class="edc-header">
+            <span>📁 Dossier Bukti Ilmiah</span>
+            <span class="edc-counter" id="edc-counter">0 / 2 Wajib</span>
+          </div>
+
+          <div class="evidence-slots-row">
+            
+            <!-- Slot 1: Gerhana Matahari -->
+            <div class="evidence-slot" id="slot-solar">
+              <div class="slot-preview" id="preview-solar">
+                <span class="slot-ph-icon">☀️</span>
+                <span class="slot-ph-label">Foto Korona</span>
+              </div>
+              <div class="slot-info">
+                <div class="slot-name">Gerhana Matahari</div>
+                <div class="slot-badge" id="badge-solar">Belum Diambil</div>
+              </div>
+            </div>
+
+            <!-- Slot 2: Gerhana Bulan -->
+            <div class="evidence-slot" id="slot-lunar">
+              <div class="slot-preview" id="preview-lunar">
+                <span class="slot-ph-icon">🩸</span>
+                <span class="slot-ph-label">Foto Blood Moon</span>
+              </div>
+              <div class="slot-info">
+                <div class="slot-name">Gerhana Bulan</div>
+                <div class="slot-badge" id="badge-lunar">Belum Diambil</div>
+              </div>
+            </div>
+
+            <!-- Slot 3: Bonus Gerhana Cincin / Parsial -->
+            <div class="evidence-slot" id="slot-bonus">
+              <div class="slot-preview" id="preview-bonus">
+                <span class="slot-ph-icon">💍</span>
+                <span class="slot-ph-label">Bonus: Cincin</span>
+              </div>
+              <div class="slot-info">
+                <div class="slot-name">Gerhana Cincin</div>
+                <div class="slot-badge" id="badge-bonus">Tantangan</div>
+              </div>
+            </div>
+
+          </div><!-- .evidence-slots-row -->
+
+          <!-- Finish Challenge Button -->
+          <button id="btn-proceed-quiz" class="btn-quiz-proceed" disabled>
+            <span>🧠</span> Lanjut ke Uji Teori Detektif (Kuis)!
+          </button>
+        </div>
+
+      </div><!-- .viewfinder-panel -->
+
+    </div><!-- .sim-layout -->
+
+    <!-- Bottom Ticker -->
+    <div class="bottom-ticker">
+      <div class="ticker-prefix">
+        <span class="pulse-radar">📡</span>
+        <span>KOMUNIKASI PUSAT KENDALI:</span>
+      </div>
+      <div class="ticker-body">
+        <span class="ticker-text" id="ticker-text">
+          Sensor aktif. Geser sudut Bulan untuk mencari garis Syzygy dan amati pembentukan bayangan Umbra!
+        </span>
+      </div>
+    </div>
+
+  </div><!-- #screen-sim -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 3: UJI KASUS & TEORI DETEKTIF KOSMIK (QUIZ)
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="screen-quiz" class="screen">
+    <div class="stars-bg"></div>
+    <div class="quiz-container">
+      
+      <div class="quiz-header">
+        <div class="mission-badge-row">
+          <span class="mission-num-pill">MISI 3</span>
+          <span class="mission-chain">Verifikasi Detektif Kosmik RBS</span>
+        </div>
+        <h2>🧠 Evaluasi Kasus &amp; Teori Gerhana</h2>
+        <p>Jawab 3 pertanyaan studi kasus dari Ibu Linda untuk menuntaskan penyelidikan ilmiah!</p>
+      </div>
+
+      <!-- Quiz Card Area -->
+      <div class="quiz-card" id="quiz-card">
+        
+        <div class="quiz-progress-bar">
+          <div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 33%;"></div>
+        </div>
+
+        <div class="quiz-step-label">
+          <span id="quiz-question-num">Pertanyaan 1 dari 3</span>
+          <span class="quiz-score-badge" id="quiz-score-badge">Skor: 0</span>
+        </div>
+
+        <div class="quiz-question-text" id="quiz-question-text">
+          Loading pertanyaan...
+        </div>
+
+        <div class="quiz-diagram-box" id="quiz-diagram-box">
+          <!-- Optional ASCII or SVG diagram -->
+        </div>
+
+        <div class="quiz-options-list" id="quiz-options-list">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="quiz-feedback-box" id="quiz-feedback-box">
+          <div class="qfb-title" id="qfb-title"></div>
+          <div class="qfb-desc" id="qfb-desc"></div>
+        </div>
+
+        <div class="quiz-nav-row">
+          <button id="btn-quiz-next" class="btn-primary" style="display: none;">
+            Pertanyaan Berikutnya ▶
+          </button>
+        </div>
+
+      </div><!-- .quiz-card -->
+
+      <div class="quiz-back-action">
+        <button id="btn-back-to-sim" class="btn-secondary">◀ Kembali ke Simulator Gerhana</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SCREEN 4: MISSION COMPLETE & SERTIFIKAT DETEKTIF KOSMIK
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="screen-complete" class="screen">
+    <div class="stars-bg"></div>
+    <div class="complete-scroll-wrap">
+      <div class="complete-content">
+        
+        <div class="complete-trophy-anim">
+          <div class="trophy-glow"></div>
+          <div class="trophy-icon">🏆</div>
+        </div>
+
+        <h1 class="complete-title">Kasus Berhasil Dipecahkan!</h1>
+        <p class="complete-subtitle">Laporan Ilmiah Detektif Gerhana Diterima oleh Pusat Komando RBS</p>
+
+        <!-- Gallery of Captured Eclipse Evidence -->
+        <div class="evidence-showcase">
+          <h3 class="es-title">📷 Bukti Pengamatan Astronomi Kadet</h3>
+          <div class="es-grid" id="es-grid">
+            <!-- Dynamically populated photo cards -->
+          </div>
+        </div>
+
+        <!-- Official Certificate of Detective Merit -->
+        <div class="official-cert-card" id="printable-certificate">
+          <div class="cert-border-outer">
+            <div class="cert-border-inner">
+              
+              <div class="cert-head">
+                <div class="cert-brand">
+                  <span class="cert-org">BIMBEL RBS</span>
+                  <span class="cert-div">PUSAT RISET DAN PENDIDIKAN SAINS KOSMIK</span>
+                </div>
+                <div class="cert-number" id="cert-doc-id">No: RBS-ECLIPSE-2026-039</div>
+              </div>
+
+              <div class="cert-banner">
+                <h2>SERTIFIKAT PENGHARGAAN DETEKTIF KOSMIK</h2>
+                <div class="cert-under">Diberikan secara resmi kepada:</div>
+              </div>
+
+              <div class="cert-recipient" id="cert-recipient-name">KADET ASTRONOMI</div>
+
+              <p class="cert-paragraph">
+                Telah berhasil menuntaskan seluruh penyelidikan astronomi <strong>Misi 3: Detektif Gerhana (Solar &amp; Lunar Eclipse)</strong>, 
+                memverifikasi geometri kesegarisan orbit (Syzygy), mendokumentasikan fenomena optik <em>Korona Matahari</em> dan <em>Blood Moon</em>, 
+                serta menguasai konsep fisika kerucut Umbra &amp; Penumbra dengan predikat:
+              </p>
+
+              <div class="cert-predicate-box">
+                <div class="pred-title">PREDIKAT AKHIR:</div>
+                <div class="pred-grade" id="cert-final-grade">DETEKTIF KOSMIK BINTANG LIMA (EXCELLENT)</div>
+                <div class="pred-stars">★★★★★</div>
+              </div>
+
+              <div class="cert-signatures">
+                <div class="cert-sig-block">
+                  <div class="sig-name-written">Linda Kusuma, S.Pd.</div>
+                  <div class="sig-line"></div>
+                  <div class="sig-title">Ibu Linda — Pembina Sains Bimbel RBS</div>
+                </div>
+
+                <div class="cert-emboss-seal">
+                  <div class="seal-ring">
+                    <span>★ RBS VERIFIED ★</span>
+                    <strong>ECLIPSE</strong>
+                    <small>INVESTIGATOR</small>
+                  </div>
+                </div>
+
+                <div class="cert-sig-block">
+                  <div class="sig-name-written">Flight Commander RBS</div>
+                  <div class="sig-line"></div>
+                  <div class="sig-title">Pusat Komando Ekspedisi Kosmik</div>
+                </div>
+              </div>
+
+              <div class="cert-date-row">
+                <span id="cert-date-text">Diterbitkan pada: 17 Oktober 2026</span>
+                <span>Otoritas: Sistem Holo-Simulator RBS-03</span>
+              </div>
+
+            </div>
+          </div>
+        </div><!-- #printable-certificate -->
+
+        <!-- Actions -->
+        <div class="complete-action-buttons">
+          <button id="btn-print-certificate" class="btn-primary" style="background: linear-gradient(135deg, #00bb77, #008855);">
+            🖨️ Cetak / Unduh Sertifikat
+          </button>
+          <button id="btn-next-mission-4" class="btn-primary" disabled title="Misi 4: Dinamika Laut &amp; Iklim sedang dalam persiapan!">
+            🚀 Misi 4: Dinamika Laut &amp; Iklim (Segera!)
+          </button>
+          <button id="btn-replay-misi3" class="btn-secondary">🔄 Ulangi Investigasi</button>
+          <a href="misi2.html" class="btn-secondary-link">◀ Kembali ke Misi 2</a>
+          <a href="index.html" class="btn-secondary-link">🏠 Beranda Misi 1</a>
+        </div>
+
+      </div><!-- .complete-content -->
+    </div><!-- .complete-scroll-wrap -->
+  </div><!-- #screen-complete -->
+
+  <!-- ═══════════════════════════════════════════════════════════
+       MODAL: ARSIP SAINS & TEORI GERHANA
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="modal-archive" class="modal-backdrop">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">📚</span>
+          <h3>Arsip Teori &amp; Sains Gerhana — Kurikulum IPA</h3>
+        </div>
+        <button id="btn-close-archive" class="btn-modal-close" title="Tutup Arsip">✕</button>
+      </div>
+
+      <div class="modal-body">
+        
+        <div class="theory-section">
+          <h4>1. Konfigurasi Gerhana Matahari (Solar Eclipse)</h4>
+          <p>Terjadi ketika <strong>Bulan berada di antara Matahari dan Bumi</strong> pada posisi sejajar lurus. Fenomena ini selalu terjadi pada fase <strong>Bulan Baru</strong>.</p>
+          <div class="theory-callout">
+            <strong>Urutan Benda:</strong> ☀️ Matahari ➔ 🌑 Bulan ➔ 🌍 Bumi
+          </div>
+          <div class="theory-subtypes">
+            <div class="sub-item">
+              <strong>Gerhana Matahari Total:</strong> Pengamat berada di zona <em>Umbra</em>. Piringan Matahari tertutup penuh oleh Bulan, menampakkan <strong>Korona Matahari</strong> (atmosfer gas bercahaya bersuhu ~1-3 juta °C) dan efek Cincin Berlian (Diamond Ring).
+            </div>
+            <div class="sub-item">
+              <strong>Gerhana Matahari Cincin (Annular):</strong> Terjadi saat Bulan berada di titik terjauh (<em>Apogee</em>). Ukuran sudut piringan Bulan lebih kecil dari Matahari, menyisakan cincin api keemasan terang.
+            </div>
+            <div class="sub-item">
+              <strong>Gerhana Matahari Sebagian:</strong> Pengamat berada di zona <em>Penumbra</em>. Hanya sebagian piringan Matahari yang tertutup Bulan.
+            </div>
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h4>2. Konfigurasi Gerhana Bulan (Lunar Eclipse)</h4>
+          <p>Terjadi ketika <strong>Bumi berada di antara Matahari dan Bulan</strong>. Bayangan Bumi jatuh menutupi permukaan Bulan. Selalu terjadi pada fase <strong>Bulan Purnama</strong>.</p>
+          <div class="theory-callout">
+            <strong>Urutan Benda:</strong> ☀️ Matahari ➔ 🌍 Bumi ➔ 🌑 Bulan
+          </div>
+          <div class="theory-subtypes">
+            <div class="sub-item">
+              <strong>Gerhana Bulan Total (Blood Moon):</strong> Bulan masuk seluruhnya ke dalam kerucut <em>Umbra Bumi</em>. Bulan tidak gelap gulita, melainkan menyala merah tembaga karena fenomena <strong>Hamburan Rayleigh</strong> di atmosfer Bumi (hanya cahaya merah panjang gelombang tinggi yang dibiaskan hingga mencapai Bulan).
+            </div>
+            <div class="sub-item">
+              <strong>Gerhana Bulan Sebagian:</strong> Hanya sebagian Bulan yang melintasi zona Umbra Bumi.
+            </div>
+            <div class="sub-item">
+              <strong>Gerhana Bulan Penumbra:</strong> Bulan hanya melintasi bayangan kabur Penumbra, sehingga Bulan tampak sedikit lebih redup dari biasanya.
+            </div>
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h4>3. Apa itu Umbra, Penumbra &amp; Syzygy?</h4>
+          <div class="glossary-grid">
+            <div class="glossary-card">
+              <div class="gc-term">Syzygy (Kesegarisan)</div>
+              <div class="gc-def">Konfigurasi tiga benda langit atau lebih yang terletak pada satu garis lurus gravitasi yang sama.</div>
+            </div>
+            <div class="glossary-card">
+              <div class="gc-term">Umbra (Bayangan Inti)</div>
+              <div class="gc-def">Daerah bayangan paling gelap di mana seluruh sumber cahaya terhalang total oleh benda penghalang. Menghasilkan gerhana total.</div>
+            </div>
+            <div class="glossary-card">
+              <div class="gc-term">Penumbra (Bayangan Kabur)</div>
+              <div class="gc-def">Daerah bayangan remang-remang di sekitar umbra di mana hanya sebagian cahaya yang terhalang. Menghasilkan gerhana parsial/sebagian.</div>
+            </div>
+            <div class="glossary-card">
+              <div class="gc-term">Kemiringan Orbit 5,14°</div>
+              <div class="gc-def">Bidang orbit Bulan tidak sejajar dengan bidang orbit Bumi (ekliptika), melainkan miring sekitar 5,14°. Oleh karena itu, gerhana HANYA terjadi ketika Bulan melintasi titik simpul (nodes) bidang ekliptika!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="theory-section danger-tip">
+          <h4>⚠️ Peringatan Keselamatan Medis Pengamatan</h4>
+          <p>
+            <strong>JANGAN PERNAH menatap Gerhana Matahari secara langsung dengan mata telanjang, teropong, atau kacamata hitam biasa!</strong> 
+            Radiasi ultraviolet dan inframerah Matahari dapat membakar retina mata secara permanen tanpa rasa sakit (solar retinopathy). Selalu gunakan kacamata filter matahari bersertifikasi ISO 12312-2 atau metode proyeksi lubang jarum (pinhole projection).
+          </p>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-close-archive-2" class="btn-primary">Paham, Kembali ke Investigasi!</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- #game-container -->
+
+<script src="misi3.js"></script>
+</body>
+</html>
