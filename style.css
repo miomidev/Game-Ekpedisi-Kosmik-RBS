@@ -248,6 +248,12 @@ html, body {
 .screen {
   position: absolute;
   inset: 0;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
   display: none;
   flex-direction: column;
   align-items: center;
@@ -1422,6 +1428,17 @@ html, body {
 @keyframes dotPulse { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
 
 /* ── PLANET VISIT SCREEN ──────────────────────────────────── */
+#screen-planet {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  max-width: 100vw;
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
 .planet-visit-bg {
   position: absolute; inset: 0;
   opacity: 0.2;
@@ -1555,10 +1572,15 @@ html, body {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 860px;
+  max-width: min(860px, calc(100vw - 32px));
   max-height: 100vh;
+  max-height: 100dvh;
   overflow-y: auto;
-  padding: 48px 32px 40px;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+  padding: 48px 24px 40px;
+  box-sizing: border-box;
+  margin: 0 auto;
   scrollbar-width: thin;
   scrollbar-color: var(--accent) transparent;
 }
@@ -1567,6 +1589,10 @@ html, body {
 
 /* ── Pita Susunan 8 Planet Kokpit (Solar System Tracker) ─────── */
 .cockpit-solar-strip {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
   background: linear-gradient(180deg, rgba(6, 16, 42, 0.94) 0%, rgba(3, 8, 24, 0.98) 100%);
   border: 1px solid rgba(0, 212, 255, 0.35);
   border-radius: var(--radius);
@@ -1610,7 +1636,12 @@ html, body {
   display: flex;
   gap: 6px;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
   padding: 4px 2px 6px;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 212, 255, 0.4) transparent;
@@ -1832,46 +1863,56 @@ html, body {
 /* ── Telemetri Data Fisik & Orbit Astronomi Kokpit ─────────── */
 .planet-telemetry-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 18px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .telemetry-card {
   background: rgba(5, 15, 40, 0.8);
   border: 1px solid rgba(0, 212, 255, 0.22);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 10px 10px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .telemetry-icon {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   flex-shrink: 0;
 }
 .telemetry-content {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-width: 0;
+  flex: 1;
 }
 .telemetry-label {
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   color: #8da4be;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 .telemetry-val {
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 700;
   color: #00d4ff;
   font-family: 'Consolas', 'Courier New', monospace;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .planet-icon-large { 
@@ -2067,9 +2108,12 @@ html, body {
 /* ── Grid Dua Monitor Avionik NASA (Dual Console) ──────────── */
 .nasa-dual-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-top: 8px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 .nasa-monitor-card {
   background: #020614;
@@ -2080,6 +2124,8 @@ html, body {
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
+  min-width: 0;
+  box-sizing: border-box;
 }
 .monitor-card-header {
   background: rgba(8, 22, 54, 0.95);
@@ -3056,10 +3102,13 @@ html, body {
   .planet-visit-content {
     padding: 14px 12px 32px;
     max-height: 100dvh;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
   .cockpit-solar-strip {
-    margin: -6px -6px 14px -6px;
+    margin: 0 0 14px 0;
+    width: 100%;
+    box-sizing: border-box;
     padding: 6px 8px;
     border-radius: 8px;
   }
@@ -3105,13 +3154,14 @@ html, body {
     padding: 2px 6px;
   }
   .planet-telemetry-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
     margin-bottom: 14px;
   }
   .telemetry-card {
     padding: 8px 10px;
     gap: 8px;
+    min-width: 0;
   }
   .telemetry-icon {
     font-size: 1.2rem;
@@ -3121,6 +3171,9 @@ html, body {
   }
   .telemetry-val {
     font-size: 0.78rem;
+  }
+  .nasa-dual-grid {
+    grid-template-columns: 1fr;
   }
   .planet-icon-large {
     font-size: 3rem;
