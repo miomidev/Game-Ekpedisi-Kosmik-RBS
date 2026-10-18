@@ -3016,15 +3016,16 @@ html, body {
   .cadet-input-group { width: 100%; max-width: 320px; }
   .cadet-input { font-size: 0.95rem; padding: 11px 14px; }
 
-  /* Top HUD: single compact row on mobile with room for audio button */
+  /* Top HUD: single compact row on mobile with room for audio controls (86px) */
   .hud-top {
-    padding: 8px 52px 8px 10px;
+    padding: 8px 86px 8px 10px;
     flex-wrap: nowrap;
     gap: 6px;
     justify-content: space-between;
   }
   .hud-item {
-    gap: 4px;
+    gap: 3px;
+    min-width: 0;
   }
   .hud-label {
     font-size: 0.65rem;
@@ -3499,6 +3500,43 @@ html, body {
   }
 }
 
+@media (max-width: 480px) {
+  .hud-top {
+    padding: 6px 84px 6px 8px;
+    gap: 4px;
+  }
+  .hud-label {
+    font-size: 0.58rem;
+  }
+  .hud-value {
+    font-size: 0.74rem;
+  }
+  .fuel-bar-container {
+    width: 60px;
+    height: 14px;
+  }
+  .hud-link-btn {
+    padding: 2px 5px;
+    font-size: 9px;
+  }
+  .hud-item.hud-mission-shortcuts .hud-label {
+    display: none;
+  }
+  .score-breakdown-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .ending-certificate.luxury-cert {
+    padding: 14px 10px;
+  }
+  .planet-header h2 {
+    font-size: 1.25rem;
+  }
+  .tagline {
+    font-size: 0.78rem;
+  }
+}
+
 @media (max-width: 360px) {
   .fuel-bar-container {
     width: 55px;
@@ -3525,13 +3563,17 @@ html, body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
+  #global-mission-nav,
+  .global-mission-nav,
+  .hud-mission-shortcuts,
+  .ending-actions,
+  .ending-action-btns,
   .audio-controls,
   .screen:not(#screen-ending),
   .stars-bg,
   .ending-badge,
   .ending-stats,
   .ending-score-card,
-  .ending-action-btns,
   .ending-content h2,
   .ending-content p#ending-text,
   button {
@@ -3581,9 +3623,11 @@ html, body {
     background: #fdf6e2 !important;
     border: 1.5px solid #d4af37 !important;
     -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   .cert-gold-seal {
     box-shadow: none !important;
     -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }

@@ -97,14 +97,19 @@ html, body {
    SCREEN: INTRO
    ═══════════════════════════════════════════════════════════ */
 #screen-intro {
-  justify-content: center; align-items: center;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 24px 14px 48px;
   background: radial-gradient(ellipse at 50% 40%, #0a1a30 0%, #050b14 70%);
 }
 
 .intro-content {
   position: relative; z-index: 2;
   display: flex; flex-direction: column; align-items: center;
-  gap: 20px; max-width: 680px; width: 90%; text-align: center;
+  gap: 16px; max-width: 680px; width: 100%; text-align: center;
+  margin: auto;
   animation: fadeSlideUp 0.7s ease both;
 }
 @keyframes fadeSlideUp {
@@ -741,21 +746,216 @@ html, body {
 .lc-row span { color: var(--text-dim); flex: 1; }
 .lc-row strong { color: var(--text); text-align: right; }
 
-/* ── Responsive ───────────────────────────────────────────── */
-@media (max-width: 900px) {
+/* ── Responsive Mobile-First & Cross-Device ─────────────────── */
+@media (max-width: 992px) {
   .sim-layout {
-    grid-template-columns: 200px 1fr 200px;
+    grid-template-columns: 210px 1fr 230px;
   }
 }
-@media (max-width: 700px) {
+
+@media (max-width: 768px) {
+  .hud-top-bar {
+    padding: 8px 74px 8px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .hud-mission-name {
+    display: none;
+  }
+  .hud-top-right {
+    gap: 4px;
+  }
+  .btn-hud {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
   .sim-layout {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    height: auto;
+  }
+
+  .center-viewport {
+    order: 1;
+    min-height: 290px;
+    height: 38vh;
+    flex-shrink: 0;
+    position: relative;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+  }
+
+  .phase-panel {
+    order: 2;
+    max-height: none;
+    overflow: visible;
+    border-left: none;
+    border-top: 1px solid rgba(0, 212, 255, 0.15);
+    padding: 14px 12px;
+  }
+
+  .control-panel {
+    order: 3;
+    max-height: none;
+    overflow: visible;
+    border-right: none;
+    border-top: 1px solid rgba(0, 212, 255, 0.15);
+    padding: 14px 12px;
+  }
+
+  .btn-capture {
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .ctrl-slider {
+    height: 6px;
+    padding: 6px 0;
+  }
+
+  .ctrl-slider::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Screen Complete Mobile */
+  #screen-complete {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 12px 48px;
+    justify-content: flex-start;
+  }
+
+  .complete-card {
+    margin: auto;
+    width: 100%;
+    max-width: 100%;
+    padding: 18px 14px;
+  }
+
+  .complete-certificate {
+    padding: 16px 14px;
+  }
+
+  .cert-cadet-name {
+    font-size: 18px;
+  }
+
+  .complete-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .gallery-recap-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  /* Screen Logbook Mobile */
+  #screen-logbook {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 12px 40px;
+    justify-content: flex-start;
+  }
+
+  .logbook-content {
+    margin: auto;
+    padding: 16px 12px;
+    width: 100%;
+    max-height: none;
+  }
+
+  .logbook-grid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr auto;
+    gap: 12px;
   }
-  .control-panel, .phase-panel {
-    border: none; border-bottom: 1px solid rgba(0,212,255,0.12);
-    max-height: 200px;
+}
+
+@media (max-width: 480px) {
+  .hud-top-bar {
+    padding: 6px 70px 6px 6px;
   }
-  .logbook-grid { grid-template-columns: 1fr; }
-  .complete-stats-grid { grid-template-columns: repeat(2,1fr); }
+  .hud-player-tag {
+    font-size: 9px !important;
+    padding: 1px 6px !important;
+  }
+  .obj-mini {
+    font-size: 15px;
+  }
+  .btn-hud {
+    padding: 3px 6px;
+    font-size: 9px;
+  }
+  .intro-title {
+    font-size: 24px;
+  }
+  .intro-logo {
+    font-size: 52px;
+  }
+  .intro-objectives {
+    padding: 14px 12px;
+  }
+  .obj-item {
+    font-size: 12px;
+  }
+  .complete-stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .complete-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .complete-actions a,
+  .complete-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Print Media Query for Certificate ─────────────────────── */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .audio-controls,
+  #screen-intro,
+  #screen-sim,
+  #screen-logbook,
+  .stars-bg,
+  .complete-trophy,
+  .complete-actions,
+  .btn-hud,
+  button,
+  a {
+    display: none !important;
+  }
+  #screen-complete {
+    display: block !important;
+    position: static !important;
+    padding: 0 !important;
+    background: none !important;
+  }
+  .complete-card {
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  .complete-certificate {
+    background: #ffffff !important;
+    border: 3px solid #d4af37 !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+  .cert-cadet-name {
+    color: #0a1f44 !important;
+  }
 }

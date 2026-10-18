@@ -1320,6 +1320,9 @@
 
   function startGame() {
     state.playerName = dom.title.input.value.trim() || 'Kadet Antariksa';
+    try {
+      localStorage.setItem('rbs_player_name', state.playerName);
+    } catch (e) {}
     dom.map.hudName.textContent = state.playerName;
     state.introIndex = 0;
     showScreen('intro');
@@ -2678,7 +2681,9 @@
   // ── SCREEN 8: GAME OVER (BAHAN BAKAR HABIS) ────────────────
   function triggerGameOver() {
     AudioEngine.wrong();
-    dom.gameover.count.textContent = state.visitedPlanets.size;
+    if (dom.gameover && dom.gameover.count) {
+      dom.gameover.count.textContent = state.visitedPlanets ? state.visitedPlanets.size : 0;
+    }
     showScreen('gameover');
   }
 
@@ -2796,6 +2801,16 @@
   // Inisialisasi awal saat load
   VoiceEngine.init();
   updateFuel(0);
+
+  // Prefill nama kadet jika pernah tersimpan di localStorage (sinkronisasi antar-misi)
+  try {
+    const savedCadetName = localStorage.getItem('rbs_player_name');
+    if (savedCadetName && savedCadetName.trim()) {
+      dom.title.input.value = savedCadetName.trim();
+      dom.title.btnStart.disabled = false;
+    }
+  } catch (e) {}
+
   showScreen('title');
 
 })();

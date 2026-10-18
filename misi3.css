@@ -261,6 +261,7 @@ html, body {
   font-weight: 900;
   background: linear-gradient(135deg, #ffffff 10%, #ffd84d 55%, #ff5252 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 1.5px;
   line-height: 1.15;
@@ -1643,6 +1644,7 @@ html, body {
   font-weight: 900;
   background: linear-gradient(135deg, #ffffff 10%, #ffd84d 50%, #ff8c00 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .complete-subtitle {
@@ -2047,7 +2049,7 @@ html, body {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE DESIGN (Tablets & Mobile Viewports)
+   RESPONSIVE DESIGN (Tablets & Mobile-First Viewports)
    ═══════════════════════════════════════════════════════════ */
 @media (max-width: 1200px) {
   .sim-layout {
@@ -2066,17 +2068,254 @@ html, body {
   }
   .viewfinder-panel {
     grid-column: span 2;
-    max-height: 260px;
+    max-height: 280px;
     flex-direction: row;
     flex-wrap: wrap;
     border-left: none;
     border-top: 1px solid var(--panel-b);
   }
   .viewfinder-circle-wrap {
-    width: 150px;
-    height: 150px;
+    width: 160px;
+    height: 160px;
   }
   .intro-cases-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Top HUD Bar Mobile */
+  .hud-top-bar {
+    padding: 8px 76px 8px 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+    height: auto;
+  }
+  .hud-mission-name {
+    display: none;
+  }
+  .hud-player-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+  .hud-syzygy-wrapper {
+    gap: 4px;
+    padding: 3px 8px;
+  }
+  .hud-syzygy-state {
+    display: none;
+  }
+  .hud-syzygy-track {
+    width: 50px;
+  }
+  .hud-top-right {
+    gap: 4px;
+  }
+  .btn-hud {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+
+  /* Sim Layout: Single Column Mobile Flow */
+  .sim-layout {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    height: auto;
+  }
+
+  /* 1. Orbit Canvas Simulation Viewport */
+  .canvas-panel {
+    order: 1;
+    min-height: 290px;
+    height: 40vh;
+    flex-shrink: 0;
+    position: relative;
+    border-bottom: 1px solid var(--panel-b);
+  }
+
+  /* 2. Viewfinder & Camera Snapshot Panel */
+  .viewfinder-panel {
+    order: 2;
+    grid-column: auto;
+    max-height: none;
+    flex-direction: column;
+    border-left: none;
+    border-top: none;
+    border-bottom: 1px solid var(--panel-b);
+    padding: 14px 12px;
+  }
+  .viewfinder-circle-wrap {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+  }
+  .btn-capture-evidence {
+    min-height: 48px;
+    font-size: 13px;
+    touch-action: manipulation;
+  }
+
+  /* 3. Controls & Sliders Panel */
+  .control-panel {
+    order: 3;
+    max-height: none;
+    overflow: visible;
+    border-right: none;
+    border-top: none;
+    padding: 14px 12px;
+  }
+  .controls-scrollable {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .ctrl-slider {
+    height: 6px;
+    padding: 6px 0;
+  }
+  .ctrl-slider::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px;
+  }
+  .angle-quick-actions {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .btn-chip {
+    padding: 6px 8px;
+    font-size: 11px;
+    min-height: 36px;
+  }
+
+  /* Intro Screen Mobile */
+  #screen-intro {
+    padding: 20px 12px 40px;
+    justify-content: flex-start;
+  }
+  .intro-title {
+    font-size: 26px;
+  }
+  .briefing-box {
+    padding: 14px 12px;
+  }
+  .case-card {
+    padding: 14px 12px;
+  }
+
+  /* Quiz Screen Mobile */
+  #screen-quiz {
+    padding: 20px 12px 40px;
+    justify-content: flex-start;
+  }
+  .quiz-card {
+    margin: auto;
+    padding: 16px 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .quiz-opt-btn {
+    min-height: 48px;
+    padding: 12px;
+    font-size: 13px;
+    touch-action: manipulation;
+  }
+
+  /* Complete Screen Mobile */
+  #screen-complete {
+    padding: 20px 12px 48px;
+    justify-content: flex-start;
+  }
+  .complete-card {
+    margin: auto;
+    padding: 16px 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+  .evidence-showcase {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .official-cert-card {
+    padding: 16px 12px;
+  }
+  .cert-recipient-name {
+    font-size: 18px;
+  }
+  .cert-header h2 {
+    font-size: 18px;
+  }
+  .complete-action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .complete-action-buttons button,
+  .complete-action-buttons a {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* Archive Modal Mobile */
+  .archive-card {
+    width: 95%;
+    max-height: 88vh;
+    padding: 18px 12px;
+  }
+  .archive-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hud-top-bar {
+    padding: 6px 70px 6px 6px;
+  }
+  .syzygy-hud-label {
+    display: none;
+  }
+  .evidence-pip {
+    padding: 3px 6px;
+    font-size: 11px;
+  }
+  .btn-hud {
+    padding: 3px 5px;
+    font-size: 9px;
+  }
+  .intro-hero-icon {
+    width: 72px;
+    height: 72px;
+  }
+  .eclipse-logo-sun {
+    width: 52px;
+    height: 52px;
+  }
+  .eclipse-logo-moon {
+    width: 48px;
+    height: 48px;
+  }
+  .intro-title {
+    font-size: 22px;
+  }
+  .intro-subtitle {
+    font-size: 12px;
+  }
+  .viewfinder-circle-wrap {
+    width: 150px;
+    height: 150px;
+  }
+  .evidence-slots-strip {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  .es-slot {
+    padding: 4px 2px;
+  }
+  .es-preview-box {
+    width: 44px;
+    height: 44px;
   }
 }

@@ -51,6 +51,15 @@
         </div>
       </div>
 
+      <!-- Cadet Profile Card -->
+      <div class="cadet-intro-card" style="background: var(--panel); border: 1px solid var(--panel-b); border-radius: var(--radius); padding: 10px 16px; width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: 6px; text-align: left; backdrop-filter: blur(10px);">
+        <label for="cadet-name-input-m2" style="font-size: 11px; font-weight: 700; color: var(--cyan); letter-spacing: 1px;">IDENTITAS KADET ASTRONOT:</label>
+        <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.4); border: 1px solid rgba(0,212,255,0.3); border-radius: 8px; padding: 6px 12px;">
+          <span style="font-size: 16px;">🧑‍🚀</span>
+          <input type="text" id="cadet-name-input-m2" placeholder="Masukkan nama kadet..." maxlength="25" style="background: transparent; border: none; color: #fff; font-family: var(--font); font-size: 14px; width: 100%; outline: none;">
+        </div>
+      </div>
+
       <div class="intro-buttons">
         <button id="btn-start-mission" class="btn-primary">
           <span>🚀</span> Aktifkan Simulator!
@@ -69,6 +78,7 @@
       <div class="hud-top-left">
         <span class="hud-mission-tag">🛰️ MISI 2</span>
         <span class="hud-mission-name">Holo-Orbit Simulator</span>
+        <span class="hud-player-tag" id="hud-m2-cadet-name" style="font-size: 11px; color: var(--gold); background: rgba(255,216,77,0.12); border: 1px solid rgba(255,216,77,0.3); padding: 2px 8px; border-radius: 12px; font-weight: 700;">Kadet</span>
       </div>
       <div class="hud-objectives-mini">
         <span class="obj-mini" id="mini-obj-1" title="Amati orbit">📡</span>

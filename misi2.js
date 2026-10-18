@@ -1118,6 +1118,14 @@
   // ── Screen Nav ─────────────────────────────────────────────
   function initNav() {
     $('btn-start-mission')?.addEventListener('click', () => {
+      const inputEl = $('cadet-name-input-m2');
+      if (inputEl && inputEl.value.trim()) {
+        state.playerName = inputEl.value.trim();
+        try { localStorage.setItem('rbs_player_name', state.playerName); } catch (e) {}
+      }
+      const hudNameEl = $('hud-m2-cadet-name');
+      if (hudNameEl) hudNameEl.textContent = state.playerName;
+
       AudioEngine.init();
       AudioEngine.startBGM();
       showScreen('sim');
@@ -1186,9 +1194,15 @@
     initCapture();
     initNav();
 
-    // Try get player name from misi1
+    // Try get player name from localStorage / misi1
     const name = localStorage.getItem('rbs_player_name');
-    if (name) state.playerName = name;
+    if (name) {
+      state.playerName = name;
+      const inputEl = $('cadet-name-input-m2');
+      if (inputEl) inputEl.value = name;
+    }
+    const hudNameEl = $('hud-m2-cadet-name');
+    if (hudNameEl) hudNameEl.textContent = state.playerName;
   }
 
   init();
