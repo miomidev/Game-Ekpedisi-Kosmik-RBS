@@ -1798,6 +1798,45 @@
     }
   }
 
+  /* ── Tutorial Modal (Panduan Detektif Gerhana) ────────────── */
+  function openTutorial() {
+    const modal = document.getElementById('eclipse-tutorial-modal');
+    if (!modal) return;
+    const nameEl = document.getElementById('m3-tutorial-cadet-name');
+    if (nameEl) nameEl.textContent = STATE.cadetName || 'Kadet';
+    modal.classList.remove('hidden');
+    audio.play('success');
+  }
+
+  function closeTutorial() {
+    const modal = document.getElementById('eclipse-tutorial-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    STATE.hasSeenTutorial = true;
+    audio.play('click');
+  }
+
+  function setupTutorial() {
+    const btnOpen = document.getElementById('btn-tutorial-m3');
+    const btnX = document.getElementById('btn-m3-tutorial-x');
+    const btnStart = document.getElementById('btn-m3-tutorial-start');
+    const backdrop = document.getElementById('m3-tutorial-backdrop');
+
+    if (btnOpen) btnOpen.addEventListener('click', openTutorial);
+    if (btnX) btnX.addEventListener('click', closeTutorial);
+    if (btnStart) btnStart.addEventListener('click', closeTutorial);
+    if (backdrop) backdrop.addEventListener('click', closeTutorial);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('eclipse-tutorial-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          closeTutorial();
+        }
+      }
+    });
+  }
+
   /* ═══════════════════════════════════════════════════════════
      15. EVENT BINDINGS
      ═══════════════════════════════════════════════════════════ */
@@ -1823,6 +1862,11 @@
         }
         audio.play('click');
         setScreen('sim');
+
+        // Auto-open tutorial on first arrival
+        if (!STATE.hasSeenTutorial) {
+          setTimeout(openTutorial, 400);
+        }
       });
     }
 
@@ -1990,6 +2034,9 @@
     if (DOM.btnOpenArchive) DOM.btnOpenArchive.addEventListener('click', () => DOM.modalArchive.classList.add('open'));
     if (DOM.btnCloseArchive) DOM.btnCloseArchive.addEventListener('click', () => DOM.modalArchive.classList.remove('open'));
     if (DOM.btnCloseArchive2) DOM.btnCloseArchive2.addEventListener('click', () => DOM.modalArchive.classList.remove('open'));
+
+    // Tutorial Modal
+    setupTutorial();
 
     // Canvas Dragging
     setupCanvasDrag();

@@ -139,6 +139,7 @@
       </div>
 
       <div class="hud-top-right">
+        <button id="btn-tutorial-m3" class="btn-hud" title="Buka Panduan Detektif Gerhana">❓ Panduan</button>
         <button id="btn-open-archive" class="btn-hud" title="Buka Arsip Teori & Sains Gerhana">📚 Arsip Sains</button>
         <button id="btn-open-quiz-direct" class="btn-hud" title="Uji Teori Detektif">🧠 Uji Kuis</button>
         <a href="misi2.html" class="btn-hud">◀ Misi 2</a>
@@ -438,6 +439,76 @@
         <span class="ticker-text" id="ticker-text">
           Sensor aktif. Geser sudut Bulan untuk mencari garis Syzygy dan amati pembentukan bayangan Umbra!
         </span>
+      </div>
+    </div>
+
+    <!-- Eclipse Tutorial / Onboarding Modal -->
+    <div id="eclipse-tutorial-modal" class="tutorial-overlay hidden">
+      <div class="tutorial-backdrop" id="m3-tutorial-backdrop"></div>
+      <div class="tutorial-card">
+        <button id="btn-m3-tutorial-x" class="tutorial-close-btn" title="Tutup Panduan" aria-label="Tutup Panduan">✕</button>
+        
+        <div class="tutorial-header">
+          <div class="tutorial-ai-badge">
+            <span class="tutorial-ai-icon">🕵️</span>
+            <span class="status-dot"></span>
+            <span class="tutorial-ai-text">LABORATORIUM DETEKTIF KOSMIK RBS</span>
+          </div>
+          <h2 class="tutorial-title">Panduan Detektif Gerhana</h2>
+          <p class="tutorial-subtitle">Halo Detektif <strong id="m3-tutorial-cadet-name">Kadet</strong>! Pecahkan rahasia gerhana Matahari dan Bulan dengan 4 langkah investigasi berikut:</p>
+        </div>
+
+        <div class="tutorial-steps-grid">
+          <!-- Step 1 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">1</div>
+            <div class="step-icon">☀️</div>
+            <div class="step-content">
+              <h4>Pilih Kasus Investigasi</h4>
+              <p>Pilih <strong>Kasus 1: Gerhana Matahari</strong> (Bulan di antara Matahari &amp; Bumi) atau <strong>Kasus 2: Gerhana Bulan</strong> (Bumi di antara Matahari &amp; Bulan).</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">2</div>
+            <div class="step-icon">🎛️</div>
+            <div class="step-content">
+              <h4>Kunci Kesegarisan (Syzygy)</h4>
+              <p>Geser <strong>posisi Bulan</strong> dan turunkan <strong>inklinasi orbit</strong> (dari 5.14° mendekati 0°) hingga indikator <strong>Syzygy mencapai 100%</strong>.</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">3</div>
+            <div class="step-icon">📸</div>
+            <div class="step-content">
+              <h4>Koleksi Bukti Foto Gerhana</h4>
+              <p>Saat bayangan <strong>Umbra</strong> mengunci target di jendela viewfinder, tekan tombol <strong>"📸 Abadikan Bukti Gerhana"</strong> untuk memotret Korona Matahari atau Blood Moon!</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">4</div>
+            <div class="step-icon">🧠</div>
+            <div class="step-content">
+              <h4>Pelajari Teori &amp; Selesaikan Kuis</h4>
+              <p>Buka <strong>📚 Arsip Sains</strong> untuk memahami Umbra vs Penumbra, lalu selesaikan <strong>Uji Teori Kuis</strong> untuk meraih Sertifikat Keahlian Gerhana!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tutorial-footer">
+          <div class="tutorial-tip">
+            <span class="tip-icon">💡</span>
+            <span>Panduan ini bisa kamu buka kembali kapan saja dengan menekan tombol <strong>❓ Panduan</strong> di bilah atas.</span>
+          </div>
+          <button id="btn-m3-tutorial-start" class="btn-primary btn-tutorial-start">
+            <span>Siap, Mulai Investigasi!</span> 🔍
+          </button>
+        </div>
       </div>
     </div>
 

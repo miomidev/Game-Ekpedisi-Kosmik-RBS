@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <title>Ekspedisi Kosmik — Misi Penjelajah Tata Surya | Bimbel RBS</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div id="game-container">
 
@@ -37,7 +39,8 @@
         <span class="audio-icon" id="audio-icon">🔊</span>
         <span class="audio-label" id="audio-label">Musik: Aktif</span>
       </button>
-      <button id="btn-toggle-voice" class="btn-audio btn-voice" title="Matikan / Nyalakan Suara Narasi (Voice)" aria-label="Toggle Suara Narasi">
+      <button id="btn-toggle-voice" class="btn-audio btn-voice" title="Matikan / Nyalakan Suara Narasi (Voice)"
+        aria-label="Toggle Suara Narasi">
         <span class="audio-icon" id="voice-icon">🎙️</span>
         <span class="audio-label" id="voice-label">Suara: Aktif</span>
       </button>
@@ -60,20 +63,29 @@
         </button>
 
         <!-- Prominent Mission Select Hub Card -->
-        <div class="mission-select-box" style="margin-top: 18px; padding: 12px 14px; background: rgba(10, 20, 45, 0.85); border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 12px; width: 100%; max-width: 440px; text-align: center; backdrop-filter: blur(8px); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);">
-          <div style="font-size: 11px; font-weight: 800; color: #88c0f0; margin-bottom: 8px; letter-spacing: 0.8px;">🚀 PILIH MISI EKSPEDISI KOSMIK:</div>
+        <div class="mission-select-box"
+          style="margin-top: 18px; padding: 12px 14px; background: rgba(10, 20, 45, 0.85); border: 1px solid rgba(0, 212, 255, 0.35); border-radius: 12px; width: 100%; max-width: 440px; text-align: center; backdrop-filter: blur(8px); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);">
+          <div style="font-size: 11px; font-weight: 800; color: #88c0f0; margin-bottom: 8px; letter-spacing: 0.8px;">🚀
+            PILIH MISI EKSPEDISI KOSMIK:</div>
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
-            <div style="background: rgba(0, 212, 255, 0.22); border: 1.5px solid #00d4ff; border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
+            <div
+              style="background: rgba(0, 212, 255, 0.22); border: 1.5px solid #00d4ff; border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px;">
               <span style="font-size: 16px;">🪐</span>
               <strong style="font-size: 11px; color: #fff;">Misi 1</strong>
               <span style="font-size: 9px; color: #00d4ff; font-weight: 700;">Tata Surya (Aktif)</span>
             </div>
-            <a href="misi2.html" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#00d4ff';" onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(0,212,255,0.3)';">
+            <a href="misi2.html"
+              style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#00d4ff';"
+              onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(0,212,255,0.3)';">
               <span style="font-size: 16px;">🌍</span>
               <strong style="font-size: 11px; color: #fff;">Misi 2</strong>
               <span style="font-size: 9px; color: #a0c8f0;">Holo-Orbit ▶</span>
             </a>
-            <a href="misi3.html" style="background: rgba(255, 140, 0, 0.12); border: 1px solid rgba(255, 170, 0, 0.45); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#ffaa00';" onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(255,170,0,0.45)';">
+            <a href="misi3.html"
+              style="background: rgba(255, 140, 0, 0.12); border: 1px solid rgba(255, 170, 0, 0.45); border-radius: 8px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; text-decoration: none; transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.05)';this.style.borderColor='#ffaa00';"
+              onmouseout="this.style.transform='scale(1)';this.style.borderColor='rgba(255,170,0,0.45)';">
               <span style="font-size: 16px;">🌑</span>
               <strong style="font-size: 11px; color: #ffd84d;">Misi 3</strong>
               <span style="font-size: 9px; color: #ffaa00;">Gerhana ▶</span>
@@ -161,30 +173,37 @@
               </defs>
 
               <!-- Left Fin -->
-              <path d="M 40 96 C 24 105 10 130 8 152 C 22 150 36 140 40 125 Z" fill="url(#rocketFinGradLeft)" stroke="#7a0018" stroke-width="1.2" />
+              <path d="M 40 96 C 24 105 10 130 8 152 C 22 150 36 140 40 125 Z" fill="url(#rocketFinGradLeft)"
+                stroke="#7a0018" stroke-width="1.2" />
               <!-- Right Fin -->
-              <path d="M 80 96 C 96 105 110 130 112 152 C 98 150 84 140 80 125 Z" fill="url(#rocketFinGradRight)" stroke="#7a0018" stroke-width="1.2" />
+              <path d="M 80 96 C 96 105 110 130 112 152 C 98 150 84 140 80 125 Z" fill="url(#rocketFinGradRight)"
+                stroke="#7a0018" stroke-width="1.2" />
               <!-- Center Tail Keel -->
               <path d="M 58 105 L 62 105 L 63 138 L 57 138 Z" fill="#b0c0d6" opacity="0.7" />
               <!-- Engine Bell Nozzle -->
-              <path d="M 46 136 L 74 136 L 78 148 L 42 148 Z" fill="url(#rocketNozzleGrad)" stroke="#1a1c22" stroke-width="1" />
+              <path d="M 46 136 L 74 136 L 78 148 L 42 148 Z" fill="url(#rocketNozzleGrad)" stroke="#1a1c22"
+                stroke-width="1" />
               <ellipse cx="60" cy="148" rx="18" ry="3.5" fill="#15171c" stroke="#252a33" stroke-width="1" />
               <ellipse cx="60" cy="148" rx="13" ry="2.2" fill="#ff7700" opacity="0.8" />
               <!-- Rocket Fuselage -->
-              <path d="M 60 10 C 46 36 38 72 38 136 L 82 136 C 82 72 74 36 60 10 Z" fill="url(#rocketBodyGrad)" stroke="#8094ad" stroke-width="1.2" />
+              <path d="M 60 10 C 46 36 38 72 38 136 L 82 136 C 82 72 74 36 60 10 Z" fill="url(#rocketBodyGrad)"
+                stroke="#8094ad" stroke-width="1.2" />
               <!-- Red Nose Cone -->
               <path d="M 60 10 C 53 25 46 45 44 56 L 76 56 C 74 45 67 25 60 10 Z" fill="url(#rocketNoseGrad)" />
               <path d="M 44 56 L 76 56" stroke="#99001f" stroke-width="1" />
               <!-- Sci-Fi Cyan RBS Stripe -->
               <path d="M 39 88 L 81 88 L 82 95 L 38 95 Z" fill="#00d4ff" opacity="0.95" />
-              <text x="60" y="116" font-family="'Segoe UI', Roboto, sans-serif" font-size="7.5" font-weight="900" fill="#003366" text-anchor="middle" letter-spacing="1.5">RBS-01</text>
+              <text x="60" y="116" font-family="'Segoe UI', Roboto, sans-serif" font-size="7.5" font-weight="900"
+                fill="#003366" text-anchor="middle" letter-spacing="1.5">RBS-01</text>
               <!-- Porthole Window -->
               <circle cx="60" cy="72" r="14" fill="url(#rocketRimGrad)" stroke="#1c2d40" stroke-width="1.5" />
               <circle cx="60" cy="72" r="10.5" fill="url(#rocketGlassGrad)" />
               <path d="M 53 66 A 7 7 0 0 1 66 66 A 5.5 5.5 0 0 0 54 70 Z" fill="#ffffff" opacity="0.85" />
               <!-- Highlights -->
-              <path d="M 44 60 C 42 80 42 110 43 134" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" opacity="0.65" />
-              <path d="M 76 60 C 78 80 78 110 77 134" stroke="#5a708a" stroke-width="1.8" stroke-linecap="round" opacity="0.5" />
+              <path d="M 44 60 C 42 80 42 110 43 134" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round"
+                opacity="0.65" />
+              <path d="M 76 60 C 78 80 78 110 77 134" stroke="#5a708a" stroke-width="1.8" stroke-linecap="round"
+                opacity="0.5" />
             </svg>
 
             <!-- Rocket Thruster Plasma Flame (Integrated Seamlessly Under Nozzle) -->
@@ -233,7 +252,8 @@
             <span class="hud-label">Pindah Misi</span>
             <div style="display: flex; gap: 4px; margin-top: 2px;">
               <a href="misi2.html" class="hud-link-btn" title="Pindah ke Misi 2: Holo-Orbit Simulator">🌍 Misi 2 ▶</a>
-              <a href="misi3.html" class="hud-link-btn hud-link-m3" title="Pindah ke Misi 3: Detektif Gerhana">🌑 Misi 3 ▶</a>
+              <a href="misi3.html" class="hud-link-btn hud-link-m3" title="Pindah ke Misi 3: Detektif Gerhana">🌑 Misi 3
+                ▶</a>
             </div>
           </div>
         </div>
@@ -286,8 +306,9 @@
         <div id="cockpit-tutorial-modal" class="tutorial-overlay hidden">
           <div class="tutorial-backdrop" id="tutorial-backdrop"></div>
           <div class="tutorial-card">
-            <button id="btn-tutorial-x" class="tutorial-close-btn" title="Tutup Panduan" aria-label="Tutup Panduan">✕</button>
-            
+            <button id="btn-tutorial-x" class="tutorial-close-btn" title="Tutup Panduan"
+              aria-label="Tutup Panduan">✕</button>
+
             <div class="tutorial-header">
               <div class="tutorial-ai-badge">
                 <span class="tutorial-ai-icon">🛰️</span>
@@ -295,7 +316,8 @@
                 <span class="tutorial-ai-text">KOMPUTER PENERBANGAN RBS-01</span>
               </div>
               <h2 class="tutorial-title">Panduan Navigasi Kokpit</h2>
-              <p class="tutorial-subtitle">Halo Kadet <strong id="tutorial-cadet-name">Astronot</strong>! Selamat datang di Ruang Kemudi Tata Surya. Ikuti panduan 4 langkah berikut untuk menjalankan misimu:</p>
+              <p class="tutorial-subtitle">Halo Kadet <strong id="tutorial-cadet-name">Astronot</strong>! Selamat datang
+                di Ruang Kemudi Tata Surya. Ikuti panduan 4 langkah berikut untuk menjalankan misimu:</p>
             </div>
 
             <div class="tutorial-steps-grid">
@@ -305,7 +327,8 @@
                 <div class="step-icon">🪐</div>
                 <div class="step-content">
                   <h4>Pilih Planet Tujuan</h4>
-                  <p><strong>Klik langsung</strong> planet yang mengorbit di jendela kokpit, atau pilih lewat <strong>tombol nama planet</strong> di bilah bawah.</p>
+                  <p><strong>Klik langsung</strong> planet yang mengorbit di jendela kokpit, atau pilih lewat
+                    <strong>tombol nama planet</strong> di bilah bawah.</p>
                 </div>
               </div>
 
@@ -315,7 +338,8 @@
                 <div class="step-icon">⛽</div>
                 <div class="step-content">
                   <h4>Pantau Bahan Bakar</h4>
-                  <p>Setiap penerbangan antar-planet memakai bahan bakar. Atur rute penerbanganmu agar cukup menjelajahi <strong>seluruh 8 planet</strong>!</p>
+                  <p>Setiap penerbangan antar-planet memakai bahan bakar. Atur rute penerbanganmu agar cukup menjelajahi
+                    <strong>seluruh 8 planet</strong>!</p>
                 </div>
               </div>
 
@@ -325,7 +349,8 @@
                 <div class="step-icon">🔬</div>
                 <div class="step-content">
                   <h4>Eksplorasi & Jawab Kuis</h4>
-                  <p>Di tiap planet, coba <strong>aktivitas sains interaktif</strong> (suhu, rover Mars, gravitasi) lalu jawab <strong>kuis tantangan</strong> untuk melengkapi data.</p>
+                  <p>Di tiap planet, coba <strong>aktivitas sains interaktif</strong> (suhu, rover Mars, gravitasi) lalu
+                    jawab <strong>kuis tantangan</strong> untuk melengkapi data.</p>
                 </div>
               </div>
 
@@ -335,7 +360,8 @@
                 <div class="step-icon">☄️</div>
                 <div class="step-content">
                   <h4>Sabuk Asteroid & Logbook</h4>
-                  <p>Waspada rintangan batuan antariksa antara Mars & Jupiter. Cek progres datamu kapan saja via tombol <strong>📖 Logbook</strong>.</p>
+                  <p>Waspada rintangan batuan antariksa antara Mars & Jupiter. Cek progres datamu kapan saja via tombol
+                    <strong>📖 Logbook</strong>.</p>
                 </div>
               </div>
             </div>
@@ -343,7 +369,8 @@
             <div class="tutorial-footer">
               <div class="tutorial-tip">
                 <span class="tip-icon">💡</span>
-                <span>Kamu bisa membuka panduan ini lagi kapan saja lewat tombol <strong>❓ Panduan</strong> di bilah bawah.</span>
+                <span>Kamu bisa membuka panduan ini lagi kapan saja lewat tombol <strong>❓ Panduan</strong> di bilah
+                  bawah.</span>
               </div>
               <button id="btn-tutorial-start" class="btn-primary btn-tutorial-start">
                 <span>Siap, Mulai Jelajah!</span> 🚀
@@ -364,18 +391,22 @@
             <svg class="rocket-svg" viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
               <use href="#rocketBodyGrad" />
               <!-- Left Fin -->
-              <path d="M 40 96 C 24 105 10 130 8 152 C 22 150 36 140 40 125 Z" fill="#ff4466" stroke="#7a0018" stroke-width="1.2" />
+              <path d="M 40 96 C 24 105 10 130 8 152 C 22 150 36 140 40 125 Z" fill="#ff4466" stroke="#7a0018"
+                stroke-width="1.2" />
               <!-- Right Fin -->
-              <path d="M 80 96 C 96 105 110 130 112 152 C 98 150 84 140 80 125 Z" fill="#ff4466" stroke="#7a0018" stroke-width="1.2" />
+              <path d="M 80 96 C 96 105 110 130 112 152 C 98 150 84 140 80 125 Z" fill="#ff4466" stroke="#7a0018"
+                stroke-width="1.2" />
               <!-- Engine Bell Nozzle -->
               <path d="M 46 136 L 74 136 L 78 148 L 42 148 Z" fill="#3b424d" stroke="#1a1c22" stroke-width="1" />
               <!-- Rocket Fuselage -->
-              <path d="M 60 10 C 46 36 38 72 38 136 L 82 136 C 82 72 74 36 60 10 Z" fill="#edf2f9" stroke="#8094ad" stroke-width="1.2" />
+              <path d="M 60 10 C 46 36 38 72 38 136 L 82 136 C 82 72 74 36 60 10 Z" fill="#edf2f9" stroke="#8094ad"
+                stroke-width="1.2" />
               <!-- Red Nose Cone -->
               <path d="M 60 10 C 53 25 46 45 44 56 L 76 56 C 74 45 67 25 60 10 Z" fill="#ff3355" />
               <!-- RBS Cyan Stripe -->
               <path d="M 39 88 L 81 88 L 82 95 L 38 95 Z" fill="#00d4ff" />
-              <text x="60" y="116" font-family="sans-serif" font-size="7.5" font-weight="900" fill="#003366" text-anchor="middle">RBS</text>
+              <text x="60" y="116" font-family="sans-serif" font-size="7.5" font-weight="900" fill="#003366"
+                text-anchor="middle">RBS</text>
               <!-- Porthole Window -->
               <circle cx="60" cy="72" r="14" fill="#a0b3c6" />
               <circle cx="60" cy="72" r="10.5" fill="#00c8ff" />
@@ -598,11 +629,15 @@
           <div class="gravity-compare">
             <div class="gravity-item">
               <div class="gravity-label">Bumi</div>
-              <div class="gravity-bar-wrap"><div class="gravity-bar" style="width:100%">9,8 m/s²</div></div>
+              <div class="gravity-bar-wrap">
+                <div class="gravity-bar" style="width:100%">9,8 m/s²</div>
+              </div>
             </div>
             <div class="gravity-item">
               <div class="gravity-label" id="gravity-planet-name"></div>
-              <div class="gravity-bar-wrap"><div id="gravity-planet-bar" class="gravity-bar gravity-bar-planet">—</div></div>
+              <div class="gravity-bar-wrap">
+                <div id="gravity-planet-bar" class="gravity-bar gravity-bar-planet">—</div>
+              </div>
             </div>
           </div>
           <p id="gravity-explanation" class="gravity-explanation"></p>
@@ -755,7 +790,9 @@
                 <p class="cert-lead-text">Dengan bangga Pusat Misi Antariksa Bimbel RBS menyatakan bahwa:</p>
                 <h1 class="cert-cadet-name" id="cert-name">—</h1>
                 <p class="cert-achievement-text">
-                  Telah berhasil menyelesaikan pelayaran antariksa mengitari 8 planet Tata Surya, melakukan pengamatan spektrum dan geologi berbasis arsip resmi <strong>NASA</strong>, serta membuktikan penguasaan konsep fisika astronomi dengan predikat:
+                  Telah berhasil menyelesaikan pelayaran antariksa mengitari 8 planet Tata Surya, melakukan pengamatan
+                  spektrum dan geologi berbasis arsip resmi <strong>NASA</strong>, serta membuktikan penguasaan konsep
+                  fisika astronomi dengan predikat:
                 </p>
                 <div class="cert-grade-callout">
                   <span class="callout-label">NILAI AKHIR:</span>
@@ -800,10 +837,16 @@
           </div>
         </div>
 
-        <div class="ending-actions" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-          <a href="misi2.html" class="btn-primary" style="background: linear-gradient(135deg, #00d4ff, #0066cc); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🚀 Lanjut ke Misi 2: Holo-Orbit</a>
-          <a href="misi3.html" class="btn-primary" style="background: linear-gradient(135deg, #ff8c00, #ff3855); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🕵️ Misi 3: Detektif Gerhana</a>
-          <button id="btn-print-cert" class="btn-primary btn-print" style="background: linear-gradient(135deg, #00bb77, #008855);">🖨️ Cetak / Unduh Sertifikat</button>
+        <div class="ending-actions"
+          style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+          <a href="misi2.html" class="btn-primary"
+            style="background: linear-gradient(135deg, #00d4ff, #0066cc); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🚀
+            Lanjut ke Misi 2: Holo-Orbit</a>
+          <a href="misi3.html" class="btn-primary"
+            style="background: linear-gradient(135deg, #ff8c00, #ff3855); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🕵️
+            Misi 3: Detektif Gerhana</a>
+          <button id="btn-print-cert" class="btn-primary btn-print"
+            style="background: linear-gradient(135deg, #00bb77, #008855);">🖨️ Cetak / Unduh Sertifikat</button>
           <button id="btn-replay" class="btn-primary">🔄 Main Lagi</button>
         </div>
       </div>
@@ -818,8 +861,12 @@
         <p>Roketmu kehabisan bahan bakar setelah menjelajahi <strong id="gameover-count">0</strong> dari 8 planet.</p>
         <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px;">
           <button id="btn-retry" class="btn-primary">🔄 Coba Lagi</button>
-          <a href="misi2.html" class="btn-primary" style="background: linear-gradient(135deg, #00d4ff, #0066cc); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">🌍 Misi 2</a>
-          <a href="misi3.html" class="btn-primary" style="background: linear-gradient(135deg, #ff8c00, #ff3855); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">🌑 Misi 3</a>
+          <a href="misi2.html" class="btn-primary"
+            style="background: linear-gradient(135deg, #00d4ff, #0066cc); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">🌍
+            Misi 2</a>
+          <a href="misi3.html" class="btn-primary"
+            style="background: linear-gradient(135deg, #ff8c00, #ff3855); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">🌑
+            Misi 3</a>
         </div>
       </div>
     </div>
@@ -832,4 +879,5 @@
   <script src="gameData.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>

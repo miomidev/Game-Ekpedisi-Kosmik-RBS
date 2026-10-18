@@ -88,9 +88,10 @@
         <span class="obj-mini-label" id="obj-complete-label"></span>
       </div>
       <div class="hud-top-right">
+        <button id="btn-tutorial-m2" class="btn-hud" title="Buka Panduan Holo-Orbit">❓ Panduan</button>
+        <button id="btn-logbook-m2" class="btn-hud">📚 Catatan</button>
         <a href="index.html" class="btn-hud">◀ Misi 1</a>
         <a href="misi3.html" class="btn-hud" style="color: var(--cyan); border-color: rgba(0, 212, 255, 0.4);">Misi 3: Gerhana ▶</a>
-        <button id="btn-logbook-m2" class="btn-hud">📚 Catatan</button>
       </div>
     </div>
 
@@ -271,6 +272,76 @@
     <div class="bottom-ticker">
       <span class="ticker-label">🛰️ KOMPUTER:</span>
       <span class="ticker-text" id="ticker-text">Sistem Holo-Orbit aktif. Gunakan slider untuk mengatur orbit!</span>
+    </div>
+
+    <!-- Holo-Orbit Tutorial / Onboarding Modal -->
+    <div id="holo-tutorial-modal" class="tutorial-overlay hidden">
+      <div class="tutorial-backdrop" id="m2-tutorial-backdrop"></div>
+      <div class="tutorial-card">
+        <button id="btn-m2-tutorial-x" class="tutorial-close-btn" title="Tutup Panduan" aria-label="Tutup Panduan">✕</button>
+        
+        <div class="tutorial-header">
+          <div class="tutorial-ai-badge">
+            <span class="tutorial-ai-icon">🛰️</span>
+            <span class="status-dot"></span>
+            <span class="tutorial-ai-text">KOMPUTER PENERBANGAN RBS-01</span>
+          </div>
+          <h2 class="tutorial-title">Panduan Holo-Orbit Simulator</h2>
+          <p class="tutorial-subtitle">Halo Kadet <strong id="m2-tutorial-cadet-name">Astronot</strong>! Kuasai dinamika orbit Bulan mengelilingi Bumi dan fenomena gerhana dengan 4 langkah misi berikut:</p>
+        </div>
+
+        <div class="tutorial-steps-grid">
+          <!-- Step 1 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">1</div>
+            <div class="step-icon">⚙️</div>
+            <div class="step-content">
+              <h4>Atur Parameter Orbit</h4>
+              <p>Gunakan panel kendali untuk mengubah <strong>Kecepatan Orbit</strong>, <strong>Eksentrisitas</strong> (kelonjongan elips), dan <strong>Inklinasi</strong> sudut kemiringan bidang orbit.</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">2</div>
+            <div class="step-icon">📍</div>
+            <div class="step-content">
+              <h4>Amati Perigee &amp; Apogee</h4>
+              <p>Perhatikan jarak orbit Bulan secara real-time. Temukan titik <strong>Perigee</strong> (terdekat ~363.000 km) dan <strong>Apogee</strong> (terjauh ~405.000 km) dari Bumi.</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">3</div>
+            <div class="step-icon">📸</div>
+            <div class="step-content">
+              <h4>Abadikan 4 Fase Bulan Unik</h4>
+              <p>Bulan berubah fase seiring posisinya terhadap Matahari &amp; Bumi. Klik tombol emas <strong>"📸 Ambil Foto Fase Bulan"</strong> untuk mengumpulkan target <strong>4 fase berbeda</strong>!</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="tutorial-step-card">
+            <div class="step-num-badge">4</div>
+            <div class="step-icon">🌑</div>
+            <div class="step-content">
+              <h4>Deteksi Posisi Gerhana</h4>
+              <p>Saat Matahari, Bulan, dan Bumi sejajar sempurna, perhatikan indikator <strong>Gerhana Matahari</strong> atau <strong>Gerhana Bulan</strong> aktif di panel simulator!</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tutorial-footer">
+          <div class="tutorial-tip">
+            <span class="tip-icon">💡</span>
+            <span>Di perangkat HP, gunakan tab <strong>📸 Kamera &amp; Fase</strong> dan <strong>⚙️ Kendali Orbit</strong>. Panduan ini bisa dibuka kapan saja lewat tombol <strong>❓ Panduan</strong> di bilah atas.</span>
+          </div>
+          <button id="btn-m2-tutorial-start" class="btn-primary btn-tutorial-start">
+            <span>Siap, Operasikan Orbit!</span> 🚀
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

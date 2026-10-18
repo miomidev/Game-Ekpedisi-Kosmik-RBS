@@ -1136,6 +1136,40 @@
     });
   }
 
+  // ── Tutorial Modal (Panduan Simulator) ─────────────────────
+  function openTutorial() {
+    const modal = $('holo-tutorial-modal');
+    if (!modal) return;
+    const nameEl = $('m2-tutorial-cadet-name');
+    if (nameEl) nameEl.textContent = state.playerName || 'Astronot';
+    modal.classList.remove('hidden');
+    AudioEngine.playBeep(520, 0.12);
+  }
+
+  function closeTutorial() {
+    const modal = $('holo-tutorial-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    state.hasSeenTutorial = true;
+    AudioEngine.playBeep(440, 0.08);
+  }
+
+  function initTutorial() {
+    $('btn-tutorial-m2')?.addEventListener('click', openTutorial);
+    $('btn-m2-tutorial-x')?.addEventListener('click', closeTutorial);
+    $('btn-m2-tutorial-start')?.addEventListener('click', closeTutorial);
+    $('m2-tutorial-backdrop')?.addEventListener('click', closeTutorial);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const modal = $('holo-tutorial-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          closeTutorial();
+        }
+      }
+    });
+  }
+
   // ── Screen Nav ─────────────────────────────────────────────
   function initNav() {
     $('btn-start-mission')?.addEventListener('click', () => {
@@ -1157,6 +1191,11 @@
       animId = requestAnimationFrame(renderLoop);
       renderPhaseGrid();
       updateTickerMessages();
+
+      // Auto-open tutorial on first arrival
+      if (!state.hasSeenTutorial) {
+        setTimeout(openTutorial, 400);
+      }
     });
 
     $('btn-logbook-m2')?.addEventListener('click', () => {
@@ -1215,6 +1254,7 @@
     initCapture();
     initNav();
     initMobileTabs();
+    initTutorial();
 
     // Try get player name from localStorage / misi1
     const name = localStorage.getItem('rbs_player_name');
