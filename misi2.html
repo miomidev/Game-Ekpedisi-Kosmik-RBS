@@ -95,10 +95,10 @@
     </div>
 
     <!-- Main 3-Column Layout -->
-    <div class="sim-layout">
+    <div class="sim-layout" id="sim-layout" data-active-tab="phase">
 
       <!-- LEFT: Control Panel -->
-      <div class="control-panel">
+      <div class="control-panel" id="control-panel">
         <div class="panel-header"><span class="panel-badge">⚙️</span><span>Panel Kendali Orbit</span></div>
 
         <div class="control-group">
@@ -172,7 +172,7 @@
       </div>
 
       <!-- CENTER: Canvas Viewport -->
-      <div class="canvas-viewport">
+      <div class="canvas-viewport" id="canvas-viewport">
         <div class="scanline-overlay"></div>
         <canvas id="orbit-canvas"></canvas>
 
@@ -203,8 +203,21 @@
         </div>
       </div>
 
+      <!-- Mobile Tab Switcher (Visible on mobile/tablet <= 900px) -->
+      <div class="mobile-sim-tabs" id="mobile-sim-tabs">
+        <button class="m-tab-btn active" id="btn-tab-phase" data-tab="phase" type="button">
+          <span class="m-tab-icon">📸</span>
+          <span class="m-tab-text">Kamera &amp; Fase</span>
+          <span class="m-tab-badge" id="m-tab-badge-photos">0/4</span>
+        </button>
+        <button class="m-tab-btn" id="btn-tab-ctrl" data-tab="ctrl" type="button">
+          <span class="m-tab-icon">⚙️</span>
+          <span class="m-tab-text">Kendali Orbit</span>
+        </button>
+      </div>
+
       <!-- RIGHT: Phase Panel & Camera -->
-      <div class="phase-panel">
+      <div class="phase-panel" id="phase-panel">
         <div class="panel-header"><span class="panel-badge">🌙</span><span>8 Fase Bulan</span></div>
         <div class="phase-grid" id="phase-grid">
           <!-- Populated by JS -->

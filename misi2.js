@@ -288,18 +288,20 @@
 
     const z = state.zoom;
 
-    // Sun position: left 1/5 of viewport
-    const sunX = W * 0.13 * z + (W * (1 - z) / 2);
-    const sunY = H / 2;
-    const sunR = Math.max(32, Math.min(50, W * 0.055)) * z;
+    const isMobile = W < 600;
 
-    // Earth position: center
-    const earthX = W / 2;
+    // Sun position: left 1/5 of viewport
+    const sunX = (isMobile ? W * 0.12 : W * 0.13) * z + (W * (1 - z) / 2);
+    const sunY = H / 2;
+    const sunR = (isMobile ? Math.max(22, Math.min(36, W * 0.062)) : Math.max(32, Math.min(50, W * 0.055))) * z;
+
+    // Earth position: center (offset slightly right on mobile for Sun spacing)
+    const earthX = isMobile ? W * 0.58 : W / 2;
     const earthY = H / 2;
-    const earthR = Math.max(18, Math.min(28, W * 0.032)) * z;
+    const earthR = (isMobile ? Math.max(14, Math.min(22, W * 0.038)) : Math.max(18, Math.min(28, W * 0.032))) * z;
 
     // Moon orbit (elliptical)
-    const orbitA = Math.max(80, Math.min(160, W * 0.22)) * z; // semi-major axis
+    const orbitA = (isMobile ? Math.max(58, Math.min(110, W * 0.23)) : Math.max(80, Math.min(160, W * 0.22))) * z; // semi-major axis
     const ecc    = state.eccentricity;
     const orbitB = orbitA * Math.sqrt(1 - ecc * ecc);
     const incRad = state.inclination * Math.PI / 180;
@@ -310,7 +312,7 @@
     const rFromFocus = orbitA * (1 - ecc * ecc) / (1 + ecc * Math.cos(moonRad));
     const moonX = earthX + Math.cos(moonRad) * rFromFocus * Math.cos(incRad * 0.3);
     const moonY = earthY + Math.sin(moonRad) * rFromFocus * Math.sin(Math.PI / 2 - incRad * 0.3);
-    const moonR = Math.max(10, Math.min(18, W * 0.02)) * z;
+    const moonR = (isMobile ? Math.max(8, Math.min(14, W * 0.024)) : Math.max(10, Math.min(18, W * 0.02))) * z;
 
     // Perigee & Apogee positions
     const periX = earthX + orbitA * (1 - ecc);  // closest (angle=0 in this simplified model)
@@ -978,6 +980,9 @@
     const badgeEl = $('unique-badge');
     if (badgeEl) badgeEl.textContent = uniqCount >= 4 ? `✓ ${uniqCount} fase unik!` : `${uniqCount}/4 fase unik`;
 
+    const mTabBadge = $('m-tab-badge-photos');
+    if (mTabBadge) mTabBadge.textContent = `${uniqCount}/4`;
+
     // Add thumbnail to gallery
     const gallery = $('photo-gallery');
     if (gallery) {
@@ -1115,6 +1120,22 @@
     });
   }
 
+  // ── Mobile Tabs ───────────────────────────────────────────
+  function initMobileTabs() {
+    const tabs = document.querySelectorAll('.m-tab-btn');
+    const layout = $('sim-layout');
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        const tabKey = btn.getAttribute('data-tab');
+        if (layout) layout.setAttribute('data-active-tab', tabKey);
+        // Trigger resize so canvas and viewport update
+        setTimeout(resizeCanvas, 50);
+      });
+    });
+  }
+
   // ── Screen Nav ─────────────────────────────────────────────
   function initNav() {
     $('btn-start-mission')?.addEventListener('click', () => {
@@ -1193,6 +1214,7 @@
     initPauseReset();
     initCapture();
     initNav();
+    initMobileTabs();
 
     // Try get player name from localStorage / misi1
     const name = localStorage.getItem('rbs_player_name');
