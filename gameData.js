@@ -8,7 +8,7 @@ const GAME_DATA = {
   // ── Narasi Kokpit ──────────────────────────────────────────
   narration: {
     intro: [
-      "Halo, Kadet! Selamat datang di Pusat Kendali Antariksa Bimbel RBS!",
+      "Halo, Kadet! Selamat datang di Pusat Kendali Antariksa SKB Banjarnegara!",
       "Mesin fusi menyala, koordinat Tata Surya terkunci.",
       "Misi utama kita: kumpulkan data atmosfer, struktur fisik, dan orbit dari 8 planet!",
       "Waspada anomali gravitasi dan rintangan asteroid.",

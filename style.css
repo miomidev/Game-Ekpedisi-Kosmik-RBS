@@ -2707,6 +2707,7 @@ html, body {
   gap: 8px;
   margin-bottom: 8px;
 }
+.cert-skb-badge,
 .cert-rbs-badge {
   background: #0a1f44;
   color: #f7d070;

@@ -1,5 +1,5 @@
 // ============================================================
-// misi2.js — Misi 2: Holo-Orbit Simulator | Bimbel RBS
+// misi2.js — Misi 2: Holo-Orbit Simulator | SKB Banjarnegara
 // Simulasi orbit Bumi–Bulan–Matahari, fase bulan, perigee/apogee, gerhana
 // ============================================================
 
@@ -188,7 +188,7 @@
     inclination: 5,       // degrees
     paused: false,
     zoom: 1.0,
-    playerName: localStorage.getItem('rbs_player_name') || 'Kadet Astronot',
+    playerName: localStorage.getItem('skb_player_name') || localStorage.getItem('rbs_player_name') || 'Kadet Astronot',
 
     // Objectives
     objOrbitWatched: false,     // auto-done when sim starts
@@ -1176,7 +1176,10 @@
       const inputEl = $('cadet-name-input-m2');
       if (inputEl && inputEl.value.trim()) {
         state.playerName = inputEl.value.trim();
-        try { localStorage.setItem('rbs_player_name', state.playerName); } catch (e) {}
+        try {
+          localStorage.setItem('skb_player_name', state.playerName);
+          localStorage.setItem('rbs_player_name', state.playerName);
+        } catch (e) {}
       }
       const hudNameEl = $('hud-m2-cadet-name');
       if (hudNameEl) hudNameEl.textContent = state.playerName;
@@ -1257,7 +1260,7 @@
     initTutorial();
 
     // Try get player name from localStorage / misi1
-    const name = localStorage.getItem('rbs_player_name');
+    const name = localStorage.getItem('skb_player_name') || localStorage.getItem('rbs_player_name');
     if (name) {
       state.playerName = name;
       const inputEl = $('cadet-name-input-m2');

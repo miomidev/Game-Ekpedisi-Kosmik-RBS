@@ -1,6 +1,6 @@
 /**
  * misi3.js — Misi 3: Detektif Gerhana (Solar & Lunar Eclipse)
- * Bimbel RBS — Ekspedisi Kosmik
+ * SKB Banjarnegara — Ekspedisi Kosmik
  * 
  * Interactive 2D Canvas Orbit & Ray-Casting Engine
  * Telescopic Spectroscopic Viewfinder with Procedural Solar Corona & Blood Moon
@@ -15,7 +15,7 @@
      ═══════════════════════════════════════════════════════════ */
   const STATE = {
     screen: 'intro', // 'intro', 'sim', 'quiz', 'complete'
-    cadetName: localStorage.getItem('rbs_player_name') || 'Kadet Kosmik',
+    cadetName: localStorage.getItem('skb_player_name') || localStorage.getItem('rbs_player_name') || 'Kadet Kosmik',
     activeCase: 'solar', // 'solar', 'lunar', 'sandbox'
     
     // Orbit Simulation Parameters
@@ -600,7 +600,7 @@
     // ── Layer: The Moon (Luna) ──
     drawMoon(ctx, moonX, moonY, moonR, sunX, sunY);
 
-    // ── Layer: RBS-03 Detective Satellite / Sensor Drone ──
+    // ── Layer: SKB-03 Detective Satellite / Sensor Drone ──
     drawDetectiveDrone(ctx, earthX, earthY, earthR, moonX, moonY, metrics);
 
     // ── Layer: Labels & Overlays ──
@@ -881,7 +881,7 @@
     ctx.restore();
   }
 
-  // Draw Detective Drone RBS-03
+  // Draw Detective Drone SKB-03
   function drawDetectiveDrone(ctx, earthX, earthY, earthR, moonX, moonY, metrics) {
     ctx.save();
     const time = performance.now() * 0.003;
@@ -1786,7 +1786,7 @@
         card.innerHTML = `
           <div class="es-thumb">
             <img src="${item.image}" alt="${item.title}" style="width:100%;height:100%;object-fit:cover;">
-            <div class="es-stamp">RBS VERIFIED</div>
+            <div class="es-stamp">SKB VERIFIED</div>
           </div>
           <div class="es-meta">
             <div class="es-name">${item.title}</div>
@@ -1857,6 +1857,7 @@
         audio.init();
         if (DOM.cadetInput && DOM.cadetInput.value.trim()) {
           STATE.cadetName = DOM.cadetInput.value.trim();
+          localStorage.setItem('skb_player_name', STATE.cadetName);
           localStorage.setItem('rbs_player_name', STATE.cadetName);
           updateCadetDisplay();
         }

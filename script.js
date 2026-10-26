@@ -1321,6 +1321,7 @@
   function startGame() {
     state.playerName = dom.title.input.value.trim() || 'Kadet Antariksa';
     try {
+      localStorage.setItem('skb_player_name', state.playerName);
       localStorage.setItem('rbs_player_name', state.playerName);
     } catch (e) {}
     dom.map.hudName.textContent = state.playerName;
@@ -1354,7 +1355,7 @@
     if (state.introIndex < GAME_DATA.narration.intro.length) {
       renderIntroStep();
     } else {
-      // Sequence Peluncuran Roket RBS-01
+      // Sequence Peluncuran Roket SKB-01
       dom.intro.btnNext.disabled = true;
       const screenIntro = dom.screens.intro;
       screenIntro.classList.add('launch-active');
@@ -2644,7 +2645,7 @@
     if (dom.ending.scoreFuel) dom.ending.scoreFuel.textContent = `${fuelScore} / 20 Poin`;
     if (dom.ending.evalNotes) dom.ending.evalNotes.textContent = `"${evalNote}"`;
 
-    // 4. Update Data Sertifikat Cetak Resmi Bimbel RBS
+    // 4. Update Data Sertifikat Cetak Resmi SKB Banjarnegara
     if (dom.ending.certName) dom.ending.certName.textContent = state.playerName;
     if (dom.ending.certCadetName) dom.ending.certCadetName.textContent = state.playerName;
     if (dom.ending.certFinalScore) dom.ending.certFinalScore.textContent = `${totalScore} / 100`;
@@ -2653,7 +2654,7 @@
     // Generate Nomor Registrasi Misi Unik & Tanggal
     const today = new Date();
     const dateFormatted = today.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    const regCode = `RBS-ASTRO-${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const regCode = `SKB-ASTRO-${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     if (dom.ending.certDate) dom.ending.certDate.textContent = dateFormatted;
     if (dom.ending.certRegNumber) dom.ending.certRegNumber.textContent = regCode;
@@ -2804,7 +2805,7 @@
 
   // Prefill nama kadet jika pernah tersimpan di localStorage (sinkronisasi antar-misi)
   try {
-    const savedCadetName = localStorage.getItem('rbs_player_name');
+    const savedCadetName = localStorage.getItem('skb_player_name') || localStorage.getItem('rbs_player_name');
     if (savedCadetName && savedCadetName.trim()) {
       dom.title.input.value = savedCadetName.trim();
       dom.title.btnStart.disabled = false;

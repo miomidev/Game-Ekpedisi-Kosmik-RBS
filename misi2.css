@@ -1,5 +1,5 @@
 /* ============================================================
-   misi2.css — Misi 2: Holo-Orbit Simulator | Bimbel RBS
+   misi2.css — Misi 2: Holo-Orbit Simulator | SKB Banjarnegara
    Dark space cockpit aesthetic — glassmorphism panels
    ============================================================ */
 
@@ -702,6 +702,7 @@ html, body {
   font-family: var(--font-hud); font-size: 10px; letter-spacing: 2px;
   color: var(--text-dim); margin-bottom: 10px;
 }
+.cert-skb,
 .cert-rbs { color: var(--gold); font-weight: 700; }
 .cert-cadet-name {
   font-family: var(--font-hud); font-size: 22px; color: #fff;
